@@ -13,25 +13,25 @@ public:
   class itDiccNat;
 
   //Constructor
-  crearDiccionario(Vector(tupla(Nat clave, alpha significado)));
+  crearDiccionario(Vector(tupla(Nat clave, alpha significado)) v);
 
   //Operaciones Basicas
-  void redefinir(diccNat<alpha> d, Nat n, alpha a);
-  alpha obtener(Nat n, diccNat<alpha> d);
-  bool definido(Nat n, diccNat<alpha> d);
-  Nat cantClaves(diccNat<alpha> d);
-  Conj::Iterador crearItClaves(diccNat<alpha> d);
+  void redefinir(Nat n, alpha a);
+  alpha obtener(Nat n);
+  bool definido(Nat n);
+  Nat cantClaves();
+  Conj::Iterador crearItClaves();
 
   //Operaciones del Iterador
-  itDiccNat crearIt(diccNat<alpha> d);
+  itDiccNat crearIt();
 
   //Clase iterador de Diccionario
   class itDiccNat{
   public:
-    bool haySiguiente(itDiccNat<alpha> it);
-    tupla(const Nat, alpha) siguiente(itDiccNat<alpha> it);
-    const alpha siguienteSignificado(itDiccNat<alpha> it);
-    void avanzar(itDiccNat<alpha> it);
+    bool haySiguiente();
+    tupla(const Nat, alpha) siguiente();
+    const alpha siguienteSignificado();
+    void avanzar();
 
   private:
     Lista::Iterador _iteradorLista;
@@ -43,3 +43,25 @@ private:
 };
 
 //Implementacion
+template<typename alpha>
+diccNat<alpha>::crearDiccionario(Vector(tupla(Nat clave, alpha significado)) v){
+  Nat i = 0;
+  while(i < v.Longitud()){
+    this->_tabla.AgregarAtras(Vector());
+    i++;
+  }
+  i = 0;
+  while(i < v.Longitud()){
+    Nat k = (v[i].clave % v.Longitud()); //REVISAR TIPO TUPLA
+    this->_tabla[k].AgregarAtras(v[i]);
+    Nat q = this->_tabla[k].Longitud();
+    this->_listaIterable.AgregarAtras(*(this->_tabla[k][q-1]));
+    i++;
+  }
+}
+
+template<typename alpha>
+void redefinir(Nat n, alpha a){
+  Nat k = (n % this->_tabla.Longitud());
+  //Iterador de lista --Completar
+}
