@@ -1,0 +1,22 @@
+Driver de test para el TP3,  AED2 2c2015.,
+
+La interacción con el módulo Principal se debe hacer exclusivamente * a través de la interfaz del driver *.
+Ver recomendaciones sobre el TP3 en el enunciado:
+http://www.dc.uba.ar/materias/aed2/2015/2c/descargas/tps/tp3/
+
+NOTA: todos lo fuentes asumen que hay una subcarpeta llamada `aed2` con los módulos-cpp de la cátedra.
+
+Detalle de archivos incluidos
+------------------------------
+
+Driver.h
+- Interfaz del driver. Completar la parte privada y dejar intacta la parte publica.
+
+Driver.cpp
+- Cáscara a completar con la implementación del Driver por cada grupo. 
+
+test.cpp
+- Esqueleto de tests con un test de ejemplo.
+
+Makefile
+- Archivo para compilar el driver y los test. Modificar cuando agreguen nuevos archivos.
