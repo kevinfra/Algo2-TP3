@@ -63,5 +63,24 @@ diccNat<alpha>::crearDiccionario(Vector(tupla(Nat clave, alpha significado)) v){
 template<typename alpha>
 void redefinir(Nat n, alpha a){
   Nat k = (n % this->_tabla.Longitud());
-  //Iterador de lista --Completar
+  Lista<*(tupla(Nat clave, alpha significado))>::Iterador it = this->_tabla[k].CrearIt();
+  while it.haySiguiente(){
+  	if((*(it.Siguiente())).clave == n){
+  		(*(it.Siguiente())).significado = a;
+  	}
+  	it.Avanzar();
+  }
+}
+
+template<typename alpha>
+*alpha obtener(Nat n){
+	Nat k = (n % this->_tabla.Longitud());
+	Lista<*(tupla(Nat clave, alpha significado))>::Iterador it = this->_tabla[k].CrearIt();
+	*alpha res = NULL;
+	while it.haySiguiente(){
+  	if((*(it.Siguiente())).clave == n){
+  		res = (*(it.Siguiente())).significado;
+  	}
+  	it.Avanzar();
+  }
 }
