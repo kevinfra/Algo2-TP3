@@ -34,7 +34,7 @@ public:
     void avanzar();
 
   private:
-    Lista::Iterador _iteradorLista;
+    Lista<tupla(Nat clave, alpha significado)>::Iterador _iteradorLista;
   };
 
 private:
@@ -61,10 +61,10 @@ diccNat<alpha>::crearDiccionario(Vector(tupla(Nat clave, alpha significado)) v){
 }
 
 template<typename alpha>
-void redefinir(Nat n, alpha a){
+void diccNat<alpha>::redefinir(Nat n, alpha a){
   Nat k = (n % this->_tabla.Longitud());
   Lista<*(tupla(Nat clave, alpha significado))>::Iterador it = this->_tabla[k].CrearIt();
-  while it.haySiguiente(){
+  while (it.HaySiguiente()){
   	if((*(it.Siguiente())).clave == n){
   		(*(it.Siguiente())).significado = a;
   	}
@@ -73,14 +73,57 @@ void redefinir(Nat n, alpha a){
 }
 
 template<typename alpha>
-*alpha obtener(Nat n){
+*alpha diccNat<alpha>::obtener(Nat n){
 	Nat k = (n % this->_tabla.Longitud());
 	Lista<*(tupla(Nat clave, alpha significado))>::Iterador it = this->_tabla[k].CrearIt();
 	*alpha res = NULL;
-	while it.haySiguiente(){
-  	if((*(it.Siguiente())).clave == n){
-  		res = (*(it.Siguiente())).significado;
-  	}
+	while (it.HaySiguiente()){
+  		if((*(it.Siguiente())).clave == n){
+  			res = (*(it.Siguiente())).significado;
+  		}
   	it.Avanzar();
   }
+  return res;
+}
+
+template<typename alpha>
+bool diccNat<alpha>::definido(Nat n){
+	Nat k = (n % this->_tabla.Longitud());
+	Lista<*(tupla(Nat clave, alpha significado))>::Iterador it = this->_tabla[k].CrearIt();
+	while (it.HaySiguiente() && (*(it.Siguiente())).clave != n){
+	  	it.Avanzar();
+  	}
+  	return (it.HaySiguiente() && (*(it.Siguiente())).clave == n);
+}
+
+template<typename alpha>
+Nat diccNat<alpha>::cantClaves(){
+	return this->_tabla.Longitud();
+}
+
+template<typename alpha>
+typename diccNat<alpha>::itDiccNat diccNat<alpha>::crearIt(){
+	_iteradorLista = this->_tabla.CrearIt();
+	return _iteradorLista;
+}
+
+template<typename alpha>
+bool diccNat<alpha>::itDiccNat::haySiguiente(){
+	return _iteradorLista.HaySiguiente();
+}
+
+template<typename alpha>
+tupla(const Nat, alpha) diccNat<alpha>::itDiccNat::siguiente(){
+	return *(_iteradorLista.Siguiente());
+}
+
+template<typename alpha>
+const alpha diccNat<alpha>::itDiccNat::siguienteSignificado(){
+	return *(_iteradorLista.Siguiente().significado);
+}
+
+
+template<typename alpha>
+void diccNat<alpha>::itDiccNat::avanzar(){
+	_iteradorLista.Avanzar();
 }
