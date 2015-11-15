@@ -11,13 +11,15 @@ using namespace aed2;
 class Campus{
 	
 	public:
+
 	Campus();
 	//CrearCampus
-	Campus(Nat alto, Nat ancho);
+	//ancho = fila, alto = columna
+	Campus(Nat ancho, Nat alto);
 
 	void AgregarObstaculo(Posicion pos);
-	void Filas();
-	void Columnas();
+	Nat Filas();
+	Nat Columnas();
 	bool Ocupada(Posicion pos);
 	bool PosValida(Posicion pos);
 	bool EsIngreso(Posicion pos);
@@ -27,9 +29,9 @@ class Campus{
 	Nat Distancia(Posicion pos1, Posicion pos2);
 	Posicion MoverDir(Posicion pos, Direccion dir);
 	Conj<Posicion> IngresosMasCercanos(Posicion pos);
-	
 
 	private:
+
 	Nat filas;
 	Nat columnas;
 	Vector<bool> obstaculos;
