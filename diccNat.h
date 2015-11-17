@@ -80,10 +80,10 @@ void diccNat<alpha>::redefinir(Nat n, alpha a){
 }
 
 template<typename alpha>
-*alpha diccNat<alpha>::obtener(Nat n){
+alpha* diccNat<alpha>::obtener(Nat n){
 	Nat k = (n % this->_tabla.Longitud());
 	Lista<*tupla>::Iterador it = this->_tabla[k].CrearIt();
-	*alpha res = NULL;
+	alpha* res = NULL;
 	while (it.HaySiguiente()){
   		if((*(it.Siguiente())).clave == n){
   			res = (*(it.Siguiente())).significado;
@@ -134,3 +134,5 @@ template<typename alpha>
 void diccNat<alpha>::itDiccNat::avanzar(){
 	_iteradorLista.Avanzar();
 }
+
+#endif //DICCIONARIO_NAT_FIJO
