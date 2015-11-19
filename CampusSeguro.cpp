@@ -3,20 +3,20 @@
 
 using namespace aed2;
 
-CampusSeguro::CampusSeguro() {}
+CampusSeguro::CampusSeguro(){}
 
 //ComenzarRastrillaje
-CampusSeguro::CampusSeguro(Campus& c, diccNat<datosAgente>& d){
-	this->campus = c;
+CampusSeguro::CampusSeguro(const class Campus& c, const diccNat<datosAgente>& d){
+	this->grilla = c;
 	this->listaMismasSanc = generarListaMismasSanc(d);
 	this->personalAS = d;
-	this-> posicionesAgente = vectorizarPos(d,this->campus.Filas(),this->campus.Columnas());
+	this-> posicionesAgente = vectorizarPos(d,campus().Filas(), campus().Columnas());
 	this->masVigilante = menorPlaca(d);
 	this->mismasSancModificado = true;
 	//los diccionarios con hippies y estudiantes deben iniciar vacios
 
 	Nat i = 0;
-	while(i < this->campus.Filas()*this->campus.Columnas()){
+	while(i < campus().Filas()*campus().Columnas()){
 		this->posicionesHippies.AgregarAtras(" ");
 		this->posicionesEstudiantes.AgregarAtras(" ");
 		i++;
@@ -41,7 +41,7 @@ CampusSeguro::CampusSeguro(Campus& c, diccNat<datosAgente>& d){
 	}
 }
 
-Vector<As>& CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Nat f, Nat c){
+Vector<As>& CampusSeguro::vectorizarPos(const diccNat<datosAgente>& d, const Nat f, const Nat c){
 	Vector<As> res;
 	Nat i = 0;
 	diccNat<datosAgente> it = d.CrearIt();
@@ -78,7 +78,7 @@ Vector<As>& CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Nat f, Nat c){
 	return res;
 }
 
-As CampusSeguro::menorPlaca(diccNat<datosAgente>& d){
+As CampusSeguro::menorPlaca(const diccNat<datosAgente>& d){
 	typename diccNat<datosAgente>::Iterador it = d.CrearIt();
 	//idem que en funcion anterior.
 	Nat placaMenor = it.Clave();
@@ -115,24 +115,29 @@ Lista<kSanc>& CampusSeguro::generarListaMismasSanc(diccNat<datosAgente>& d){
 		itDic.Avanzar();
 	}
 
+	return res;
 }
 
-void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
-	if(todasOcupadas(this->campus.Vecinos(pos)) && AlMenosUnAgente(this->campus.Vecinos(pos)){
-		Conj<As> conjAgParaSanc = AgParaPremSanc(this->campus.Vecinos(pos));
+void CampusSeguro::IngresarHippie(Nombre h, Posicion p){
+}
+
+
+void CampusSeguro::IngresarEstudiante(const Nombre e, const Posicion pos){
+	if(todasOcupadas(campus().Vecinos(pos)) && AlMenosUnAgente(this->campus.Vecinos(pos)){
+		Conj<As> conjAgParaSanc = AgParaPremSanc(campus().Vecinos(pos));
 		SancionarAgentes(conjAgParaSanc);
 	}
 
-	if(CantHippiesVecinos(this->campus.Vecinos(pos)) < 2){
+	if(CantHippiesVecinos(campus().Vecinos(pos)) < 2){
 		this->estudiantes.Definir(e,pos);
-		this->posicionesEstudiantes[pos.y * this->campus.Columnas() + pos.x] = e;
+		this->posicionesEstudiantes[pos.y * campus().Columnas() + pos.x] = e;
 	} else{
 		this->hippies.Definir(e,pos);
-		this->posicionesHippies[pos.y * this->campus.Columnas() + pos.x] = e;
+		this->posicionesHippies[pos.y * campus().Columnas() + pos.x] = e;
 	}
 
 
-	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(this->campus.Vecinos(pos));
+	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(campus().Vecinos(pos));
 
 	if (conjHippiesRodEst.Cardinal() > 0) {
 		typename Conj<NombrePosicion>::Iterador itHEst = conjHippiesRodEst.CrearIt();
@@ -140,9 +145,9 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 			this->estudiantes.Definir(itHEst.Siguiente().nombre, itHEst.Siguiente().pos);
 			this->hippies.Eliminar(itHEst.Siguiente().nombre);
 
-			this->posicionesEstudiantes[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x] = this->posicionesHippies[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x];
+			this->posicionesEstudiantes[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = this->posicionesHippies[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x];
 
-			this->posicionesHippies[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x] = " ";
+			this->posicionesHippies[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = " ";
 
 			itHEst.Avanzar();
 		}
@@ -150,43 +155,43 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 
 
 	//Las Capturas se actualizan en HippiesRodeadosAs
-	Conj<NombrePosicion> conjHIppiesRodAs = HippiesRodeadosAs(this->campus.Vecinos(pos));
+	Conj<NombrePosicion> conjHIppiesRodAs = HippiesRodeadosAs(campus().Vecinos(pos));
 
 	if(conjHippiesRodAs.Cardinal() > 0){
 		typename Conj<NombrePosicion>::Iterador itHAs = conjHippiesRodAs.CrearIt();
 		while(itHAs.HaySiguiente()){
 			this->hippies.Eliminar(itHAs.Siguiente().nombre);
-			this->posicionesHippies[itHAs.Siguiente().pos.y * this->campus.Columnas() + itHAs.Siguiente().pos.x];
+			this->posicionesHippies[itHAs.Siguiente().pos.y * campus().Columnas() + itHAs.Siguiente().pos.x];
 
 			itHAs.Avanzar();
 		}
 	}
 
 
-	Conj<NombrePosicion> conjEstRodHip = EstudiantesRodeadosHippies(this->campus.Vecinos(pos));
+	Conj<NombrePosicion> conjEstRodHip = EstudiantesRodeadosHippies(campus().Vecinos(pos));
 
 	if(conjEstRodHip.Cardinal() > 0){
 		typename Conj<NombrePosicion>::Iterador itEstH = conjEstRodHip.CrearIt();
 		while(itEstH.HaySiguiente()){
 			this->estudiantes.Eliminar(itEstH.Siguiente().nombre);
-			this->posicionesEstudiantes[itEstH.Siguiente().pos.y * this->campus.Columnas() + itEstH.Siguiente().pos.x] = " ";
+			this->posicionesEstudiantes[itEstH.Siguiente().pos.y * campus().Columnas() + itEstH.Siguiente().pos.x] = " ";
 
 			this->hippies.Definir(itEstH.Siguiente().nombre, itEstH.Siguiente().pos);
-			this->posicionesHippies[itEstH.Siguiente().pos.y * this->campus.Columnas() + itEstH.Siguiente().pos.x] = itEstH.Siguiente().nombre;
+			this->posicionesHippies[itEstH.Siguiente().pos.y * campus().Columnas() + itEstH.Siguiente().pos.x] = itEstH.Siguiente().nombre;
 
 			itEstH.Avanzar();
 		}
 	}
 
 	
-	Conj<Posicion> conjEstRodAs = EstudiantesRodeadosAs(this->campus.Vecinos(pos));
+	Conj<Posicion> conjEstRodAs = EstudiantesRodeadosAs(campus().Vecinos(pos));
 
 	if(conjEstRodAs.Cardinal() > 0){
 		typename Conj<Posicion>::Iterador itEstAs = conjEstRodAs.CrearIt();
 
 		while(itEstAs.HaySiguiente()){
-			if(todasOcupadas(this->campus.Vecinos(itEstAs.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itEstAs.Siguiente()))){
-				Conj<As> conjAgParaSanc = AgParaPremSanc(this->campus.Vecinos(itEstAs.Siguiente()));
+			if(todasOcupadas(campus().Vecinos(itEstAs.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itEstAs.Siguiente()))){
+				Conj<As> conjAgParaSanc = AgParaPremSanc(campus().Vecinos(itEstAs.Siguiente()));
 				SancionarAgentes(conjAgParaSanc);
 			}
 		}
@@ -194,12 +199,12 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 
 }
 
-Conj<Posicion>& CampusSeguro::EstudiantesRodeadosAs(Conj<Posicion>& c){
+Conj<Posicion>& CampusSeguro::EstudiantesRodeadosAs(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	Conj<Posicion> res;
 
 	while(itC.HaySiguiente()){
-		if(TodasOcupadas(this->campus.Vecinos(itC.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itC.Siguiente()))){
+		if(TodasOcupadas(campus().Vecinos(itC.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itC.Siguiente()))){
 			res.AgregarRapido(itC.Siguiente());
 		}
 		itC.Avanzar();
@@ -208,14 +213,14 @@ Conj<Posicion>& CampusSeguro::EstudiantesRodeadosAs(Conj<Posicion>& c){
 	return res;
 }
 
-Conj<NombrePosicion>& EstudiantesRodeadosHippies(Conj<Posicion>& c){
+Conj<NombrePosicion>& CampusSeguro::EstudiantesRodeadosHippies(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	Conj<NombrePosicion> res;
 	NombrePosicion np;
 
 	while(itC.HaySiguiente()){
-		if(this->posicionesEstudiantes[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(this->campus.Vecinos(itC.Siguiente())) && HippiesAtrapando(this->campus.Vecinos(itC.Siguiente()))){
-			np.nombre = this->posicionesEstudiantes[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x];
+		if(this->posicionesEstudiantes[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(this->campus.Vecinos(itC.Siguiente())) && HippiesAtrapando(this->campus.Vecinos(itC.Siguiente()))){
+			np.nombre = this->posicionesEstudiantes[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x];
 			np.pos = itC.Siguiente();
 			res.AgregarRapido(np);
 		}
@@ -225,12 +230,12 @@ Conj<NombrePosicion>& EstudiantesRodeadosHippies(Conj<Posicion>& c){
 	return res;
 }
 
-bool CampusSeguro::HippiesAtrapando(Conj<Posicion>& c){
+bool CampusSeguro::HippiesAtrapando(const Conj<Posicion>& c){
 	Nat i = 0;
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 
 	while(itC.HaySiguiente()){
-		if(this->posicionesHippies[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x] != " "){
+		if(this->posicionesHippies[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " "){
 			i++;
 		}
 		itC.Avanzar();
@@ -239,7 +244,7 @@ bool CampusSeguro::HippiesAtrapando(Conj<Posicion>& c){
 	return i >= 2;
 }
 
-void CampusSeguro::SancionarAgentes(Conj<As>& c){
+void CampusSeguro::SancionarAgentes(const Conj<As>& c){
 	typename Conj<As>::Iterador itC = c.CrearIt();
 
 	if(c.Cardinal() > 0){
@@ -280,19 +285,19 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 
 }
 
-Conj<NombrePosicion>& CampusSeguro:: HippiesRodeadosAs(Conj<Posicion>& c){
+Conj<NombrePosicion>& CampusSeguro::HippiesRodeadosAs(const Conj<Posicion>& c){
 	typename Conj<Posicion>:: Iterador itC = c.CrearIt();
 	Conj<NombrePosicion> res;
 	NombrePosicion np;
 
 	while(itC.HaySiguiente()){
-		if(this->posicionesHippies[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(this->campus.Vecinos(itC.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itC.Siguiente()))){
-			np.nombre = this->posicionesHippies[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x];
+		if(this->posicionesHippies[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(campus().Vecinos(itC.Siguiente())) && AlMenosUnAgente(campus().Vecinos(itC.Siguiente()) )){
+			np.nombre = this->posicionesHippies[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x];
 			np.pos = itC.Siguiente();
 			
 			res.AgregarRapido(np);
 
-			Conj<As> conjAgPremiar = AgParaPremSanc(this->campus.Vecinos(itC.Siguiente()));
+			Conj<As> conjAgPremiar = AgParaPremSanc(campus().Vecinos(itC.Siguiente()));
 			PremiarAgentes(conjAgPremiar);
 		}
 		itC.Avanzar();
@@ -302,13 +307,13 @@ Conj<NombrePosicion>& CampusSeguro:: HippiesRodeadosAs(Conj<Posicion>& c){
 
 }
 
-Conj<As>& CampusSeguro::AgParaPremSanc(Conj<Posicion>& c){
+Conj<As>& CampusSeguro::AgParaPremSanc(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	Conj<As> res;
 
 	while(itC.HaySiguiente()){
-		if(this->posicionesAgente[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x].datos.HaySiguiente()){
-			res.AgregarRapido(this->posicionesAgente[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x]);
+		if(this->posicionesAgente[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x].datos.HaySiguiente()){
+			res.AgregarRapido(this->posicionesAgente[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x]);
 		}
 		itC.Avanzar();
 	}
@@ -316,7 +321,7 @@ Conj<As>& CampusSeguro::AgParaPremSanc(Conj<Posicion>& c){
 	return res;
 }
 
-void CampusSeguro::PremiarAgentes(Conj<As>& c){
+void CampusSeguro::PremiarAgentes(const Conj<As>& c){
 	typename Conj<As>::Iterador itC = c.CrearIt();
 	
 	while(itC.HaySiguiente()){
@@ -330,7 +335,7 @@ void CampusSeguro::PremiarAgentes(Conj<As>& c){
 
 }
 
-Nat CampusSeguro::CantHippiesVecinos(Conj<Posicion>& c){
+Nat CampusSeguro::CantHippiesVecinos(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	Nat res = 0;
 
@@ -347,52 +352,52 @@ Nat CampusSeguro::CantHippiesVecinos(Conj<Posicion>& c){
 	return res;
 }
 
-bool CampusSeguro::TodosEstudiantes(Conj<Posicion>& c){
+bool CampusSeguro::TodosEstudiantes(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	bool res = true;
 
 	while(itC.HaySiguiente()){
-		if(this->posicionesEstudiantes[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x] = " ") res = false;
+		if(this->posicionesEstudiantes[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] == " ") res = false;
 
 		itC.Avanzar();
 	}
 	return res;
 }
 
-bool CampusSeguro::TodasOcupadas(Conj<Posicion>& c){
+bool CampusSeguro::TodasOcupadas(const Conj<Posicion>& c){
 	bool res = false;
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 
 	while(itC.HaySiguiente() && !res){
-		if(this->posicionesHippies[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x] != " ") res = true;
+		if(this->posicionesHippies[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " ") res = true;
 
-		if(this->posicionesEstudiantes[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x] != " ") res = true;
+		if(this->posicionesEstudiantes[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " ") res = true;
 		
 		itC.Avanzar();
 	}
 
 	itC = c.CrearIt();
 	while(itC.HaySiguiente() && !res){
-		if(this->posicionesAgente[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x].datos.HaySiguiente()) res = true;
+		if(this->posicionesAgente[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x].datos.HaySiguiente()) res = true;
 	}
 
 	itC = c.CrearIt();
 	while(itC.HaySiguiente() && !res){
-		if(this->campus.Ocupada(itC.Siguiente())) res = true;
+		if(campus().Ocupada(itC.Siguiente())) res = true;
 		itC.Avanzar();
 	}
 
 	return res;
 }
 
-Conj<NombrePosicion>& HippiesRodeadosEstudiantes(Conj<Posicion>& c){
+Conj<NombrePosicion>& CampusSeguro::HippiesRodeadosEstudiantes(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	Conj<NombrePosicion> conjuntoRetorno;
 	NombrePosicion np;
 
 	while(itC.HaySiguiente()){
-		if(this->posicionesHippies[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(this->campus.Vecinos(itC.Siguiente())) && TodosEstudiantes(this->campus.Vecinos(itC.Siguiente()))){
-			np.nombre = this->posicionesHippies[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x];
+		if(this->posicionesHippies[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(campus().Vecinos(itC.Siguiente())) && TodosEstudiantes(campus().Vecinos(itC.Siguiente()))){
+			np.nombre = this->posicionesHippies[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x];
 			np.pos = itC.Siguiente();
 
 			conjuntoRetorno.AgregarRapido(np);
@@ -404,12 +409,12 @@ Conj<NombrePosicion>& HippiesRodeadosEstudiantes(Conj<Posicion>& c){
 	return conjuntoRetorno;
 }
 
-bool CampusSeguro::AlMenosUnAgente(Conj<Posicion>& c){
+bool CampusSeguro::AlMenosUnAgente(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	bool res = false;
 
 	while(itC.HaySiguiente()){
-		if(this->posicionesAgente[itC.Siguiente().y * this->campus.Columnas() + itC.Siguiente().x].datos.HaySiguiente()) res =  true;
+		if(this->posicionesAgente[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x].datos.HaySiguiente()) res =  true;
 
 		itC.Avanzar();
 	}
@@ -417,20 +422,21 @@ bool CampusSeguro::AlMenosUnAgente(Conj<Posicion>& c){
 	return res;
 }
 
+/*
 void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
-	if(TodasOcupadas(this->campus.Vecinos(pos)) && AlMenosUnAgente(this->campus.Vecinos(pos))){
-		Conj<As> conjAgParaPrem = AgParaPremSanc(this->campus.Vecinos(pos));
+	if(TodasOcupadas(campus().Vecinos(pos)) && AlMenosUnAgente(this->campus.Vecinos(pos))){
+		Conj<As> conjAgParaPrem = AgParaPremSanc(campus().Vecinos(pos));
 		PremiarAgentes(conjAgParaPrem);
-	} else if(TodasOcupadas(this->campus.Vecinos(pos)) && TodosEstudiantes(this->campus.Vecinos(pos))){
+	} else if(TodasOcupadas(campus().Vecinos(pos)) && TodosEstudiantes(this->campus.Vecinos(pos))){
 		this->estudiantes.Definir(h,pos);
-		this->posicionesEstudiantes[pos.y * this->campus.Columnas() + pos.x] = h;
+		this->posicionesEstudiantes[pos.y * campus().Columnas() + pos.x] = h;
 	} else {
 		this->hippies.Definir(h,pos);
-		this->posicionesHippies[pos.y * this->campus.Columnas() + pos.x] = h;
+		this->posicionesHippies[pos.y * campus().Columnas() + pos.x] = h;
 	}
 
 	
-	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(this->campus.Vecinos(pos));
+	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(campus().Vecinos(pos));
 
 	if (conjHippiesRodEst.Cardinal() > 0) {
 		typename Conj<NombrePosicion>::Iterador itHEst = conjHippiesRodEst.CrearIt();
@@ -438,9 +444,9 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 			this->estudiantes.Definir(itHEst.Siguiente().nombre, itHEst.Siguiente().pos);
 			this->hippies.Eliminar(itHEst.Siguiente().nombre);
 
-			this->posicionesEstudiantes[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x] = this->posicionesHippies[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x];
+			this->posicionesEstudiantes[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = this->posicionesHippies[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x];
 
-			this->posicionesHippies[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x] = " ";
+			this->posicionesHippies[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = " ";
 
 			itHEst.Avanzar();
 		}
@@ -448,49 +454,50 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 
 
 	//Las Capturas se actualizan en HippiesRodeadosAs
-	Conj<NombrePosicion> conjHippiesRodAs = HippiesRodeadosAs(this->campus.Vecinos(pos));
+	Conj<NombrePosicion> conjHippiesRodAs = HippiesRodeadosAs(campus().Vecinos(pos));
 
 	if(conjHippiesRodAs.Cardinal() > 0){
 		typename Conj<NombrePosicion>::Iterador itHAs = conjHippiesRodAs.CrearIt();
 		while(itHAs.HaySiguiente()){
 			this->hippies.Eliminar(itHAs.Siguiente().nombre);
-			this->posicionesHippies[itHAs.Siguiente().pos.y * this->campus.Columnas() + itHAs.Siguiente().pos.x];
+			this->posicionesHippies[itHAs.Siguiente().pos.y * campus().Columnas() + itHAs.Siguiente().pos.x];
 
 			itHAs.Avanzar();
 		}
 	}
 
 
-	Conj<NombrePosicion> conjEstRodHip = EstudiantesRodeadosHippies(this->campus.Vecinos(pos));
+	Conj<NombrePosicion> conjEstRodHip = EstudiantesRodeadosHippies(campus().Vecinos(pos));
 
 	if(conjEstRodHip.Cardinal() > 0){
 		typename Conj<NombrePosicion>::Iterador itEstH = conjEstRodHip.CrearIt();
 		while(itEstH.HaySiguiente()){
 			this->estudiantes.Eliminar(itEstH.Siguiente().nombre);
-			this->posicionesEstudiantes[itEstH.Siguiente().pos.y * this->campus.Columnas() + itEstH.Siguiente().pos.x] = " ";
+			this->posicionesEstudiantes[itEstH.Siguiente().pos.y * campus().Columnas() + itEstH.Siguiente().pos.x] = " ";
 
 			this->hippies.Definir(itEstH.Siguiente().nombre, itEstH.Siguiente().pos);
-			this->posicionesHippies[itEstH.Siguiente().pos.y * this->campus.Columnas() + itEstH.Siguiente().pos.x] = itEstH.Siguiente().nombre;
+			this->posicionesHippies[itEstH.Siguiente().pos.y * campus().Columnas() + itEstH.Siguiente().pos.x] = itEstH.Siguiente().nombre;
 
 			itEstH.Avanzar();
 		}
 	}
 
 	
-	Conj<Posicion> conjEstRodAs = EstudiantesRodeadosAs(this->campus.Vecinos(pos));
+	Conj<Posicion> conjEstRodAs = EstudiantesRodeadosAs(campus().Vecinos(pos));
 
 	if(conjEstRodAs.Cardinal() > 0){
 		typename Conj<Posicion>::Iterador itEstAs = conjEstRodAs.CrearIt();
 
 		while(itEstAs.HaySiguiente()){
-			if(TodasOcupadas(this->campus.Vecinos(itEstAs.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itEstAs.Siguiente()))){
-				Conj<As> conjAgParaSanc = AgParaPremSanc(this->campus.Vecinos(itEstAs.Siguiente()));
+			if(TodasOcupadas(campus().Vecinos(itEstAs.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itEstAs.Siguiente()))){
+				Conj<As> conjAgParaSanc = AgParaPremSanc(campus().Vecinos(itEstAs.Siguiente()));
 				SancionarAgentes(conjAgParaSanc);
 			}
 		}
 	}
 
 }
+*/
 
 void CampusSeguro::MoverEstudiante(Nombre e, Direccion d){
 }
@@ -501,7 +508,8 @@ void CampusSeguro::MoverHippie(Nombre h){
 void CampusSeguro::MoverAgente(Agente a){
 }
 
-Campus CampusSeguro::campus(){
+Campus CampusSeguro::campus() const{
+	return this->grilla;
 }
 
 typename Conj<Nombre>::Iterador CampusSeguro::Estudiantes(){
