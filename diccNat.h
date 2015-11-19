@@ -16,17 +16,17 @@ public:
   struct tupla{
     Nat clave;
     alpha significado;
-  }
+  };
 
   //Constructor
-  crearDiccionario(Vector<tupla> v);
+  diccNat(Vector<tupla> v); //CrearDiccionario
 
   //Operaciones Basicas
   void redefinir(Nat n, alpha a);
-  alpha obtener(Nat n);
+  alpha* obtener(Nat n);
   bool definido(Nat n);
   Nat cantClaves();
-  Conj::Iterador crearItClaves();
+  Conj<Nat>::Iterador crearItClaves();
 
   //Operaciones del Iterador
   itDiccNat crearIt();
@@ -40,21 +40,21 @@ public:
     void avanzar();
 
   private:
-    Lista<tupla>::Iterador _iteradorLista;
+    typename Lista<tupla>::Iterador _iteradorLista;
   };
 
 
 private:
   Vector< Lista<tupla> > _tabla;
-  Lista<*tupla> _listaIterable;
+  Lista<tupla*> _listaIterable;
 };
 
 //Implementacion
 template<typename alpha>
-diccNat<alpha>::crearDiccionario(Vector<tupla> v){
+diccNat<alpha>::diccNat(Vector<tupla> v){
   Nat i = 0;
   while(i < v.Longitud()){
-    this->_tabla.AgregarAtras(Lista());
+    this->_tabla.AgregarAtras(Lista<tupla>());
     i++;
   }
   i = 0;
@@ -70,10 +70,10 @@ diccNat<alpha>::crearDiccionario(Vector<tupla> v){
 template<typename alpha>
 void diccNat<alpha>::redefinir(Nat n, alpha a){
   Nat k = (n % this->_tabla.Longitud());
-  Lista<*tupla>::Iterador it = this->_tabla[k].CrearIt();
-  while (it.HaySiguiente()){
-  	if((*(it.Siguiente())).clave == n){
-  		(*(it.Siguiente())).significado = a;
+  typename Lista<tupla*>::Iterador it = this->_tabla[k].CrearIt();
+  while(it.HaySiguiente()){
+  	if(it.Siguiente()->clave == n){
+  		it.Siguiente()->significado = a;
   	}
   	it.Avanzar();
   }
@@ -82,11 +82,11 @@ void diccNat<alpha>::redefinir(Nat n, alpha a){
 template<typename alpha>
 alpha* diccNat<alpha>::obtener(Nat n){
 	Nat k = (n % this->_tabla.Longitud());
-	Lista<*tupla>::Iterador it = this->_tabla[k].CrearIt();
+	typename Lista<tupla*>::Iterador it = this->_tabla[k].CrearIt();
 	alpha* res = NULL;
 	while (it.HaySiguiente()){
-  		if((*(it.Siguiente())).clave == n){
-  			res = (*(it.Siguiente())).significado;
+  		if(it.Siguiente()->clave == n){
+  			res = it.Siguiente()->significado;
   		}
   	it.Avanzar();
   }
@@ -96,8 +96,8 @@ alpha* diccNat<alpha>::obtener(Nat n){
 template<typename alpha>
 bool diccNat<alpha>::definido(Nat n){
 	Nat k = (n % this->_tabla.Longitud());
-	Lista<*tupla>::Iterador it = this->_tabla[k].CrearIt();
-	while (it.HaySiguiente() && (*(it.Siguiente())).clave != n){
+	typename Lista<tupla*>::Iterador it = this->_tabla[k].CrearIt();
+	while (it.HaySiguiente() && (it.Siguiente()->clave != n)){
 	  	it.Avanzar();
   	}
   	return (it.HaySiguiente() && (*(it.Siguiente())).clave == n);
@@ -110,8 +110,8 @@ Nat diccNat<alpha>::cantClaves(){
 
 template<typename alpha>
 typename diccNat<alpha>::itDiccNat diccNat<alpha>::crearIt(){
-	_iteradorLista = this->_tabla.CrearIt();
-	return _iteradorLista;
+	this->_iteradorLista = this->_tabla.CrearIt();
+	return this->_iteradorLista;
 }
 
 template<typename alpha>
@@ -120,7 +120,7 @@ bool diccNat<alpha>::itDiccNat::haySiguiente(){
 }
 
 template<typename alpha>
-tupla diccNat<alpha>::itDiccNat::siguiente(){
+typename diccNat<alpha>::tupla diccNat<alpha>::itDiccNat::siguiente(){
 	return *(_iteradorLista.Siguiente());
 }
 
