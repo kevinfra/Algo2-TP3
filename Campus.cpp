@@ -6,16 +6,16 @@ using namespace aed2;
 Campus::Campus() {}
 
 //CrearCampus
-Campus::Campus(Nat ancho, Nat alto){
+Campus::Campus(const Nat ancho, const Nat alto){
 	this->filas = ancho;
 	this->columnas = alto;
 	
-	for(int i = 0; i< alto*ancho; i++){
+	for(Nat i = 0; i< alto*ancho; i++){
 		this->obstaculos.AgregarAtras(false);
 	}
 }
 
-void Campus::AgregarObstaculo(Posicion pos){
+void Campus::AgregarObstaculo(const Posicion pos){
 	this->obstaculos.Agregar(pos.y*this->columnas + pos.x, true);
 }
 
@@ -27,31 +27,31 @@ Nat Campus::Columnas(){
 	return this->columnas;
 }
 
-bool Campus::Ocupada(Posicion pos){
+bool Campus::Ocupada(const Posicion pos){
 	return this->obstaculos[pos.y*this->columnas + pos.x];
 }
 
-bool Campus::PosValida(Posicion pos){
+bool Campus::PosValida(const Posicion pos){
 	return (pos.x >= 0) && (pos.x < this->columnas) && (pos.y >= 0) && (pos.y < this->filas);
 }
 
-bool Campus::EsIngreso(Posicion pos){
+bool Campus::EsIngreso(const Posicion pos){
 	return (IngresoSuperior(pos)) || (IngresoInferior(pos));
 }
 
 //En la interfaz dice IngresoSuperior pero en los algoritmos dice EsIngresoSuperior
 //Lo dejo como en la interfaz
-bool Campus::IngresoSuperior(Posicion pos){
+bool Campus::IngresoSuperior(const Posicion pos){
 	return (pos.y == 0);
 }
 
 //En la interfaz dice IngresoInferior pero en los algoritmos dice EsIngresoInferior
 //Lo dejo como en la interfaz
-bool Campus::IngresoInferior(Posicion pos){
+bool Campus::IngresoInferior(const Posicion pos){
 	return (pos.y == this->filas-1);
 }
 
-Conj<Posicion> Campus::Vecinos(Posicion pos){
+Conj<Posicion> Campus::Vecinos(const Posicion pos){
 	Conj<Posicion> res;
 
 	Posicion vecino;
@@ -74,7 +74,7 @@ Conj<Posicion> Campus::Vecinos(Posicion pos){
 	return res;
 }
 
-Nat Campus::Distancia(Posicion pos1, Posicion pos2){
+Nat Campus::Distancia(const Posicion pos1, const Posicion pos2){
 	/*	Si lo hago con Nat no entra al if y no me cambia el signo
 	 *	cuando es negativo.
 	 */
@@ -92,7 +92,7 @@ Nat Campus::Distancia(Posicion pos1, Posicion pos2){
 	return (res1 + res2);
 }
 
-Posicion Campus::MoverDir(Posicion pos, Direccion dir){
+Posicion Campus::MoverDir(const Posicion pos, const Direccion dir){
 	Posicion posNueva;
 	
 	if(dir == izq){
@@ -111,7 +111,7 @@ Posicion Campus::MoverDir(Posicion pos, Direccion dir){
 	return posNueva;
 }
 
-Conj<Posicion> Campus::IngresosMasCercanos(Posicion pos){
+Conj<Posicion> Campus::IngresosMasCercanos(const Posicion pos){
 	Conj<Posicion> res;
 	Posicion filaCero;
 	Posicion filaMUno;

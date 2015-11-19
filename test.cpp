@@ -171,18 +171,27 @@ void test_vecinos(){
 
 	Campus ctest1(10,10);
 	Posicion pos;
+	Posicion prueba;
 
 	pos.x = 0;
 	pos.y = 0;
 	Conj<Posicion> conj1(ctest1.Vecinos(pos));
 	ASSERT_EQ(conj1.Cardinal(), 2);
+	prueba.x = 0;
+	prueba.y = 1;
+	ASSERT(conj1.Pertenece(prueba));
+	prueba.x = 1;
+	prueba.y = 0;
+	ASSERT(conj1.Pertenece(prueba));
+
+	/*
 	Conj<Posicion>::Iterador it1 = conj1.CrearIt();
 	cout << endl;
 	while(it1.HaySiguiente()){
 		cout << it1.Siguiente().y << " " << it1.Siguiente().x << endl;
 		it1.Avanzar();
 	}
-
+	
 	pos.x = 3;
 	pos.y = 0;
 	Conj<Posicion> conj2(ctest1.Vecinos(pos));
@@ -269,7 +278,8 @@ void test_vecinos(){
 	while(it9.HaySiguiente()){
 		cout << it9.Siguiente().y << " " << it9.Siguiente().x << endl;
 		it9.Avanzar();
-	}
+	}*/
+
 }
 
 void test_distancia(){
@@ -444,7 +454,7 @@ int main(int argc, char **argv)
 	 * los test.
 	 * Devuelve lo que tiene que devolver.
 	 */
-	//RUN_TEST(test_vecinos);
+	RUN_TEST(test_vecinos);
 	RUN_TEST(test_distancia);
 	//Idem test_vecinos
 	//RUN_TEST(test_ingresos_mas_cercanos);

@@ -15,20 +15,20 @@ class Campus{
 	Campus();
 	//CrearCampus
 	//ancho = fila, alto = columna
-	Campus(Nat ancho, Nat alto);
+	Campus(const Nat ancho, const Nat alto);
 
-	void AgregarObstaculo(Posicion pos);
+	void AgregarObstaculo(const Posicion pos);
 	Nat Filas();
 	Nat Columnas();
-	bool Ocupada(Posicion pos);
-	bool PosValida(Posicion pos);
-	bool EsIngreso(Posicion pos);
-	bool IngresoSuperior(Posicion pos);
-	bool IngresoInferior(Posicion pos);
-	Conj<Posicion> Vecinos(Posicion pos);
-	Nat Distancia(Posicion pos1, Posicion pos2);
-	Posicion MoverDir(Posicion pos, Direccion dir);
-	Conj<Posicion> IngresosMasCercanos(Posicion pos);
+	bool Ocupada(const Posicion pos);
+	bool PosValida(const Posicion pos);
+	bool EsIngreso(const Posicion pos);
+	bool IngresoSuperior(const Posicion pos);
+	bool IngresoInferior(const Posicion pos);
+	Conj<Posicion> Vecinos(const Posicion pos);
+	Nat Distancia(const Posicion pos1, const Posicion pos2);
+	Posicion MoverDir(const Posicion pos, const Direccion dir);
+	Conj<Posicion> IngresosMasCercanos(const Posicion pos);
 
 	private:
 

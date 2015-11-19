@@ -564,7 +564,7 @@ template<class K, class S>
 typename Dicc<K,S>::const_Iterador Dicc<K,S>::Buscar(const K& clave) const
 {
   typename Dicc<K,S>::const_Iterador it = CrearIt();
-  while(it.HaySiguiente() && it.SiguienteClave() != clave){
+  while(it.HaySiguiente() && it.SiguienteClave() == clave){
       it.Avanzar();
   }
   return it;
@@ -577,7 +577,7 @@ std::ostream& operator << (std::ostream& os, const Dicc<K,S>& d)
 }
 
 template<class K, class S>
-bool operator == (const Dicc<K,S>& d1, const Dicc<K,S>& d2)
+bool operator== (const Dicc<K,S>& d1, const Dicc<K,S>& d2)
 {
   bool retval = d1.CantClaves() == d2.CantClaves();
   typename Dicc<K,S>::const_Iterador it1 = d1.CrearIt();
