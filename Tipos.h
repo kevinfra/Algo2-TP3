@@ -5,7 +5,12 @@
 
 namespace aed2{
 
-	typedef struct {Nat x,y;} Posicion;
+	typedef struct Posicion {Nat x,y;
+					bool operator==(const Posicion& pos) const
+					{
+						return (x == pos.x && y == pos.y);
+					}
+				} Posicion;
 	typedef enum {izq,der,arriba,abajo} Direccion;
 	typedef Nat Agente;
 	typedef String Nombre;
