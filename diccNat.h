@@ -19,7 +19,7 @@ public:
   };
 
   //Constructor
-  diccNat(Vector<tupla> v); //CrearDiccionario
+  diccNat(Vector<tupla> &v); //CrearDiccionario
 
   //Operaciones Basicas
   void redefinir(Nat n, alpha a);
@@ -51,7 +51,7 @@ private:
 
 //Implementacion
 template<typename alpha>
-diccNat<alpha>::diccNat(Vector<tupla> v){
+diccNat<alpha>::diccNat(Vector<tupla> &v){
   Nat i = 0;
   while(i < v.Longitud()){
     this->_tabla.AgregarAtras(Lista<tupla>());
@@ -59,10 +59,11 @@ diccNat<alpha>::diccNat(Vector<tupla> v){
   }
   i = 0;
   while(i < v.Longitud()){
-    Nat k = (v[i].clave % v.Longitud()); //REVISAR TIPO TUPLA
+    Nat k = (v[i].clave % v.Longitud());
     this->_tabla[k].AgregarAtras(v[i]);
     Nat q = this->_tabla[k].Longitud();
-    this->_listaIterable.AgregarAtras(*(this->_tabla[k][q-1]));
+    tupla* punteroATabla = &(this->_tabla[k][q-1]);
+    this->_listaIterable.AgregarAtras(punteroATabla);
     i++;
   }
 }
