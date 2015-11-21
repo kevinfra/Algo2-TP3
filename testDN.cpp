@@ -66,6 +66,22 @@ void test_iteradorClaves(){
   ASSERT_EQ(it.Siguiente(), 3);
 }
 
+void test_itDiccNat(){
+  Vector< diccNat<Nat>::tupla > v;
+  for(Nat i = 0;i < 10;i++){
+    diccNat<Nat>::tupla t;
+    t.clave = i;
+    t.significado = i+10;
+    v.AgregarAtras(t);
+  }
+  diccNat<Nat> d(v);
+  diccNat<Nat>::itDiccNat it = d.crearIt();
+  while(it.haySiguiente() && it.siguiente().clave != 9){
+    it.avanzar();
+  }
+  //ASSERT_EQ(it.siguiente(), 9);
+}
+
 
 int main(int argc, char **argv)
 {
@@ -73,5 +89,6 @@ int main(int argc, char **argv)
   RUN_TEST(test_obtenerDefinidoYredefinir);
   RUN_TEST(test_numeroClaves);
   RUN_TEST(test_iteradorClaves);
+  RUN_TEST(test_itDiccNat);
 	return 0;
 }
