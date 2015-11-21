@@ -35,8 +35,8 @@ public:
   class itDiccNat{
   public:
     bool haySiguiente();
-    tupla siguiente();
-    alpha siguienteSignificado();
+    tupla& siguiente();
+    alpha& siguienteSignificado();
     void avanzar();
 
   private:
@@ -117,10 +117,10 @@ Conj<Nat>::Iterador diccNat<alpha>::crearItClaves(){
   return this->_clavesIterables.CrearIt();
 }
 
-
 template<typename alpha>
 typename diccNat<alpha>::itDiccNat diccNat<alpha>::crearIt(){
-	return this->_listaIterable.CrearIt();
+  itDiccNat d;
+  return d;
 }
 
 template<typename alpha>
@@ -129,13 +129,13 @@ bool diccNat<alpha>::itDiccNat::haySiguiente(){
 }
 
 template<typename alpha>
-typename diccNat<alpha>::tupla diccNat<alpha>::itDiccNat::siguiente(){
-	return this->_iteradorLista.Siguiente();
+typename diccNat<alpha>::tupla& diccNat<alpha>::itDiccNat::siguiente(){
+	return *(this->_iteradorLista.Siguiente());
 }
 
 template<typename alpha>
-alpha diccNat<alpha>::itDiccNat::siguienteSignificado(){
-	return &(this->_iteradorLista.Siguiente()).significado;
+alpha& diccNat<alpha>::itDiccNat::siguienteSignificado(){
+	return *(this->_iteradorLista.Siguiente()).significado;
 }
 
 
