@@ -13,6 +13,8 @@ template<typename alpha>
 class DiccString{
 	
 	public:
+
+	class Iterador;
 	
 	//CrearDiccionario
 	DiccString();
@@ -22,6 +24,24 @@ class DiccString{
 	alpha& Obtener(String c);
 	void Eliminar(String c);
 	Conj<String>::Iterador CrearItClaves();
+
+	Iterador CrearIt();
+
+	class Iterador{
+		
+		public:
+			
+			Iterador();
+			bool HaySiguiente();
+			bool HayAnterior();
+			alpha& SiguienteSignificado();
+			alpha& AnteriorSignificado();
+			void Retroceder();
+			void Avanzar();
+
+
+		private:
+	};
 
 	private:
 

@@ -3,13 +3,9 @@
 
 using namespace aed2;
 
-CampusSeguro::CampusSeguro(){}
-
 //ComenzarRastrillaje
-CampusSeguro::CampusSeguro(const class Campus& c, const diccNat<datosAgente>& d){
-	this->grilla = c;
+CampusSeguro::CampusSeguro(const class Campus& c, diccNat<datosAgente>& d) : grilla(c), personalAS(d) {
 	this->listaMismasSanc = generarListaMismasSanc(d);
-	this->personalAS = d;
 	this-> posicionesAgente = vectorizarPos(d,campus().Filas(), campus().Columnas());
 	this->masVigilante = menorPlaca(d);
 	this->mismasSancModificado = true;
@@ -22,34 +18,34 @@ CampusSeguro::CampusSeguro(const class Campus& c, const diccNat<datosAgente>& d)
 		i++;
 	}
 
-	typename diccNat<datosAgente>::Iterador it = d.CrearIt();
+	typename diccNat<datosAgente>::itDiccNat it = d.crearIt();
 	bool ordenado;
-	while(it.HaySiguiente()){
+	while(it.haySiguiente()){
 		i = 0;
 		ordenado = true;
 		while(i < this->agentesOrdenados.Longitud() && ordenado){
-			if (this->agentesOrdenados[i].agente > it.Siguiente().agente){
+			if (this->agentesOrdenados[i].agente > it.siguiente().clave){
 				ordenado = false;
 			}
 		}
 
 		As tupla;
-		tupla.agente = it.Siguente().agente;
+		tupla.agente = it.siguiente().clave;
 		tupla.datos = it;
 		this->agentesOrdenados.AgregarAtras(tupla);
-		it.Avanzar();
+		it.avanzar();
 	}
 }
 
-Vector<As>& CampusSeguro::vectorizarPos(const diccNat<datosAgente>& d, const Nat f, const Nat c){
+Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Nat f, Nat c){
 	Vector<As> res;
 	Nat i = 0;
-	diccNat<datosAgente> it = d.CrearIt();
+	typename diccNat<datosAgente>::itDiccNat it = d.crearIt();
 
 	/*	Pruebo creando un iterador vacio de esta forma.
 	 *	Hay que testearlo bien esto.
 	 */
-	typename diccNat<datosAgente>::Iterador itVacio;
+	typename diccNat<datosAgente>::itDiccNat itVacio;
 
 	As tuplaVacia;
 	tuplaVacia.agente = 0;
@@ -61,34 +57,35 @@ Vector<As>& CampusSeguro::vectorizarPos(const diccNat<datosAgente>& d, const Nat
 	}
 	
 	As tuplaAAgregar;
-	while(it.HaySiguiente()){
-		typename diccNat(datosAgente)::Iterador itPos = it;
+	while(it.haySiguiente()){
+		typename diccNat<datosAgente>::itDiccNat itPos = it;
 
 		/* 
 		 *	Creo que si le pongo Clave() deberia devolverme eso mismo.
 		 *	Hay que testear esto bien.
 		 */
 
-		tuplaAAgregar.agente = it.Clave();
+		tuplaAAgregar.agente = it.siguiente().clave;
 		tuplaAAgregar.datos = itPos;
-		res[it.Siguiente().posicion.y * c + it.Siguiente().posicion.x] = tuplaAAgregar;
-		it.Avanzar();
+		res[it.siguiente().significado.posicion.y * c + it.siguiente().significado.posicion.x] = tuplaAAgregar;
+		it.avanzar();
 	}
 	
 	return res;
 }
 
-As CampusSeguro::menorPlaca(const diccNat<datosAgente>& d){
-	typename diccNat<datosAgente>::Iterador it = d.CrearIt();
+CampusSeguro::As CampusSeguro::menorPlaca(diccNat<datosAgente>& d){
+	typename diccNat<datosAgente>::itDiccNat it = d.crearIt();
+	typename diccNat<datosAgente>::itDiccNat itMenor;
 	//idem que en funcion anterior.
-	Nat placaMenor = it.Clave();
+	Nat placaMenor = it.siguiente().clave;
 
-	while(it.HaySiguiente()){
-		if (it.Clave() < placaMenor){
-			placaMenor = it.Clave();
-			typename diccNat<datosAgente>::Iterador itMenor = it;
+	while(it.haySiguiente()){
+		if (it.siguiente().clave < placaMenor){
+			placaMenor = it.siguiente().clave;
+			itMenor = it;
 		}
-		it.Avanzar();
+		it.avanzar();
 	}
 	As res;
 	res.agente = placaMenor;
@@ -96,8 +93,8 @@ As CampusSeguro::menorPlaca(const diccNat<datosAgente>& d){
 	return res;
 }
 
-Lista<kSanc>& CampusSeguro::generarListaMismasSanc(diccNat<datosAgente>& d){
-	typename diccNat<datosAgente>::Iterador itDic = d.CrearIt();
+Lista<CampusSeguro::kSanc> CampusSeguro::generarListaMismasSanc(diccNat<datosAgente>& d){
+	typename diccNat<datosAgente>::itDiccNat itDic = d.crearIt();
 	Lista<kSanc> res;
 	typename Lista<kSanc>::Iterador itL = res.CrearIt();
 
@@ -107,23 +104,22 @@ Lista<kSanc>& CampusSeguro::generarListaMismasSanc(diccNat<datosAgente>& d){
 	tupla.agentes = conj;
 	res.AgregarAdelante(tupla);
 
-	while(itDic.HaySiguiente()){
-		typename Conj<Agente>::Iterador itC = res.agentes.AgregarRapido(itDic.Clave());
-		itDic.Siguiente().itConjMismasSanc = itC;
-		itDic.Siguiente().itMismasSanc = itL;
+	while(itDic.haySiguiente()){
+		typename Conj<Agente>::Iterador itC = itL.Siguiente().agentes.AgregarRapido(itDic.siguiente().clave);
+		itDic.siguiente().significado.itConjMismasSanc = itC;
+		itDic.siguiente().significado.itMismasSanc = itL;
 		
-		itDic.Avanzar();
+		itDic.avanzar();
 	}
 
 	return res;
 }
 
-void CampusSeguro::IngresarHippie(Nombre h, Posicion p){
+void CampusSeguro::IngresarHippie(const Nombre h, const Posicion pos){
 }
 
-
 void CampusSeguro::IngresarEstudiante(const Nombre e, const Posicion pos){
-	if(todasOcupadas(campus().Vecinos(pos)) && AlMenosUnAgente(this->campus.Vecinos(pos)){
+	if(TodasOcupadas(campus().Vecinos(pos)) && AlMenosUnAgente(campus().Vecinos(pos))){
 		Conj<As> conjAgParaSanc = AgParaPremSanc(campus().Vecinos(pos));
 		SancionarAgentes(conjAgParaSanc);
 	}
@@ -145,7 +141,7 @@ void CampusSeguro::IngresarEstudiante(const Nombre e, const Posicion pos){
 			this->estudiantes.Definir(itHEst.Siguiente().nombre, itHEst.Siguiente().pos);
 			this->hippies.Eliminar(itHEst.Siguiente().nombre);
 
-			this->posicionesEstudiantes[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = this->posicionesHippies[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x];
+			this->posicionesEstudiantes[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = this->posicionesHippies[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x];
 
 			this->posicionesHippies[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = " ";
 
@@ -155,7 +151,7 @@ void CampusSeguro::IngresarEstudiante(const Nombre e, const Posicion pos){
 
 
 	//Las Capturas se actualizan en HippiesRodeadosAs
-	Conj<NombrePosicion> conjHIppiesRodAs = HippiesRodeadosAs(campus().Vecinos(pos));
+	Conj<NombrePosicion> conjHippiesRodAs = HippiesRodeadosAs(campus().Vecinos(pos));
 
 	if(conjHippiesRodAs.Cardinal() > 0){
 		typename Conj<NombrePosicion>::Iterador itHAs = conjHippiesRodAs.CrearIt();
@@ -190,7 +186,7 @@ void CampusSeguro::IngresarEstudiante(const Nombre e, const Posicion pos){
 		typename Conj<Posicion>::Iterador itEstAs = conjEstRodAs.CrearIt();
 
 		while(itEstAs.HaySiguiente()){
-			if(todasOcupadas(campus().Vecinos(itEstAs.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itEstAs.Siguiente()))){
+			if(TodasOcupadas(campus().Vecinos(itEstAs.Siguiente())) && AlMenosUnAgente(campus().Vecinos(itEstAs.Siguiente()))){
 				Conj<As> conjAgParaSanc = AgParaPremSanc(campus().Vecinos(itEstAs.Siguiente()));
 				SancionarAgentes(conjAgParaSanc);
 			}
@@ -199,12 +195,12 @@ void CampusSeguro::IngresarEstudiante(const Nombre e, const Posicion pos){
 
 }
 
-Conj<Posicion>& CampusSeguro::EstudiantesRodeadosAs(const Conj<Posicion>& c){
-	typename Conj<Posicion>::Iterador itC = c.CrearIt();
+Conj<Posicion> CampusSeguro::EstudiantesRodeadosAs(const Conj<Posicion>& c){
+	typename Conj<Posicion>::const_Iterador itC = c.CrearIt();
 	Conj<Posicion> res;
 
 	while(itC.HaySiguiente()){
-		if(TodasOcupadas(campus().Vecinos(itC.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itC.Siguiente()))){
+		if(TodasOcupadas(campus().Vecinos(itC.Siguiente())) && AlMenosUnAgente(campus().Vecinos(itC.Siguiente()))){
 			res.AgregarRapido(itC.Siguiente());
 		}
 		itC.Avanzar();
@@ -213,13 +209,13 @@ Conj<Posicion>& CampusSeguro::EstudiantesRodeadosAs(const Conj<Posicion>& c){
 	return res;
 }
 
-Conj<NombrePosicion>& CampusSeguro::EstudiantesRodeadosHippies(const Conj<Posicion>& c){
-	typename Conj<Posicion>::Iterador itC = c.CrearIt();
+Conj<NombrePosicion> CampusSeguro::EstudiantesRodeadosHippies(const Conj<Posicion>& c){
+	typename Conj<Posicion>::const_Iterador itC = c.CrearIt();
 	Conj<NombrePosicion> res;
 	NombrePosicion np;
 
 	while(itC.HaySiguiente()){
-		if(this->posicionesEstudiantes[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(this->campus.Vecinos(itC.Siguiente())) && HippiesAtrapando(this->campus.Vecinos(itC.Siguiente()))){
+		if(this->posicionesEstudiantes[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(campus().Vecinos(itC.Siguiente())) && HippiesAtrapando(campus().Vecinos(itC.Siguiente()))){
 			np.nombre = this->posicionesEstudiantes[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x];
 			np.pos = itC.Siguiente();
 			res.AgregarRapido(np);
@@ -232,7 +228,7 @@ Conj<NombrePosicion>& CampusSeguro::EstudiantesRodeadosHippies(const Conj<Posici
 
 bool CampusSeguro::HippiesAtrapando(const Conj<Posicion>& c){
 	Nat i = 0;
-	typename Conj<Posicion>::Iterador itC = c.CrearIt();
+	typename Conj<Posicion>::const_Iterador itC = c.CrearIt();
 
 	while(itC.HaySiguiente()){
 		if(this->posicionesHippies[itC.Siguiente().y * campus().Columnas() + itC.Siguiente().x] != " "){
@@ -244,7 +240,7 @@ bool CampusSeguro::HippiesAtrapando(const Conj<Posicion>& c){
 	return i >= 2;
 }
 
-void CampusSeguro::SancionarAgentes(const Conj<As>& c){
+void CampusSeguro::SancionarAgentes(Conj<As>& c){
 	typename Conj<As>::Iterador itC = c.CrearIt();
 
 	if(c.Cardinal() > 0){
@@ -255,38 +251,38 @@ void CampusSeguro::SancionarAgentes(const Conj<As>& c){
 	Conj<Agente> conjVacio;
 
 	while(itC.HaySiguiente()){
-		itC.Siguiente().datos.Siguiente().cantSanc++;
+		itC.Siguiente().datos.siguiente().significado.cantSanc++;
 
-		typename Lista<kSanc>::Iterador itLis = itC.Siguiente().datos.Siguiente().itMismasSanc;
+		typename Lista<kSanc>::Iterador itLis = itC.Siguiente().datos.siguiente().significado.itMismasSanc;
 		
-		if(itC.Siguiente().datos.Siguiente().itMismasSanc.HaySiguiente()){
-			itC.Siguiente().datos.Siguiente().itMismasSanc.Avanzar();
+		if(itC.Siguiente().datos.siguiente().significado.itMismasSanc.HaySiguiente()){
+			itC.Siguiente().datos.siguiente().significado.itMismasSanc.Avanzar();
 			
-			if(itC.Siguiente().datos.Siguiente().itMismasSanc.Siguiente().sanc != itC.Siguiente().datos.Siguiente().cantSanc){
+			if(itC.Siguiente().datos.siguiente().significado.itMismasSanc.Siguiente().sanc != itC.Siguiente().datos.siguiente().significado.cantSanc){
 				tuplaksanc.agentes = conjVacio;
-				tupla.sanc = itC.Siguiente().datos.Siguiente().cantSanc;
-				itC.Siguiente().datos.Siguiente().itMismasSanc.AgregarComoAnterior(tuplaksanc);
+				tuplaksanc.sanc = itC.Siguiente().datos.siguiente().significado.cantSanc;
+				itC.Siguiente().datos.siguiente().significado.itMismasSanc.AgregarComoAnterior(tuplaksanc);
 
-				itC.Siguiente().datos.Siguiente().itMismasSanc.Retroceder();
+				itC.Siguiente().datos.siguiente().significado.itMismasSanc.Retroceder();
 			}
 
 		} else {
 			tuplaksanc.agentes = conjVacio;
-			tuplaksanc.sanc = itC.Siguiente().datos.Siguiente().cantSanc;
-			itC.Siguiente().datos.Siguiente().itMismasSanc.AgregarComoSiguiente(tuplaksanc);
+			tuplaksanc.sanc = itC.Siguiente().datos.siguiente().significado.cantSanc;
+			itC.Siguiente().datos.siguiente().significado.itMismasSanc.AgregarComoSiguiente(tuplaksanc);
 
-			itC.Siguiente().datos.Siguiente().itMismasSanc.Avanzar();
+			itC.Siguiente().datos.siguiente().significado.itMismasSanc.Avanzar();
 		}
 	
-		itC.Siguiente().datos.Siguiente().itConjMismasSanc.EliminarSiguiente();
-		itC.Siguiente().datos.Siguiente().itConjMismasSanc = itC.Siguiente().datos.Siguiente().itMismasSanc.Siguiente().agentes.AgregarRapido(itC.Siguiente().agente);
+		itC.Siguiente().datos.siguiente().significado.itConjMismasSanc.EliminarSiguiente();
+		itC.Siguiente().datos.siguiente().significado.itConjMismasSanc = itC.Siguiente().datos.siguiente().significado.itMismasSanc.Siguiente().agentes.AgregarRapido(itC.Siguiente().agente);
 		itC.Avanzar();
 	}
 
 }
 
-Conj<NombrePosicion>& CampusSeguro::HippiesRodeadosAs(const Conj<Posicion>& c){
-	typename Conj<Posicion>:: Iterador itC = c.CrearIt();
+Conj<NombrePosicion> CampusSeguro::HippiesRodeadosAs(const Conj<Posicion>& c){
+	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	Conj<NombrePosicion> res;
 	NombrePosicion np;
 
@@ -307,7 +303,7 @@ Conj<NombrePosicion>& CampusSeguro::HippiesRodeadosAs(const Conj<Posicion>& c){
 
 }
 
-Conj<As>& CampusSeguro::AgParaPremSanc(const Conj<Posicion>& c){
+Conj<As> CampusSeguro::AgParaPremSanc(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	Conj<As> res;
 
@@ -342,9 +338,9 @@ Nat CampusSeguro::CantHippiesVecinos(const Conj<Posicion>& c){
 	while(itC.HaySiguiente()){
 		typename DiccString(posicion)::Iterador itDic = this->hippies.CrearIt();
 
-		while(itD.HaySiguiente()){
+		while(itDic.HaySiguiente()){
 			if(itDic.Siguiente() = itC.Siguiente()) res++;
-			itD.Avanzar();
+			itDic.Avanzar();
 		}
 		itC.Avanzar();
 	}
@@ -390,7 +386,7 @@ bool CampusSeguro::TodasOcupadas(const Conj<Posicion>& c){
 	return res;
 }
 
-Conj<NombrePosicion>& CampusSeguro::HippiesRodeadosEstudiantes(const Conj<Posicion>& c){
+Conj<NombrePosicion> CampusSeguro::HippiesRodeadosEstudiantes(const Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	Conj<NombrePosicion> conjuntoRetorno;
 	NombrePosicion np;
@@ -427,7 +423,7 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 	if(TodasOcupadas(campus().Vecinos(pos)) && AlMenosUnAgente(this->campus.Vecinos(pos))){
 		Conj<As> conjAgParaPrem = AgParaPremSanc(campus().Vecinos(pos));
 		PremiarAgentes(conjAgParaPrem);
-	} else if(TodasOcupadas(campus().Vecinos(pos)) && TodosEstudiantes(this->campus.Vecinos(pos))){
+	} else if(TodasOcupadas(campus().Vecinos(pos)) && TodosEstudiantes(campus().Vecinos(pos))){
 		this->estudiantes.Definir(h,pos);
 		this->posicionesEstudiantes[pos.y * campus().Columnas() + pos.x] = h;
 	} else {
@@ -444,7 +440,7 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 			this->estudiantes.Definir(itHEst.Siguiente().nombre, itHEst.Siguiente().pos);
 			this->hippies.Eliminar(itHEst.Siguiente().nombre);
 
-			this->posicionesEstudiantes[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = this->posicionesHippies[itHEst.Siguiente().pos.y * this->campus.Columnas() + itHEst.Siguiente().pos.x];
+			this->posicionesEstudiantes[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = this->posicionesHippies[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x];
 
 			this->posicionesHippies[itHEst.Siguiente().pos.y * campus().Columnas() + itHEst.Siguiente().pos.x] = " ";
 
@@ -489,7 +485,7 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 		typename Conj<Posicion>::Iterador itEstAs = conjEstRodAs.CrearIt();
 
 		while(itEstAs.HaySiguiente()){
-			if(TodasOcupadas(campus().Vecinos(itEstAs.Siguiente())) && AlMenosUnAgente(this->campus.Vecinos(itEstAs.Siguiente()))){
+			if(TodasOcupadas(campus().Vecinos(itEstAs.Siguiente())) && AlMenosUnAgente(campus().Vecinos(itEstAs.Siguiente()))){
 				Conj<As> conjAgParaSanc = AgParaPremSanc(campus().Vecinos(itEstAs.Siguiente()));
 				SancionarAgentes(conjAgParaSanc);
 			}

@@ -12,35 +12,36 @@
 
 using namespace aed2;
 
-struct kSanc{
-	Nat sanc;
-	Conj<Agente> agentes;
-};
-	
-struct datosAgente{
-	Posicion posicion;
-	Nat cantSanc;
-	Nat cantAtrapados;
-	typename Lista<kSanc>::Iterador itMismasSanc;
-	typename Conj<Agente>::Iterador itConjMismasSanc;
-};
-
-struct As{
-	Agente agente;
-	typename diccNat<datosAgente>::Iterador datos;
-};
 
 struct NombrePosicion{
 	Nombre nombre;
 	Posicion pos;
-}
+};
 
 class CampusSeguro{
 
 	public:
+	struct kSanc{
+		Nat sanc;
+		Conj<Agente> agentes;
+	};
+	
+	struct datosAgente{
+		Posicion posicion;
+		Nat cantSanc;
+		Nat cantAtrapados;
+		typename Lista<kSanc>::Iterador itMismasSanc;
+		typename Conj<Agente>::Iterador itConjMismasSanc;
+	};
+
+	struct As{
+		Agente agente;
+		typename diccNat<datosAgente>::itDiccNat datos;
+	};
+	
 	CampusSeguro();
 	//ComenzarRastrillaje
-	CampusSeguro(const class Campus& c, const diccNat<datosAgente>& d);
+	CampusSeguro(const class Campus& c, diccNat<datosAgente>& d);
 
 	void IngresarEstudiante(const Nombre e, const Posicion p);
 	void IngresarHippie(Nombre h, Posicion p);
@@ -74,20 +75,20 @@ class CampusSeguro{
 	Vector<Nombre> posicionesEstudiantes;
 
 	//Funciones Auxiliares
-	Vector<As>& vectorizarPos(const diccNat<datosAgente>& d, const Nat f, const Nat c);
-	As menorPlaca(const diccNat<datosAgente>& d);
-	Lista<kSanc>& generarListaMismasSanc(diccNat<datosAgente>& d);
-	Conj<Posicion>& EstudiantesRodeadosAs(const Conj<Posicion>& c);
-	Conj<NombrePosicion>& EstudiantesRodeadosHippies(const Conj<Posicion>& c);
+	Vector<As> vectorizarPos(diccNat<datosAgente>& d, Nat f, Nat c);
+	As menorPlaca(diccNat<datosAgente>& d);
+	Lista<kSanc> generarListaMismasSanc(diccNat<datosAgente>& d);
+	Conj<Posicion> EstudiantesRodeadosAs(const Conj<Posicion>& c);
+	Conj<NombrePosicion> EstudiantesRodeadosHippies(const Conj<Posicion>& c);
 	bool HippiesAtrapando(const Conj<Posicion>& c);
-	void SancionarAgentes(const Conj<As>& c);
-	Conj<NombrePosicion>& HippiesRodeadosAs(const Conj<Posicion>& c);
-	Conj<As>& AgParaPremSanc(const Conj<Posicion>& c);
+	void SancionarAgentes(Conj<As>& c);
+	Conj<NombrePosicion> HippiesRodeadosAs(const Conj<Posicion>& c);
+	Conj<As> AgParaPremSanc(const Conj<Posicion>& c);
 	void PremiarAgentes(const Conj<As>& c);
 	Nat CantHippiesVecinos(const Conj<Posicion>& c);
 	bool TodosEstudiantes(const Conj<Posicion>& c);
 	bool TodasOcupadas(const Conj<Posicion>& c);
-	Conj<NombrePosicion>& HippiesRodeadosEstudiantes(const Conj<Posicion>& c);
+	Conj<NombrePosicion> HippiesRodeadosEstudiantes(const Conj<Posicion>& c);
 	bool AlMenosUnAgente(const Conj<Posicion>& c);
 
 
