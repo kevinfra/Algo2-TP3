@@ -35,7 +35,7 @@ public:
   //Clase iterador de Diccionario
   class itDiccNat{
   public:
-    itDiccNat(typename Lista<tupla*>::Iterador l);
+    itDiccNat(Lista<tupla*> l);
     bool haySiguiente();
     tupla& siguiente();
     alpha& siguienteSignificado();
@@ -124,13 +124,13 @@ Conj<Nat>::Iterador diccNat<alpha>::crearItClaves(){
 
 template<typename alpha>
 typename diccNat<alpha>::itDiccNat diccNat<alpha>::crearIt(){
-  itDiccNat d(this->_listaIterable);
-  return d;
+  return itDiccNat(_listaIterable);
 }
 
 template<typename alpha>
-diccNat<alpha>::itDiccNat::itDiccNat(typename Lista<tupla*>::Iterador &l)
-  : _iteradorLista(l.CrearIt()) {}
+diccNat<alpha>::itDiccNat::itDiccNat(Lista<tupla*> l){
+    _iteradorLista = l.CrearIt();
+}
 
 template<typename alpha>
 bool diccNat<alpha>::itDiccNat::haySiguiente(){
