@@ -19,6 +19,7 @@ public:
   };
 
   //Constructor
+  diccNat();
   diccNat(const Vector<tupla> &v); //CrearDiccionario
 
   //Operaciones Basicas
@@ -34,6 +35,7 @@ public:
   //Clase iterador de Diccionario
   class itDiccNat{
   public:
+    itDiccNat(typename Lista<tupla*>::Iterador l);
     bool haySiguiente();
     tupla& siguiente();
     alpha& siguienteSignificado();
@@ -70,6 +72,9 @@ diccNat<alpha>::diccNat(const Vector<tupla> &v){
     i++;
   }
 }
+
+template<typename alpha>
+diccNat<alpha>::diccNat(){}
 
 template<typename alpha>
 void diccNat<alpha>::redefinir(Nat n, const alpha &a){
@@ -119,9 +124,13 @@ Conj<Nat>::Iterador diccNat<alpha>::crearItClaves(){
 
 template<typename alpha>
 typename diccNat<alpha>::itDiccNat diccNat<alpha>::crearIt(){
-  itDiccNat d;
+  itDiccNat d(this->_listaIterable);
   return d;
 }
+
+template<typename alpha>
+diccNat<alpha>::itDiccNat::itDiccNat(typename Lista<tupla*>::Iterador &l)
+  : _iteradorLista(l.CrearIt()) {}
 
 template<typename alpha>
 bool diccNat<alpha>::itDiccNat::haySiguiente(){
