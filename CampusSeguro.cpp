@@ -44,6 +44,7 @@ Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Na
 
 	/*	Pruebo creando un iterador vacio de esta forma.
 	 *	Hay que testearlo bien esto.
+	 * 	TODO: Lo que hay que hacer para los iteradores vacios es crear la estructura vacia y a eso pedirle el iterador - manu
 	 */
 	typename diccNat<datosAgente>::itDiccNat itVacio;
 
