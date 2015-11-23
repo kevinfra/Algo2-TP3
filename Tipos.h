@@ -14,7 +14,10 @@ namespace aed2{
 	typedef enum {izq,der,arriba,abajo} Direccion;
 	typedef Nat Agente;
 	typedef String Nombre;
-
+	typedef struct {
+				Nombre nombre;
+				Posicion pos;
+				} NombrePosicion;
 } // namespace aed2
 
 #endif // AED2_TIPOS_H_
