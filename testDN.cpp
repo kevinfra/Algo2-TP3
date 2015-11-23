@@ -79,12 +79,11 @@ void test_itDiccNat(){
   diccNat<Nat>::itDiccNat it = d.crearIt();
   std::cout << "crea el it" << std::endl;
   it.haySiguiente();
-  it.siguiente().clave;
-  std::cout << "hay siguiente" << std::endl;
+  //std::cout << it.siguienteSignificado() << std::endl; //ESTO NO FUNCIONA
 
   while(it.haySiguiente()){
     std::cout << "entra" << std::endl;
-    std::cout << it.siguiente().clave << std::endl;
+    std::cout << (it.siguiente()).clave << std::endl; //ESTO NO FUNCIONA PORQUE TIRA SEGMENTATION FAULT
     it.avanzar();
     std::cout << "sale" << std::endl;
   }

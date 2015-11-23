@@ -128,9 +128,9 @@ typename diccNat<alpha>::itDiccNat diccNat<alpha>::crearIt(){
 }
 
 template<typename alpha>
-diccNat<alpha>::itDiccNat::itDiccNat(Lista<tupla*> l){
-    _iteradorLista = l.CrearIt();
-}
+diccNat<alpha>::itDiccNat::itDiccNat(Lista<tupla*> l)
+  :     _iteradorLista(l.CrearIt())
+{}
 
 template<typename alpha>
 bool diccNat<alpha>::itDiccNat::haySiguiente(){
@@ -144,13 +144,13 @@ typename diccNat<alpha>::tupla& diccNat<alpha>::itDiccNat::siguiente(){
 
 template<typename alpha>
 alpha& diccNat<alpha>::itDiccNat::siguienteSignificado(){
-	return *(this->_iteradorLista.Siguiente()).significado;
+	return (this->_iteradorLista.Siguiente())->significado;
 }
 
 
 template<typename alpha>
 void diccNat<alpha>::itDiccNat::avanzar(){
-	_iteradorLista.Avanzar();
+	this->_iteradorLista.Avanzar();
 }
 
 #endif //DICCIONARIO_NAT_FIJO
