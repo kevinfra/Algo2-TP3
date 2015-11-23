@@ -15,6 +15,14 @@ class DiccString{
 	public:
 
 	class Iterador;
+
+	struct Nodo{
+		Arreglo<Nodo*> arbolTrie;
+		alpha info;
+		bool infoValida;
+		typename Conj<String>::Iterador clave;
+		typename Lista<Nodo*>::Iterador infoEnLista;
+	};
 	
 	//CrearDiccionario
 	DiccString();
@@ -31,7 +39,7 @@ class DiccString{
 		
 		public:
 			
-			Iterador();
+			Iterador(Lista<Nodo*> lista);
 			bool HaySiguiente();
 			bool HayAnterior();
 			alpha& SiguienteSignificado();
@@ -40,21 +48,28 @@ class DiccString{
 			void Avanzar();
 
 
-		private:
+		private: typename Lista<Nodo*>::Iterador iteradorLista;
 	};
 
 	private:
 
-	struct Nodo{
-		//Nodo();
-		Arreglo<Nodo*> arbolTrie;
-		alpha info;
-		bool infoValida;
-		Lista<Nodo*> infoEnLista;
-	};
-
 	Arreglo<Nodo*> raiz;
 	Lista<Nodo*> listaIterable;
+	Conj<String> conjIterable;
+
+	bool tieneHermanos(const Nodo* nodo){
+		int i = 0;
+		int l = nodo->arbolTrie.Tamanho();
+		while(i<l && !nodo->arbolTrie.Definido(i)){
+			i++;
+		}
+		return i < l;
+	}
+
+
+	bool tieneHermanosEInfo(const Nodo* nodo){
+		return tieneHermanos(nodo) && nodo->infoValida;
+	}
 
 	Nat ord(char caracter){
 		switch(caracter) {
@@ -105,7 +120,6 @@ class DiccString{
 template <typename alpha>
 DiccString<alpha>::DiccString(){
 	raiz = Arreglo<Nodo*>(26);
-	//listaIterable = new Lista<Nodo*>;
 }
 
 template <typename alpha>
@@ -137,8 +151,6 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 		Nodo* nodo = new Nodo();
 		nodo->arbolTrie = Arreglo<Nodo*>(26);
 		nodo->infoValida = false;
-		//nodo.arbolTrie = Arreglo<Nodo*>(26);
-		//nodo.infoValida = false;
 		raiz.Definir(letra,nodo);
 	}
 	Nodo* arr = raiz[letra];
@@ -155,10 +167,11 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 	}
 	arr->info = significado;
 	if(!arr->infoValida){
-		//typename Lista<Nodo*>::Iterador it = listaIterable.AgregarAdelante(NULL);
 		arr->infoValida = true;
-		//arr->infoEnLista = it;
-		//it.Siguiente() = arr;
+		listaIterable.AgregarAdelante(arr);
+		arr->clave = conjIterable.Agregar(c);
+		typename Lista<Nodo*>::Iterador it = listaIterable.CrearIt();
+		arr->infoEnLista = it;
 	}
 }
 
@@ -180,12 +193,79 @@ void DiccString<alpha>::Eliminar(String c){
 	Nat i = 0;
 	Nat letra = ord(c[0]);
 	Nodo* arr = raiz[letra];
-	//Pila<Nodo*> pil = new Pila<Nodo*>();
+	Lista<Nodo*> pila;
+	while(i<c.size()-1){
+		i++;
+		letra = ord(c[i]);
+		arr = arr->arbolTrie[letra];
+		pila.AgregarAdelante(arr);
+	}
+	arr->clave.EliminarSiguiente();
+	if(tieneHermanos(arr)){
+		arr->infoValida = false;
+		arr->infoEnLista.EliminarSiguiente();
+	}
+	else
+	{
+		typename Lista<Nodo*>::Iterador itPila = pila.CrearIt();
+		i = 1;
+		itPila.Siguiente()->infoEnLista.EliminarSiguiente();
+		itPila.EliminarSiguiente();
+		while(itPila.HaySiguiente() && !tieneHermanosEInfo(itPila.Siguiente())){
+			itPila.EliminarSiguiente();
+			i++;
+		}
+		if(i == c.size()-1){
+			raiz.Borrar(ord(c[0]));
+		}
+	}
 
 }
 
 template <typename alpha>
 Conj<String>::Iterador DiccString<alpha>::CrearItClaves(){
+	return conjIterable.CrearIt();
+}
+
+template<typename alpha>
+typename DiccString<alpha>::Iterador DiccString<alpha>::CrearIt(){
+  return Iterador(this->listaIterable);
+}
+
+template<typename alpha>
+DiccString<alpha>::Iterador::Iterador(Lista<Nodo*> lista)
+  :     iteradorLista(lista.CrearIt())
+{}
+
+template<typename alpha>
+bool DiccString<alpha>::Iterador::HaySiguiente(){
+	return this->iteradorLista.HaySiguiente();
+}
+
+template<typename alpha>
+bool DiccString<alpha>::Iterador::HayAnterior(){
+	return this->iteradorLista.HayAnterior();
+}
+
+
+template<typename alpha>
+alpha& DiccString<alpha>::Iterador::SiguienteSignificado(){
+	return (this->iteradorLista.Siguiente())->info;
+}
+
+template<typename alpha>
+alpha& DiccString<alpha>::Iterador::AnteriorSignificado(){
+	return (this->iteradorLista.Anterior())->info;
+}
+
+template<typename alpha>
+void DiccString<alpha>::Iterador::Avanzar(){
+	this->iteradorLista.Avanzar();
+}
+
+template<typename alpha>
+void DiccString<alpha>::Iterador::Retroceder(){
+	this->iteradorLista.Retroceder();
 }
 
 #endif
