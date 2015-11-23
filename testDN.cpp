@@ -72,12 +72,20 @@ void test_itDiccNat(){
     diccNat<Nat>::tupla t;
     t.clave = i;
     t.significado = i+10;
+    std::cout << t.clave << std::endl;
     v.AgregarAtras(t);
   }
   diccNat<Nat> d(v);
   diccNat<Nat>::itDiccNat it = d.crearIt();
-  while(it.haySiguiente() && it.siguiente().clave != 9){
+  std::cout << "crea el it" << std::endl;
+  it.haySiguiente();
+  //std::cout << it.siguienteSignificado() << std::endl; //ESTO NO FUNCIONA
+
+  while(it.haySiguiente()){
+    std::cout << "entra" << std::endl;
+    std::cout << (it.siguiente()).clave << std::endl; //ESTO NO FUNCIONA PORQUE TIRA SEGMENTATION FAULT
     it.avanzar();
+    std::cout << "sale" << std::endl;
   }
   //ASSERT_EQ(it.siguiente(), 9);
 }
