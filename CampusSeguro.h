@@ -88,7 +88,8 @@ class CampusSeguro{
 	bool TodasOcupadas(Conj<Posicion> c);
 	Conj<NombrePosicion> HippiesRodeadosEstudiantes(Conj<Posicion> c);
 	bool AlMenosUnAgente(Conj<Posicion> c);
-
+	typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As> v);
+	Posicion proxPos(Posicion pos, DiccString<Posicion> dicc);
 
 };
 

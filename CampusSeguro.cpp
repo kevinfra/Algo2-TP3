@@ -521,7 +521,34 @@ void CampusSeguro::MoverEstudiante(Nombre e, Direccion d){
 void CampusSeguro::MoverHippie(Nombre h){
 }
 
+// TODO: testear
 void CampusSeguro::MoverAgente(Agente a){
+	typename diccNat<datosAgente>::itDiccNat it = busqBinPorPlaca(this->agentesOrdenados, a);
+
+	//Actualizo la posicion del agente
+	// Posicion nuevaPos = proxPos(it.siguiente().posicion, this->hippies);
+}
+
+// TODO: testear
+typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As> v){
+	Nat inf = 0;
+	Nat sup = v.Longitud();
+	Nat med;
+
+	while(inf != sup - 1){
+		med = (inf + sup) / 2;
+		if(v[med].agente <= a)
+			inf = med + 1;
+		else
+			sup = med;
+	}
+
+	return(v[inf].datos);
+}
+
+//TODO: testear
+Posicion proxPos(Posicion pos, DiccString<Posicion> dicc){
+	// Nat distCorta = distanciaMasCorta(pos, dicc);
 }
 
 Campus CampusSeguro::campus() const{
