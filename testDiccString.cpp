@@ -14,6 +14,13 @@ int main(int argc, char **argv){
 		cout << "No esta definido" << endl;
 	}
 	cout << midic.Obtener("ab") << endl;
-
-
+	midic.Definir("ab",3);
+	cout << midic.Obtener("ab") << endl;
+	midic.Eliminar("ab");
+	if(midic.Definido("ab")){
+		cout << "Esta definido!!" << endl;
+	}
+	else{
+		cout << "No esta definido" << endl;
+	}
 }

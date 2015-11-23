@@ -46,7 +46,6 @@ class DiccString{
 	private:
 
 	struct Nodo{
-		//Nodo();
 		Arreglo<Nodo*> arbolTrie;
 		alpha info;
 		bool infoValida;
@@ -55,6 +54,20 @@ class DiccString{
 
 	Arreglo<Nodo*> raiz;
 	Lista<Nodo*> listaIterable;
+
+	bool tieneHermanos(const Nodo* nodo){
+		int i = 0;
+		int l = nodo->arbolTrie.Tamanho();
+		while(i<l && !nodo->arbolTrie.Definido(i)){
+			i++;
+		}
+		return i < l;
+	}
+
+
+	bool tieneHermanosEInfo(const Nodo* nodo){
+		return tieneHermanos(nodo) && nodo->infoValida;
+	}
 
 	Nat ord(char caracter){
 		switch(caracter) {
@@ -137,8 +150,6 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 		Nodo* nodo = new Nodo();
 		nodo->arbolTrie = Arreglo<Nodo*>(26);
 		nodo->infoValida = false;
-		//nodo.arbolTrie = Arreglo<Nodo*>(26);
-		//nodo.infoValida = false;
 		raiz.Definir(letra,nodo);
 	}
 	Nodo* arr = raiz[letra];
@@ -180,7 +191,31 @@ void DiccString<alpha>::Eliminar(String c){
 	Nat i = 0;
 	Nat letra = ord(c[0]);
 	Nodo* arr = raiz[letra];
-	//Pila<Nodo*> pil = new Pila<Nodo*>();
+	Lista<Nodo*> pila;
+	while(i<c.size()-1){
+		i++;
+		letra = ord(c[i]);
+		arr = arr->arbolTrie[letra];
+		pila.AgregarAdelante(arr);
+	}
+	if(tieneHermanos(arr)){
+		arr->infoValida = false;
+	}
+	else
+	{
+		typename Lista<Nodo*>::Iterador itPila = pila.CrearIt();
+		i = 1;
+		itPila.EliminarSiguiente();
+		//itPila.Avanzar();
+		while(itPila.HaySiguiente() && !tieneHermanosEInfo(itPila.Siguiente())){
+			itPila.EliminarSiguiente();
+			//itPila.Avanzar();
+			i++;
+		}
+		if(i == c.size()-1){
+			raiz.Borrar(ord(c[0]));
+		}
+	}
 
 }
 
