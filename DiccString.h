@@ -108,20 +108,20 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 	Nat i = 0;
 	Nat letra = ord(c[0]);
 	if(!raiz.Definido(letra)){
-		Nodo* nodo = new Nodo();
-		nodo->arbolTrie = Arreglo<Nodo*>(26);
-		nodo->infoValida = false;
-		raiz.Definir(letra,nodo);
+		Nodo nodo;
+		nodo.arbolTrie = Arreglo<Nodo*>(26);
+		nodo.infoValida = false;
+		raiz.Definir(letra,&nodo);
 	}
 	Nodo* arr = raiz[letra];
 	while(i<c.size()-1){
 		i++;
 		letra = ord(c[i]);
 		if(!arr->arbolTrie.Definido(letra)){
-			Nodo* nuevoHijo = new Nodo();
-			nuevoHijo->arbolTrie = Arreglo<Nodo*>(26);
-			nuevoHijo->infoValida = false;
-			arr->arbolTrie.Definir(letra,nuevoHijo);
+			Nodo nuevoHijo;
+			nuevoHijo.arbolTrie = Arreglo<Nodo*>(26);
+			nuevoHijo.infoValida = false;
+			arr->arbolTrie.Definir(letra,&nuevoHijo);
 		}
 		arr = arr->arbolTrie[letra];
 	}
