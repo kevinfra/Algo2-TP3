@@ -534,26 +534,26 @@ void CampusSeguro::MoverAgente(Agente a){
 
 	// Actualizo la posicion del agente
 	Posicion nuevaPos = proxPos(it.siguiente().significado.posicion, this->hippies);
-	posicionesAgente[it.siguiente().significado.posicion.y * this->grilla.Columnas() + it.siguiente().significado.posicion.x].datos = diccNat<datosAgente>().crearIt();
+	posicionesAgente[it.siguiente().significado.posicion.y * campus().Columnas() + it.siguiente().significado.posicion.x].datos = diccNat<datosAgente>().crearIt();
 
 	As as;
 	as.agente = a;
 	as.datos = it;
-	posicionesAgente[nuevaPos.y * this->grilla.Columnas() + nuevaPos.x] = as;
+	posicionesAgente[nuevaPos.y * campus().Columnas() + nuevaPos.x] = as;
 
 	it.siguiente().significado.posicion = nuevaPos;
 
 	// Me fijo a quienes atrapa
-	Posicion posArr = this->grilla.MoverDir(nuevaPos, arriba);
+	Posicion posArr = campus().MoverDir(nuevaPos, arriba);
 	actualizarAgente(posArr, a, it);
 
-	Posicion posAba = this->grilla.MoverDir(nuevaPos, abajo);
+	Posicion posAba = campus().MoverDir(nuevaPos, abajo);
 	actualizarAgente(posAba, a, it);
 
-	Posicion posDer = this->grilla.MoverDir(nuevaPos, der);
+	Posicion posDer = campus().MoverDir(nuevaPos, der);
 	actualizarAgente(posDer, a, it);
 
-	Posicion posIzq = this->grilla.MoverDir(nuevaPos, izq);
+	Posicion posIzq = campus().MoverDir(nuevaPos, izq);
 	actualizarAgente(posIzq, a, it);
 }
 
@@ -669,15 +669,15 @@ Conj<Posicion> CampusSeguro::lugaresPosibles(Posicion pos, Conj<Posicion> posici
 
 // TODO: testear
 bool CampusSeguro::hayAlgoEnPos(Posicion pos){
-	if(this->posicionesAgente[pos.y * this->grilla.Columnas() + pos.x].datos.haySiguiente())
+	if(this->posicionesAgente[pos.y * campus().Columnas() + pos.x].datos.haySiguiente())
 		return true;
 
-	if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != " ")
+	if(this->posicionesHippies[pos.y * campus().Columnas() + pos.x] != " ")
 		return true;
-	if(this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] != " ")
+	if(this->posicionesEstudiantes[pos.y * campus().Columnas() + pos.x] != " ")
 		return true;
 
-	if(this->grilla.Ocupada(pos))
+	if(campus().Ocupada(pos))
 		return true;
 
 	return false;
@@ -685,9 +685,9 @@ bool CampusSeguro::hayAlgoEnPos(Posicion pos){
 
 // TODO: testear
 void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat it){
-	if(this->grilla.PosValida(pos)){
+	if(campus().PosValida(pos)){
 
-		if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != " "){
+		if(this->posicionesHippies[pos.y * campus().Columnas() + pos.x] != " "){
 			if(atrapado(pos)){
 				// Incremento sus capturas, actualizo masVigilante y mato al hippie
 				it.siguiente().significado.cantAtrapados++;
@@ -697,12 +697,12 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 					tup.datos = it;
 					this->masVigilante = tup;
 				}
-				this->hippies.Eliminar(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x]);
-				posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = " ";
+				this->hippies.Eliminar(this->posicionesHippies[pos.y * campus().Columnas() + pos.x]);
+				posicionesHippies[pos.y * campus().Columnas() + pos.x] = " ";
 			}
 		}
 
-		if(posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] != " "){
+		if(posicionesEstudiantes[pos.y * campus().Columnas() + pos.x] != " "){
 			if(atrapado(pos)){
 				//Actualizo las sanciones y las estructuras relacionadas
 				this->mismasSancModificado = true;
@@ -759,7 +759,7 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 					iterListaAnterior.EliminarSiguiente();
 				}
 
-				it.siguiente().cantSanc++;
+				it.siguiente().significado.cantSanc++;
 			}
 		}
 	}
@@ -767,7 +767,7 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 
 // TODO: testear
 bool CampusSeguro::atrapado(Posicion pos){
-	return(TodasOcupadas(this->grilla.Vecinos(pos)));
+	return(TodasOcupadas(campus().Vecinos(pos)));
 }
 
 Campus CampusSeguro::campus() const{
