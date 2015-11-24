@@ -636,18 +636,31 @@ Conj<Posicion> CampusSeguro::dondeIr(Posicion pos, Nat dist, DiccString<Posicion
 Conj<Posicion> CampusSeguro::lugaresPosibles(Posicion pos, Conj<Posicion> posiciones){
 	typename Conj<Posicion>::Iterador it = posiciones.CrearIt();
 	Conj<Posicion> lugares = Conj();
+	Posicion auxPos;
 
 	while(it.HaySiguiente()){
 		if(hayAlgoEnPos(it.Siguiente())){
-			if(it.Siguiente().x > pos.x)
-				lugares.AgregarRapido(Posicion(pos.x + 1, pos.y));
-			else if(it.Siguiente().x < pos.x)
-				lugares.AgregarRapido(Posicion(pos.x - 1, pos.y));
+			if(it.Siguiente().x > pos.x){
+				auxPos.x = pos.x + 1;
+				auxPos.y = pos.y;
+				lugares.AgregarRapido(auxPos);
+			}
+			else if(it.Siguiente().x < pos.x){
+				auxPos.x = pos.x - 1;
+				auxPos.y = pos.y;
+				lugares.AgregarRapido(auxPos);
+			}
 
-			if(it.Siguiente().y > pos.y)
-				lugares.AgregarRapido(Posicion(pos.x, pos.y + 1));
-			else if(it.Siguiente().x < pos.x)
-				lugares.AgregarRapido(Posicion(pos.x, pos.y - 1));
+			if(it.Siguiente().y > pos.y){
+				auxPos.x = pos.x;
+				auxPos.y = pos.y + 1;	
+				lugares.AgregarRapido(auxPos);
+			}
+			else if(it.Siguiente().x < pos.x){
+				auxPos.x = pos.x;
+				auxPos.y = pos.y - 1;	
+				lugares.AgregarRapido(auxPos);
+			}
 		}
 	}
 
@@ -752,6 +765,7 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 	}
 }
 
+// TODO: testear
 bool CampusSeguro::atrapado(Posicion pos){
 	return(TodasOcupadas(this->grilla.Vecinos(pos)));
 }
