@@ -26,6 +26,14 @@ class DiccString{
 	
 	//CrearDiccionario
 	DiccString();
+
+	~DiccString(){
+		//Conj<String>::Iterador itClaves = conjIterable.CrearIt();
+		//while(itClaves.HaySiguiente()){
+		//	itClaves.EliminarSiguiente();
+		//	itClaves.Avanzar();
+		//}
+	}
 	
 	bool Definido(String c);
 	void Definir(String c,alpha significado);
@@ -68,51 +76,11 @@ class DiccString{
 
 
 	bool tieneHermanosEInfo(const Nodo* nodo){
-		return tieneHermanos(nodo) && nodo->infoValida;
+		return tieneHermanos(nodo) || nodo->infoValida;
 	}
 
 	Nat ord(char caracter){
-		switch(caracter) {
-			case 'a':
-				return 0;
-				break;
-			case 'b':
-				return 1;
-				break;
-			case 'c':
-				return 2;
-				break;
-			case 'd':
-				return 3;
-				break;
-			case 'e':
-				return 4;
-				break;
-			case 'f':
-				return 5;
-				break;
-			case 'g':
-				return 6;
-				break;
-			case 'h':
-				return 7;
-				break;
-			case 'i':
-				return 8;
-				break;
-			case 'j':
-				return 9;
-				break;
-			case 'k':
-				return 10;
-				break;
-			case 'l':
-				return 11;
-				break;
-			case 'm':
-				return 12;
-				break;
-		}
+		return int(caracter) - 97;
 	}
 
 };
@@ -148,20 +116,20 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 	Nat i = 0;
 	Nat letra = ord(c[0]);
 	if(!raiz.Definido(letra)){
-		Nodo* nodo = new Nodo();
-		nodo->arbolTrie = Arreglo<Nodo*>(26);
-		nodo->infoValida = false;
-		raiz.Definir(letra,nodo);
+		Nodo nodo;
+		nodo.arbolTrie = Arreglo<Nodo*>(26);
+		nodo.infoValida = false;
+		raiz.Definir(letra,&nodo);
 	}
 	Nodo* arr = raiz[letra];
 	while(i<c.size()-1){
 		i++;
 		letra = ord(c[i]);
 		if(!arr->arbolTrie.Definido(letra)){
-			Nodo* nuevoHijo = new Nodo();
-			nuevoHijo->arbolTrie = Arreglo<Nodo*>(26);
-			nuevoHijo->infoValida = false;
-			arr->arbolTrie.Definir(letra,nuevoHijo);
+			Nodo nuevoHijo;
+			nuevoHijo.arbolTrie = Arreglo<Nodo*>(26);
+			nuevoHijo.infoValida = false;
+			arr->arbolTrie.Definir(letra,&nuevoHijo);
 		}
 		arr = arr->arbolTrie[letra];
 	}
@@ -194,6 +162,7 @@ void DiccString<alpha>::Eliminar(String c){
 	Nat letra = ord(c[0]);
 	Nodo* arr = raiz[letra];
 	Lista<Nodo*> pila;
+	pila.AgregarAdelante(arr);
 	while(i<c.size()-1){
 		i++;
 		letra = ord(c[i]);
@@ -214,9 +183,6 @@ void DiccString<alpha>::Eliminar(String c){
 		while(itPila.HaySiguiente() && !tieneHermanosEInfo(itPila.Siguiente())){
 			itPila.EliminarSiguiente();
 			i++;
-		}
-		if(i == c.size()-1){
-			raiz.Borrar(ord(c[0]));
 		}
 	}
 
