@@ -27,7 +27,7 @@ CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& 
 	this->personalAS = diccHash;
 
 	this->listaMismasSanc = generarListaMismasSanc(diccHash);
-	this-> posicionesAgente = vectorizarPos(diccHash,campus().Filas(), campus().Columnas());
+	this->posicionesAgente = vectorizarPos(diccHash,campus().Filas(), campus().Columnas());
 	this->masVigilante = menorPlaca(diccHash);
 	this->mismasSancModificado = true;
 	//los diccionarios con hippies y estudiantes deben iniciar vacios
@@ -525,12 +525,33 @@ void CampusSeguro::MoverHippie(Nombre h){
 void CampusSeguro::MoverAgente(Agente a){
 	typename diccNat<datosAgente>::itDiccNat it = busqBinPorPlaca(this->agentesOrdenados, a);
 
-	//Actualizo la posicion del agente
-	// Posicion nuevaPos = proxPos(it.siguiente().posicion, this->hippies);
+	// Actualizo la posicion del agente
+	Posicion nuevaPos = proxPos(it.siguiente().posicion, this->hippies);
+	posicionesAgente[it.siguiente().posicion.y * this->grilla.Columnas() + it.siguiente().posicion.x].datos = Conj().CrearIt();
+
+	As as;
+	as.agente = a;
+	as.datos = it;
+	posicionesAgente[nuevaPos.y * this->grilla.Columnas() + nuevaPos.x] = as;
+
+	it.siguiente().posicion = nuevaPos;
+
+	// Me fijo a quienes atrapa
+	Posicion posArr = this->grilla.MoverDir(nuevaPos, arriba);
+	actualizarAgente(posArr, a, it);
+
+	Posicion posAba = this->grilla.MoverDir(nuevaPos, abajo);
+	actualizarAgente(posAba, a, it);
+
+	Posicion posDer = this->grilla.MoverDir(nuevaPos, der);
+	actualizarAgente(posDer, a, it);
+
+	Posicion posIzq = this->grilla.MoverDir(nuevaPos, izq);
+	actualizarAgente(posIzq, a, it);
 }
 
 // TODO: testear
-typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As> v){
+typename diccNat<datosAgente>::itDiccNat CampusSeguro::busqBinPorPlaca(Agente a, Vector<As> v){
 	Nat inf = 0;
 	Nat sup = v.Longitud();
 	Nat med;
@@ -546,9 +567,186 @@ typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As> v)
 	return(v[inf].datos);
 }
 
-//TODO: testear
-Posicion proxPos(Posicion pos, DiccString<Posicion> dicc){
-	// Nat distCorta = distanciaMasCorta(pos, dicc);
+// TODO: testear
+// Tengo que ponerle return fuera del if?
+Posicion CampusSeguro::proxPos(Posicion pos, DiccString<Posicion> dicc){
+	Nat distCorta = distanciaMasCorta(pos, dicc);
+
+	Conj<Posicion> conjDondeIr = dondeIr(pos, distCorta, dicc);
+	Conj<Posicion> conjLugaresPosibles = lugaresPosibles(pos, conjDondeIr);
+
+	if(conjLugaresPosibles.EsVacio())
+		return pos;
+	else{
+		typename Conj<Posicion>::Iterador it = conjLugaresPosibles.CrearIt();
+		return it.Siguiente();
+	}
+
+}
+
+// TODO: testear
+Nat CampusSeguro::distanciaMasCorta(Posicion pos, DiccString<Posicion> dicc){
+	typename DiccString<Posicion>::Iterador it = dicc.CrearIt();
+
+	Nat dist = distancia(pos, it.Siguiente());
+	it.Avanzar();
+
+	while(it.HaySiguiente()){
+		if (dist > distancia(pos, it.Siguiente()))
+			dist = distancia(pos, it.Siguiente());
+		it.Avanzar();
+	}
+
+	return dist;
+}
+
+Nat CampusSeguro::distancia(Posicion p1, Posicion p2){
+	return(modulo(pos1.x - pos2.x) + modulo(pos1.y - pos2.y));
+}
+
+Nat CampusSeguro::modulo(int val){
+	if(val >= 0)
+		return val;
+	else
+		return -val;
+}
+
+// TODO: testear
+Conj<Posicion> CampusSeguro::dondeIr(Posicion pos, Nat dist, DiccString<Posicion> dicc){
+	Conj<Posicion> posiciones = Conj();
+	typename DiccString<Posicion>::Iterador it = dicc.CrearIt();
+
+	while(it.HaySiguiente()){
+		if(dist = distancia(pos, it.Siguiente()))
+			posiciones.AgregarRapido(it.Siguiente());
+		it.Avanzar();
+	}
+
+	return(posiciones);
+}
+
+// TODO: testear
+Conj<Posicion> CampusSeguro::lugaresPosibles(Posicion pos, Conj<Posicion> posiciones){
+	typename Conj<Posicion>::Iterador it = posiciones.CrearIt();
+	Conj<Posicion> lugares = Conj();
+
+	while(it.HaySiguiente()){
+		if(hayAlgoEnPos(it.Siguiente())){
+			if(it.Siguiente().x > pos.x)
+				lugares.AgregarRapido(Posicion(pos.x + 1, pos.y));
+			else if(it.Siguiente().x < pos.x)
+				lugares.AgregarRapido(Posicion(pos.x - 1, pos.y));
+
+			if(it.Siguiente().y > pos.y)
+				lugares.AgregarRapido(Posicion(pos.x, pos.y + 1));
+			else if(it.Siguiente().x < pos.x)
+				lugares.AgregarRapido(Posicion(pos.x, pos.y - 1));
+		}
+	}
+
+	return lugares;
+}
+
+// TODO: testear
+bool CampusSeguro::hayAlgoEnPos(Posicion pos){
+	if(this->posicionesAgente[pos.y * this->grilla.Columnas() + pos.x].datos.haySiguiente())
+		return true;
+
+	if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != " ")
+		return true;
+	if(this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] != " ")
+		return true;
+
+	if(this->grilla.Ocupada(pos))
+		return true;
+
+	return false;
+}
+
+// TODO: testear
+void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat it){
+	if(this->grilla.PosValida(pos)){
+
+		if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != " "){
+			if(atrapado(pos)){
+				// Incremento sus capturas, actualizo masVigilante y mato al hippie
+				it.siguiente().cantAtrapados++;
+				if(it.siguiente().cantAtrapados > this->masVigilante.datos.siguiente().cantAtrapados){
+					As tup;
+					tup.agente = a;
+					tup.datos = it;
+					this->masVigilante = tup;
+				}
+				this->hippies.Eliminar(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x]);
+				posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = " ";
+			}
+		}
+
+		if(posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] != " "){
+			if(atrapado(pos)){
+				//Actualizo las sanciones y las estructuras relacionadas
+				this->mismasSancModificado = true;
+
+				typename Conj<Agente>::Iterador iterConj = it.siguiente().itConjMismasSanc;
+				iterConj.EliminarSiguiente();
+
+				typename Lista<kSanc>::Iterador iterLista = it.siguiente().itMismasSanc;
+
+				// Me guardo un iterador para borrar el nodo de la lista si es que queda sin agentes
+				typename Lista<kSanc>::Iterador iterListaAnterior = it.siguiente().itMismasSanc;			// Esto va a funcionar? Que estos dos iteradores sean iguales no genera algun problema de referencia o algo asi?
+
+				if(iterLista.HaySiguiente()){
+					// Me fijo si el siguiente es la siguiente sancion
+					Nat sanciones = iterLista.Siguiente().sanc;
+					iterLista.Avanzar();
+
+					if(iterLista.Siguiente().sanc = sanciones + 1){
+						// Lo agrego al conjunto
+						it.siguiente().itConjMismasSanc = iterLista.Siguiente().agentes.AgregarRapido(a);
+					}
+					else{
+						// Creo un nuevo nodo en el medio
+						Conj<Agente> conj = Conj();
+						it.siguiente().itConjMismasSanc = conj.AgregarRapido(a);
+
+						kSanc nodo;
+						nodo.sanc = sanciones + 1;
+						nodo.agentes = conj;
+						iterLista.AgregarComoAnterior(nodo);
+
+						iterLista.Retroceder();
+
+						it.siguiente().itMismasSanc = iterLista;
+					}
+				}
+				else{
+					//Creo un nuevo nodo
+					Conj<Agente> conj = Conj();
+					it.siguiente().itConjMismasSanc = conj.AgregarRapido(a);
+
+					kSanc nodo;
+					nodo.sanc = sanciones + 1;
+					nodo.agentes = conj;
+					iterLista.AgregarComoSiguiente(nodo);
+
+					iterLista.Avanzar();
+
+					it.siguiente().itMismasSanc = iterLista;
+				}
+
+				if(!iterConj.HaySiguiente()){
+					// Borro el nodo anterior de la lista porque no tiene agentes
+					iterListaAnterior.EliminarSiguiente();
+				}
+
+				it.siguiente().cantSanc++;
+			}
+		}
+	}
+}
+
+bool CampusSeguro::atrapado(Posicion pos){
+	return(TodasOcupadas(this->grilla.Vecinos(pos)));
 }
 
 Campus CampusSeguro::campus() const{

@@ -90,7 +90,13 @@ class CampusSeguro{
 	bool AlMenosUnAgente(Conj<Posicion> c);
 	typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As> v);
 	Posicion proxPos(Posicion pos, DiccString<Posicion> dicc);
-
+	Nat distanciaMasCorta(Posicion pos, DiccString<Posicion> dicc);
+	Nat distancia(Posicion p1, Posicion p2);
+	Nat modulo(int val);
+	Conj<Posicion> lugaresPosibles(Posicion pos, Conj<Posicion> posiciones);
+	bool hayAlgoEnPos(Posicion pos);
+	void actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat);
+	bool atrapado(Posicion pos);
 };
 
 #endif
