@@ -27,7 +27,7 @@ CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& 
 	this->personalAS = diccHash;
 
 	this->listaMismasSanc = generarListaMismasSanc(diccHash);
-	this-> posicionesAgente = vectorizarPos(diccHash,campus().Filas(), campus().Columnas());
+	this->posicionesAgente = vectorizarPos(diccHash,campus().Filas(), campus().Columnas());
 	this->masVigilante = menorPlaca(diccHash);
 	this->mismasSancModificado = true;
 	//los diccionarios con hippies y estudiantes deben iniciar vacios
@@ -652,10 +652,9 @@ bool CampusSeguro::hayAlgoEnPos(Posicion pos){
 	if(this->posicionesAgente[pos.y * this->grilla.Columnas() + pos.x].datos.haySiguiente())
 		return true;
 
-	//OJO QUE SI HAY UN ELEMENTO EN DONDE NO HAY UN HIPPIE O ESTUDIANTE DEBERIA HABER UN STRING VACIO, NO UN ESPACIO
-	if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != "")
+	if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != " ")
 		return true;
-	if(this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] != "")
+	if(this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] != " ")
 		return true;
 
 	if(this->grilla.Ocupada(pos))
@@ -664,11 +663,84 @@ bool CampusSeguro::hayAlgoEnPos(Posicion pos){
 	return false;
 }
 
-void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat){
+// TODO: testear
+void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat it){
 	if(this->grilla.PosValida(pos)){
 
-		if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != ""){
-			// if(atrapado(pos)){}
+		if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != " "){
+			if(atrapado(pos)){
+				// Incremento sus capturas, actualizo masVigilante y mato al hippie
+				it.siguiente().cantAtrapados++;
+				if(it.siguiente().cantAtrapados > this->masVigilante.datos.siguiente().cantAtrapados){
+					As tup;
+					tup.agente = a;
+					tup.datos = it;
+					this->masVigilante = tup;
+				}
+				this->hippies.Eliminar(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x]);
+				posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = " ";
+			}
+		}
+
+		if(posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] != " "){
+			if(atrapado(pos)){
+				//Actualizo las sanciones y las estructuras relacionadas
+				this->mismasSancModificado = true;
+
+				typename Conj<Agente>::Iterador iterConj = it.siguiente().itConjMismasSanc;
+				iterConj.EliminarSiguiente();
+
+				typename Lista<kSanc>::Iterador iterLista = it.siguiente().itMismasSanc;
+
+				// Me guardo un iterador para borrar el nodo de la lista si es que queda sin agentes
+				typename Lista<kSanc>::Iterador iterListaAnterior = it.siguiente().itMismasSanc;			// Esto va a funcionar? Que estos dos iteradores sean iguales no genera algun problema de referencia o algo asi?
+
+				if(iterLista.HaySiguiente()){
+					// Me fijo si el siguiente es la siguiente sancion
+					Nat sanciones = iterLista.Siguiente().sanc;
+					iterLista.Avanzar();
+
+					if(iterLista.Siguiente().sanc = sanciones + 1){
+						// Lo agrego al conjunto
+						it.siguiente().itConjMismasSanc = iterLista.Siguiente().agentes.AgregarRapido(a);
+					}
+					else{
+						// Creo un nuevo nodo en el medio
+						Conj<Agente> conj = Conj();
+						it.siguiente().itConjMismasSanc = conj.AgregarRapido(a);
+
+						kSanc nodo;
+						nodo.sanc = sanciones + 1;
+						nodo.agentes = conj;
+						iterLista.AgregarComoAnterior(nodo);
+
+						iterLista.Retroceder();
+
+						it.siguiente().itMismasSanc = iterLista;
+					}
+				}
+				else{
+					//Creo un nuevo nodo
+					Conj<Agente> conj = Conj();
+					it.siguiente().itConjMismasSanc = conj.AgregarRapido(a);
+
+					kSanc nodo;
+					nodo.sanc = sanciones + 1;
+					nodo.agentes = conj;
+					iterLista.AgregarComoSiguiente(nodo);
+
+					iterLista.Avanzar();
+
+					it.siguiente().itMismasSanc = iterLista;
+				}
+
+				if(!iterConj.HaySiguiente()){
+					// Borro el nodo anterior de la lista porque no tiene agentes
+					iterListaAnterior.EliminarSiguiente();
+				}
+
+				it.siguiente().cantSanc++;
+			}
 		}
 	}
 }
