@@ -41,14 +41,6 @@ class CampusSeguro{
 	Conj<Agente> ConKSanciones(Nat k);
 
 	private:
-	struct datosAgente{
-		Posicion posicion;
-		Nat cantSanc;
-		Nat cantAtrapados;
-		typename Lista<kSanc>::Iterador itMismasSanc;
-		typename Conj<Agente>::Iterador itConjMismasSanc;
-	};
-	
 	struct kSanc{
 		Nat sanc;
 		Conj<Agente> agentes;
@@ -57,6 +49,17 @@ class CampusSeguro{
 	struct As{
 		Agente agente;
 		typename diccNat<datosAgente>::itDiccNat datos;
+		/*	bool operator==(const As& a) const{
+			return (agente == a.agente && datos == a.datos);
+		}*/
+	};
+
+	struct datosAgente{
+		Posicion posicion;
+		Nat cantSanc;
+		Nat cantAtrapados;
+		typename Lista<kSanc>::Iterador itMismasSanc;
+		typename Conj<Agente>::Iterador itConjMismasSanc;
 	};
 
 	class Campus grilla;
