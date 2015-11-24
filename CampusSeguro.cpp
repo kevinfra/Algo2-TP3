@@ -75,6 +75,7 @@ Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Na
 
 	As tuplaVacia;
 	tuplaVacia.agente = 0;
+	tuplaVacia.datos = itVacio;
 
 	while(i < f*c){
 		res.AgregarAtras(tuplaVacia);
@@ -95,7 +96,9 @@ Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Na
 
 CampusSeguro::As CampusSeguro::menorPlaca(diccNat<datosAgente>& d){
 	typename diccNat<datosAgente>::itDiccNat it = d.crearIt();
-	typename diccNat<datosAgente>::itDiccNat itMenor;
+
+	//creo el iterador con el diccionario
+	typename diccNat<datosAgente>::itDiccNat itMenor = d.crearIt();
 	//idem que en funcion anterior.
 	Nat placaMenor = it.siguiente().clave;
 
@@ -262,6 +265,7 @@ bool CampusSeguro::HippiesAtrapando(Conj<Posicion> c){
 
 void CampusSeguro::SancionarAgentes(Conj<As> c){
 	typename Conj<As>::Iterador itC = c.CrearIt();
+	typename diccNat<datosAgente>::itDiccNat itParaMod;
 
 	if(c.Cardinal() > 0){
 		this->mismasSancModificado = true;
@@ -271,31 +275,32 @@ void CampusSeguro::SancionarAgentes(Conj<As> c){
 	Conj<Agente> conjVacio;
 
 	while(itC.HaySiguiente()){
-		itC.Siguiente().datos.siguiente().significado.cantSanc++;
+		itParaMod = itC.Siguiente().datos;
+		itParaMod.siguiente().significado.cantSanc++;
 
-		typename Lista<kSanc>::Iterador itLis = itC.Siguiente().datos.siguiente().significado.itMismasSanc;
+		typename Lista<kSanc>::Iterador itLis = itParaMod.siguiente().significado.itMismasSanc;
 		
-		if(itC.Siguiente().datos.siguiente().significado.itMismasSanc.HaySiguiente()){
-			itC.Siguiente().datos.siguiente().significado.itMismasSanc.Avanzar();
+		if(itParaMod.siguiente().significado.itMismasSanc.HaySiguiente()){
+			itParaMod.siguiente().significado.itMismasSanc.Avanzar();
 			
-			if(itC.Siguiente().datos.siguiente().significado.itMismasSanc.Siguiente().sanc != itC.Siguiente().datos.siguiente().significado.cantSanc){
+			if(itParaMod.siguiente().significado.itMismasSanc.Siguiente().sanc != itParaMod.siguiente().significado.cantSanc){
 				tuplaksanc.agentes = conjVacio;
-				tuplaksanc.sanc = itC.Siguiente().datos.siguiente().significado.cantSanc;
-				itC.Siguiente().datos.siguiente().significado.itMismasSanc.AgregarComoAnterior(tuplaksanc);
+				tuplaksanc.sanc = itParaMod.siguiente().significado.cantSanc;
+				itParaMod.siguiente().significado.itMismasSanc.AgregarComoAnterior(tuplaksanc);
 
-				itC.Siguiente().datos.siguiente().significado.itMismasSanc.Retroceder();
+				itParaMod.siguiente().significado.itMismasSanc.Retroceder();
 			}
 
 		} else {
 			tuplaksanc.agentes = conjVacio;
-			tuplaksanc.sanc = itC.Siguiente().datos.siguiente().significado.cantSanc;
-			itC.Siguiente().datos.siguiente().significado.itMismasSanc.AgregarComoSiguiente(tuplaksanc);
+			tuplaksanc.sanc = itParaMod.siguiente().significado.cantSanc;
+			itParaMod.siguiente().significado.itMismasSanc.AgregarComoSiguiente(tuplaksanc);
 
-			itC.Siguiente().datos.siguiente().significado.itMismasSanc.Avanzar();
+			itParaMod.siguiente().significado.itMismasSanc.Avanzar();
 		}
 	
-		itC.Siguiente().datos.siguiente().significado.itConjMismasSanc.EliminarSiguiente();
-		itC.Siguiente().datos.siguiente().significado.itConjMismasSanc = itC.Siguiente().datos.siguiente().significado.itMismasSanc.Siguiente().agentes.AgregarRapido(itC.Siguiente().agente);
+		itParaMod.siguiente().significado.itConjMismasSanc.EliminarSiguiente();
+		itParaMod.siguiente().significado.itConjMismasSanc = itParaMod.siguiente().significado.itMismasSanc.Siguiente().agentes.AgregarRapido(itC.Siguiente().agente);
 		itC.Avanzar();
 	}
 
@@ -339,11 +344,13 @@ Conj<CampusSeguro::As> CampusSeguro::AgParaPremSanc(Conj<Posicion> c){
 
 void CampusSeguro::PremiarAgentes(Conj<CampusSeguro::As> c){
 	typename Conj<As>::Iterador itC = c.CrearIt();
+	typename diccNat<datosAgente>::itDiccNat itParaMod;
 	
 	while(itC.HaySiguiente()){
-		itC.Siguiente().datos.siguiente().significado.cantAtrapados++;
+		itParaMod = itC.Siguiente().datos;
+		itParaMod.siguiente().significado.cantAtrapados++;
 
-		if(this->masVigilante.datos.siguiente().significado.cantAtrapados < itC.Siguiente().datos.siguiente().significado.cantAtrapados){
+		if(this->masVigilante.datos.siguiente().significado.cantAtrapados < itParaMod.siguiente().significado.cantAtrapados){
 			this->masVigilante = itC.Siguiente();
 		}
 		itC.Avanzar();
@@ -356,10 +363,10 @@ Nat CampusSeguro::CantHippiesVecinos(Conj<Posicion> c){
 	Nat res = 0;
 
 	while(itC.HaySiguiente()){
-		typename DiccString(Posicion)::Iterador itDic = this->hippies.CrearIt();
+		typename DiccString<Posicion>::Iterador itDic = this->hippies.CrearIt();
 
 		while(itDic.HaySiguiente()){
-			if(itDic.Siguiente() = itC.Siguiente()) res++;
+			if(itDic.SiguienteSignificado() == itC.Siguiente()) res++;
 			itDic.Avanzar();
 		}
 		itC.Avanzar();

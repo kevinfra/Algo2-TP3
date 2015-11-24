@@ -18,10 +18,13 @@ namespace aed2{
 	typedef enum {izq,der,arriba,abajo} Direccion;
 	typedef Nat Agente;
 	typedef String Nombre;
-	typedef struct {
-		Nombre nombre;
-		Posicion pos;
-	} NombrePosicion;
+	typedef struct NombrePosicion {
+			Nombre nombre;
+			Posicion pos;
+			bool operator==(const NombrePosicion& np) const{
+				return (nombre == np.nombre && pos == np.pos);
+			}
+			} NombrePosicion;
 } // namespace aed2
 
 #endif // AED2_TIPOS_H_
