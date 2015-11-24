@@ -107,26 +107,22 @@ template <typename alpha>
 void DiccString<alpha>::Definir(String c,alpha significado){
 	Nat i = 0;
 	Nat letra = ord(c[0]);
-	Nodo nodo;
 	if(!raiz.Definido(letra)){
-		nodo.arbolTrie = Arreglo<Nodo*>(26);
-		nodo.infoValida = false;
-		raiz.Definir(letra,&nodo);
+		Nodo* nodo = new Nodo();
+		nodo->arbolTrie = Arreglo<Nodo*>(26);
+		nodo->infoValida = false;
+		raiz.Definir(letra,nodo);
 	}
 	Nodo* arr = raiz[letra];
 	i++;
 	letra = ord(c[i]);
-	std::cout << "tu vieja" << std::endl;
 	while(i<c.size()-1){
-		std::cout << "antes del if" << std::endl;
 		if(!arr->arbolTrie.Definido(letra)){
-			std::cout << "entra al if" << std::endl;
-			Nodo nuevoHijo;
-			nuevoHijo.arbolTrie = Arreglo<Nodo*>(26);
-			nuevoHijo.infoValida = false;
-			arr->arbolTrie.Definir(letra,&nuevoHijo);
+			Nodo *nuevoHijo = new Nodo();
+			nuevoHijo->arbolTrie = Arreglo<Nodo*>(26);
+			nuevoHijo->infoValida = false;
+			arr->arbolTrie.Definir(letra,nuevoHijo);
 		}
-		std::cout << "despues del if" << std::endl;
 		arr = arr->arbolTrie[letra];
 		i++;
 		letra = ord(c[i]);

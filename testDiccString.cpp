@@ -12,9 +12,9 @@ int main(int argc, char **argv){
 	//midic.Eliminar("ab");
 	//midic.Eliminar("a");
 	//midic.Eliminar("ccc");
-	/*DiccString<int>::Iterador it =  midic.CrearIt();
+	DiccString<int>::Iterador it =  midic.CrearIt();
 	while(it.HaySiguiente()){
 		cout << it.SiguienteSignificado() << endl;
 		it.Avanzar();
-	}*/
+	}
 }
