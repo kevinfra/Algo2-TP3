@@ -558,7 +558,7 @@ void CampusSeguro::MoverAgente(Agente a){
 }
 
 // TODO: testear
-typename diccNat<datosAgente>::itDiccNat CampusSeguro::busqBinPorPlaca(Agente a, Vector<As> v){
+typename diccNat<CampusSeguro::datosAgente>::itDiccNat CampusSeguro::busqBinPorPlaca(Agente a, Vector<As> v){
 	Nat inf = 0;
 	Nat sup = v.Longitud();
 	Nat med;
@@ -613,18 +613,18 @@ Nat CampusSeguro::distancia(Posicion pos1, Posicion pos2){
 
 Nat CampusSeguro::modulo(int val){
 	if(val >= 0)
-		return val;
+		return (Nat)val;
 	else
-		return -val;
+		return (Nat)-val;
 }
 
 // TODO: testear
 Conj<Posicion> CampusSeguro::dondeIr(Posicion pos, Nat dist, DiccString<Posicion> dicc){
-	Conj<Posicion> posiciones = Conj();
+	Conj<Posicion> posiciones;
 	typename DiccString<Posicion>::Iterador it = dicc.CrearIt();
 
 	while(it.HaySiguiente()){
-		if(dist = distancia(pos, it.SiguienteSignificado()))
+		if(dist == distancia(pos, it.SiguienteSignificado()))
 			posiciones.AgregarRapido(it.SiguienteSignificado());
 		it.Avanzar();
 	}
@@ -635,7 +635,7 @@ Conj<Posicion> CampusSeguro::dondeIr(Posicion pos, Nat dist, DiccString<Posicion
 // TODO: testear
 Conj<Posicion> CampusSeguro::lugaresPosibles(Posicion pos, Conj<Posicion> posiciones){
 	typename Conj<Posicion>::Iterador it = posiciones.CrearIt();
-	Conj<Posicion> lugares = Conj();
+	Conj<Posicion> lugares;
 	Posicion auxPos;
 
 	while(it.HaySiguiente()){
@@ -720,13 +720,13 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 					Nat sanciones = iterLista.Siguiente().sanc;
 					iterLista.Avanzar();
 
-					if(iterLista.Siguiente().sanc = sanciones + 1){
+					if(iterLista.Siguiente().sanc == sanciones + 1){
 						// Lo agrego al conjunto
 						it.siguiente().significado.itConjMismasSanc = iterLista.Siguiente().agentes.AgregarRapido(a);
 					}
 					else{
 						// Creo un nuevo nodo en el medio
-						Conj<Agente> conj = Conj();
+						Conj<Agente> conj;
 						it.siguiente().significado.itConjMismasSanc = conj.AgregarRapido(a);
 
 						kSanc nodo;
@@ -741,11 +741,11 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 				}
 				else{
 					//Creo un nuevo nodo
-					Conj<Agente> conj = Conj();
+					Conj<Agente> conj;
 					it.siguiente().significado.itConjMismasSanc = conj.AgregarRapido(a);
 
 					kSanc nodo;
-					nodo.sanc = sanciones + 1;
+					nodo.sanc = 1; // Esto está mal
 					nodo.agentes = conj;
 					iterLista.AgregarComoSiguiente(nodo);
 
@@ -775,32 +775,60 @@ Campus CampusSeguro::campus() const{
 }
 
 typename Conj<Nombre>::Iterador CampusSeguro::Estudiantes(){
+	return this->estudiantes.CrearItClaves();
 }
 
 typename Conj<Nombre>::Iterador CampusSeguro::Hippies(){
+	return this->hippies.CrearItClaves();
 }
 
-typename Conj<Agente>::Iterador CampusSeguro::Agentes(){
+typename Conj<Agente>::Iterador CampusSeguro::Agentes() {
+	return this->personalAS.crearItClaves();
 }
 
+// Pre: id esta en hippies o en estudiantes
 Posicion CampusSeguro::PosEstudianteYHippie(Nombre id){
+	if(this->hippies.Definido(id))
+		return this->hippies.Obtener(id);
+	else
+		return this->estudiantes.Obtener(id);
 }
 
+// Pre: a pertenece a personalAS
 Posicion CampusSeguro::PosAgente(Agente a){
+	return this->personalAS.obtener(a)->posicion;
 }
 
-Nat CampusSeguro::CantSanciones(Agente a){
+// Pre: a pertenece a personalAS
+Nat CampusSeguro::CantSanciones(Agente a) {
+	return this->personalAS.obtener(a)->cantSanc;
 }
 
-Nat CampusSeguro::CantHippiesAtrapados(Agente a){
+// Pre: a pertenece a personalAS
+Nat CampusSeguro::CantHippiesAtrapados(Agente a) {
+	return this->personalAS.obtener(a)->cantAtrapados;
 }
 
 Agente CampusSeguro::MasVigilante(){
+	return this->masVigilante.agente;
 }
 
-Conj<Agente> CampusSeguro::ConMismasSanciones(Agente a){
+// Pre: a pertenece a personalAS
+Conj<Agente> CampusSeguro::ConMismasSanciones(Agente a) {
+	return personalAS.obtener(a)->itMismasSanc.Siguiente().agentes;
 }
 
-Conj<Agente> CampusSeguro::ConKSanciones(Nat k){
+Conj<Agente> CampusSeguro::ConKSanciones(Nat k) {
+	if(this->mismasSancModificado){
+//		hacerArregloMismasSanc();
+		this->mismasSancModificado = false;
+	}
+
+	Nat i = 0;
+//	bool esta = busqBinAgente(k, i, this->arregloMismasSanc);
+//	if(esta)
+//		return this->arregloMismasSanc[i].Siguiente().agentes;
+//	else
+		return Conj<Agente>();
 }
 
