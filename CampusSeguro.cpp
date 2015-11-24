@@ -530,18 +530,18 @@ void CampusSeguro::MoverHippie(Nombre h){
 
 // TODO: testear
 void CampusSeguro::MoverAgente(Agente a){
-	typename diccNat<datosAgente>::itDiccNat it = busqBinPorPlaca(this->agentesOrdenados, a);
+	typename diccNat<datosAgente>::itDiccNat it = busqBinPorPlaca(a, this->agentesOrdenados);
 
 	// Actualizo la posicion del agente
-	Posicion nuevaPos = proxPos(it.siguiente().posicion, this->hippies);
-	posicionesAgente[it.siguiente().posicion.y * this->grilla.Columnas() + it.siguiente().posicion.x].datos = Conj().CrearIt();
+	Posicion nuevaPos = proxPos(it.siguiente().significado.posicion, this->hippies);
+	posicionesAgente[it.siguiente().significado.posicion.y * this->grilla.Columnas() + it.siguiente().significado.posicion.x].datos = diccNat<datosAgente>().crearIt();
 
 	As as;
 	as.agente = a;
 	as.datos = it;
 	posicionesAgente[nuevaPos.y * this->grilla.Columnas() + nuevaPos.x] = as;
 
-	it.siguiente().posicion = nuevaPos;
+	it.siguiente().significado.posicion = nuevaPos;
 
 	// Me fijo a quienes atrapa
 	Posicion posArr = this->grilla.MoverDir(nuevaPos, arriba);
@@ -595,19 +595,19 @@ Posicion CampusSeguro::proxPos(Posicion pos, DiccString<Posicion> dicc){
 Nat CampusSeguro::distanciaMasCorta(Posicion pos, DiccString<Posicion> dicc){
 	typename DiccString<Posicion>::Iterador it = dicc.CrearIt();
 
-	Nat dist = distancia(pos, it.Siguiente());
+	Nat dist = distancia(pos, it.SiguienteSignificado());
 	it.Avanzar();
 
 	while(it.HaySiguiente()){
-		if (dist > distancia(pos, it.Siguiente()))
-			dist = distancia(pos, it.Siguiente());
+		if (dist > distancia(pos, it.SiguienteSignificado()))
+			dist = distancia(pos, it.SiguienteSignificado());
 		it.Avanzar();
 	}
 
 	return dist;
 }
 
-Nat CampusSeguro::distancia(Posicion p1, Posicion p2){
+Nat CampusSeguro::distancia(Posicion pos1, Posicion pos2){
 	return(modulo(pos1.x - pos2.x) + modulo(pos1.y - pos2.y));
 }
 
@@ -624,8 +624,8 @@ Conj<Posicion> CampusSeguro::dondeIr(Posicion pos, Nat dist, DiccString<Posicion
 	typename DiccString<Posicion>::Iterador it = dicc.CrearIt();
 
 	while(it.HaySiguiente()){
-		if(dist = distancia(pos, it.Siguiente()))
-			posiciones.AgregarRapido(it.Siguiente());
+		if(dist = distancia(pos, it.SiguienteSignificado()))
+			posiciones.AgregarRapido(it.SiguienteSignificado());
 		it.Avanzar();
 	}
 
@@ -690,8 +690,8 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 		if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != " "){
 			if(atrapado(pos)){
 				// Incremento sus capturas, actualizo masVigilante y mato al hippie
-				it.siguiente().cantAtrapados++;
-				if(it.siguiente().cantAtrapados > this->masVigilante.datos.siguiente().cantAtrapados){
+				it.siguiente().significado.cantAtrapados++;
+				if(it.siguiente().significado.cantAtrapados > this->masVigilante.datos.siguiente().significado.cantAtrapados){
 					As tup;
 					tup.agente = a;
 					tup.datos = it;
@@ -707,13 +707,13 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 				//Actualizo las sanciones y las estructuras relacionadas
 				this->mismasSancModificado = true;
 
-				typename Conj<Agente>::Iterador iterConj = it.siguiente().itConjMismasSanc;
+				typename Conj<Agente>::Iterador iterConj = it.siguiente().significado.itConjMismasSanc;
 				iterConj.EliminarSiguiente();
 
-				typename Lista<kSanc>::Iterador iterLista = it.siguiente().itMismasSanc;
+				typename Lista<kSanc>::Iterador iterLista = it.siguiente().significado.itMismasSanc;
 
 				// Me guardo un iterador para borrar el nodo de la lista si es que queda sin agentes
-				typename Lista<kSanc>::Iterador iterListaAnterior = it.siguiente().itMismasSanc;			// Esto va a funcionar? Que estos dos iteradores sean iguales no genera algun problema de referencia o algo asi?
+				typename Lista<kSanc>::Iterador iterListaAnterior = it.siguiente().significado.itMismasSanc;			// Esto va a funcionar? Que estos dos iteradores sean iguales no genera algun problema de referencia o algo asi?
 
 				if(iterLista.HaySiguiente()){
 					// Me fijo si el siguiente es la siguiente sancion
@@ -722,12 +722,12 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 
 					if(iterLista.Siguiente().sanc = sanciones + 1){
 						// Lo agrego al conjunto
-						it.siguiente().itConjMismasSanc = iterLista.Siguiente().agentes.AgregarRapido(a);
+						it.siguiente().significado.itConjMismasSanc = iterLista.Siguiente().agentes.AgregarRapido(a);
 					}
 					else{
 						// Creo un nuevo nodo en el medio
 						Conj<Agente> conj = Conj();
-						it.siguiente().itConjMismasSanc = conj.AgregarRapido(a);
+						it.siguiente().significado.itConjMismasSanc = conj.AgregarRapido(a);
 
 						kSanc nodo;
 						nodo.sanc = sanciones + 1;
@@ -736,13 +736,13 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 
 						iterLista.Retroceder();
 
-						it.siguiente().itMismasSanc = iterLista;
+						it.siguiente().significado.itMismasSanc = iterLista;
 					}
 				}
 				else{
 					//Creo un nuevo nodo
 					Conj<Agente> conj = Conj();
-					it.siguiente().itConjMismasSanc = conj.AgregarRapido(a);
+					it.siguiente().significado.itConjMismasSanc = conj.AgregarRapido(a);
 
 					kSanc nodo;
 					nodo.sanc = sanciones + 1;
@@ -751,7 +751,7 @@ void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<dat
 
 					iterLista.Avanzar();
 
-					it.siguiente().itMismasSanc = iterLista;
+					it.siguiente().significado.itMismasSanc = iterLista;
 				}
 
 				if(!iterConj.HaySiguiente()){
