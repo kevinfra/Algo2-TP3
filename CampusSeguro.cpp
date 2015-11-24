@@ -818,6 +818,7 @@ Conj<Agente> CampusSeguro::ConMismasSanciones(Agente a) {
 	return personalAS.obtener(a)->itMismasSanc.Siguiente().agentes;
 }
 
+// TODO: hacer las auxiliares y descomentar
 Conj<Agente> CampusSeguro::ConKSanciones(Nat k) {
 	if(this->mismasSancModificado){
 //		hacerArregloMismasSanc();
