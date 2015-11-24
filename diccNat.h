@@ -56,6 +56,7 @@ private:
 //Implementacion
 template<typename alpha>
 diccNat<alpha>::diccNat(const Vector<tupla> &v){
+  //PRE NO ACLARADO EN TP2: SinClavesRepetidas(v)
   Nat i = 0;
   while(i < v.Longitud()){
     this->_tabla.AgregarAtras(Lista<tupla>());
