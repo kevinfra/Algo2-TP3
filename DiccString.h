@@ -46,6 +46,7 @@ class DiccString{
 			alpha& AnteriorSignificado();
 			void Retroceder();
 			void Avanzar();
+			bool operator == (const typename DiccString<alpha>::Iterador& otro) const;
 
 
 		private: typename Lista<Nodo*>::Iterador iteradorLista;
@@ -231,6 +232,11 @@ void DiccString<alpha>::Iterador::Avanzar(){
 template<typename alpha>
 void DiccString<alpha>::Iterador::Retroceder(){
 	this->iteradorLista.Retroceder();
+}
+
+template<typename alpha>
+bool DiccString<alpha>::Iterador::operator == (const typename DiccString<alpha>::Iterador& otro) const {
+  return iteradorLista == otro->iteradorLista;
 }
 
 #endif
