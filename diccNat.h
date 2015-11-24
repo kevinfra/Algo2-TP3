@@ -41,6 +41,7 @@ public:
     tupla& siguiente();
     alpha& siguienteSignificado();
     void avanzar();
+    bool operator==(const typename diccNat<alpha>::itDiccNat& otro) const;
 
   private:
     typename Lista<tupla*>::Iterador _iteradorLista;
@@ -156,6 +157,11 @@ alpha& diccNat<alpha>::itDiccNat::siguienteSignificado(){
 template<typename alpha>
 void diccNat<alpha>::itDiccNat::avanzar(){
 	this->_iteradorLista.Avanzar();
+}
+
+template<typename alpha>
+bool diccNat<alpha>::itDiccNat::operator==(const typename diccNat<alpha>::itDiccNat& otro) const{
+	return (_iteradorLista == otro._iteradorLista);
 }
 
 #endif //DICCIONARIO_NAT_FIJO
