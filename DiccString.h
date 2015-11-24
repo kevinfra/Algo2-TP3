@@ -17,7 +17,7 @@ class DiccString{
 	class Iterador;
 
 	struct Nodo{
-		Arreglo<Nodo*> arbolTrie;
+		Arreglo<Nodo> arbolTrie;
 		alpha info;
 		bool infoValida;
 		typename Conj<String>::Iterador clave;
@@ -53,7 +53,7 @@ class DiccString{
 
 	private:
 
-	Arreglo<Nodo*> raiz;
+	Arreglo<Nodo> raiz;
 	Lista<Nodo*> listaIterable;
 	Conj<String> conjIterable;
 
@@ -79,7 +79,7 @@ class DiccString{
 
 template <typename alpha>
 DiccString<alpha>::DiccString(){
-	raiz = Arreglo<Nodo*>(26);
+	raiz = Arreglo<Nodo>(26);
 }
 
 template <typename alpha>
@@ -87,15 +87,18 @@ bool DiccString<alpha>::Definido(String c){
 	Nat i = 0;
 	Nat letra = ord(c[0]);
 	if(raiz.Definido(letra)){
-		Nodo* arr = raiz[letra];
+		Nodo* arr = &raiz[letra];
 		i++;
 		letra = ord(c[i]);
 		while(i<c.size()-1 && arr->arbolTrie.Definido(letra)){
-			arr = arr->arbolTrie[letra];
+			arr = &arr->arbolTrie[letra];
 			i++;
 			letra = ord(c[i]);
 		}
-		return i==c.size()-1 && arr->arbolTrie.Definido(letra) && arr->arbolTrie[letra]->infoValida;
+		if(i==c.size()){
+			return arr->infoValida;
+		}
+		return i==c.size()-1 && arr->arbolTrie.Definido(letra) && arr->arbolTrie[letra].infoValida;
 	}
 	else
 	{
@@ -108,24 +111,22 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 	Nat i = 0;
 	Nat letra = ord(c[0]);
 	if(!raiz.Definido(letra)){
-		Nodo* nodo = new Nodo();
-		nodo->arbolTrie = Arreglo<Nodo*>(26);
-		nodo->infoValida = false;
+		Nodo nodo;
+		nodo.arbolTrie = Arreglo<Nodo>(26);
+		nodo.infoValida = false;
 		raiz.Definir(letra,nodo);
 	}
-	Nodo* arr = raiz[letra];
-	i++;
-	letra = ord(c[i]);
+	Nodo* arr = &raiz[letra];
 	while(i<c.size()-1){
-		if(!arr->arbolTrie.Definido(letra)){
-			Nodo *nuevoHijo = new Nodo();
-			nuevoHijo->arbolTrie = Arreglo<Nodo*>(26);
-			nuevoHijo->infoValida = false;
-			arr->arbolTrie.Definir(letra,nuevoHijo);
-		}
-		arr = arr->arbolTrie[letra];
 		i++;
 		letra = ord(c[i]);
+		if(!arr->arbolTrie.Definido(letra)){
+			Nodo nuevoHijo;
+			nuevoHijo.arbolTrie = Arreglo<Nodo>(26);
+			nuevoHijo.infoValida = false;
+			arr->arbolTrie.Definir(letra,nuevoHijo);
+		}
+		arr = &arr->arbolTrie[letra];
 	}
 	arr->info = significado;
 	if(!arr->infoValida){
@@ -139,29 +140,33 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 
 template <typename alpha>
 alpha& DiccString<alpha>::Obtener(String c){
+	assert(Definido(c));
 	Nat i = 0;
 	Nat letra = ord(c[0]);
-	Nodo* arr = raiz[letra];
+	Nodo* arr = &raiz[letra];
 	while(i<c.size()-1){
 		i++;
 		letra = ord(c[i]);
-		arr = arr->arbolTrie[letra];
+		arr = &arr->arbolTrie[letra];
 	}
 	return arr->info;
 }
 
 template <typename alpha>
 void DiccString<alpha>::Eliminar(String c){
+	assert(Definido(c));
 	Nat i = 0;
 	Nat letra = ord(c[0]);
-	Nodo* arr = raiz[letra];
+	Nodo* arr = &raiz[letra];
 	Lista<Nodo*> pila;
 	pila.AgregarAdelante(arr);
-	while(i<c.size()-1){
+	i++;
+	letra = ord(c[i]);
+	while(i<c.size()){
+		arr = &arr->arbolTrie[letra];
+		pila.AgregarAdelante(arr);
 		i++;
 		letra = ord(c[i]);
-		arr = arr->arbolTrie[letra];
-		pila.AgregarAdelante(arr);
 	}
 	arr->clave.EliminarSiguiente();
 	if(tieneHermanos(arr)){
