@@ -525,12 +525,33 @@ void CampusSeguro::MoverHippie(Nombre h){
 void CampusSeguro::MoverAgente(Agente a){
 	typename diccNat<datosAgente>::itDiccNat it = busqBinPorPlaca(this->agentesOrdenados, a);
 
-	//Actualizo la posicion del agente
-	// Posicion nuevaPos = proxPos(it.siguiente().posicion, this->hippies);
+	// Actualizo la posicion del agente
+	Posicion nuevaPos = proxPos(it.siguiente().posicion, this->hippies);
+	posicionesAgente[it.siguiente().posicion.y * this->grilla.Columnas() + it.siguiente().posicion.x].datos = Conj().CrearIt();
+
+	As as;
+	as.agente = a;
+	as.datos = it;
+	posicionesAgente[nuevaPos.y * this->grilla.Columnas() + nuevaPos.x] = as;
+
+	it.siguiente().posicion = nuevaPos;
+
+	// Me fijo a quienes atrapa
+	Posicion posArr = this->grilla.MoverDir(nuevaPos, arriba);
+	actualizarAgente(posArr, a, it);
+
+	Posicion posAba = this->grilla.MoverDir(nuevaPos, abajo);
+	actualizarAgente(posAba, a, it);
+
+	Posicion posDer = this->grilla.MoverDir(nuevaPos, der);
+	actualizarAgente(posDer, a, it);
+
+	Posicion posIzq = this->grilla.MoverDir(nuevaPos, izq);
+	actualizarAgente(posIzq, a, it);
 }
 
 // TODO: testear
-typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As> v){
+typename diccNat<datosAgente>::itDiccNat CampusSeguro::busqBinPorPlaca(Agente a, Vector<As> v){
 	Nat inf = 0;
 	Nat sup = v.Longitud();
 	Nat med;
@@ -546,9 +567,114 @@ typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As> v)
 	return(v[inf].datos);
 }
 
-//TODO: testear
-Posicion proxPos(Posicion pos, DiccString<Posicion> dicc){
-	// Nat distCorta = distanciaMasCorta(pos, dicc);
+// TODO: testear
+// Tengo que ponerle return fuera del if?
+Posicion CampusSeguro::proxPos(Posicion pos, DiccString<Posicion> dicc){
+	Nat distCorta = distanciaMasCorta(pos, dicc);
+
+	Conj<Posicion> conjDondeIr = dondeIr(pos, distCorta, dicc);
+	Conj<Posicion> conjLugaresPosibles = lugaresPosibles(pos, conjDondeIr);
+
+	if(conjLugaresPosibles.EsVacio())
+		return pos;
+	else{
+		typename Conj<Posicion>::Iterador it = conjLugaresPosibles.CrearIt();
+		return it.Siguiente();
+	}
+
+}
+
+// TODO: testear
+Nat CampusSeguro::distanciaMasCorta(Posicion pos, DiccString<Posicion> dicc){
+	typename DiccString<Posicion>::Iterador it = dicc.CrearIt();
+
+	Nat dist = distancia(pos, it.Siguiente());
+	it.Avanzar();
+
+	while(it.HaySiguiente()){
+		if (dist > distancia(pos, it.Siguiente()))
+			dist = distancia(pos, it.Siguiente());
+		it.Avanzar();
+	}
+
+	return dist;
+}
+
+Nat CampusSeguro::distancia(Posicion p1, Posicion p2){
+	return(modulo(pos1.x - pos2.x) + modulo(pos1.y - pos2.y));
+}
+
+Nat CampusSeguro::modulo(int val){
+	if(val >= 0)
+		return val;
+	else
+		return -val;
+}
+
+// TODO: testear
+Conj<Posicion> CampusSeguro::dondeIr(Posicion pos, Nat dist, DiccString<Posicion> dicc){
+	Conj<Posicion> posiciones = Conj();
+	typename DiccString<Posicion>::Iterador it = dicc.CrearIt();
+
+	while(it.HaySiguiente()){
+		if(dist = distancia(pos, it.Siguiente()))
+			posiciones.AgregarRapido(it.Siguiente());
+		it.Avanzar();
+	}
+
+	return(posiciones);
+}
+
+// TODO: testear
+Conj<Posicion> CampusSeguro::lugaresPosibles(Posicion pos, Conj<Posicion> posiciones){
+	typename Conj<Posicion>::Iterador it = posiciones.CrearIt();
+	Conj<Posicion> lugares = Conj();
+
+	while(it.HaySiguiente()){
+		if(hayAlgoEnPos(it.Siguiente())){
+			if(it.Siguiente().x > pos.x)
+				lugares.AgregarRapido(Posicion(pos.x + 1, pos.y));
+			else if(it.Siguiente().x < pos.x)
+				lugares.AgregarRapido(Posicion(pos.x - 1, pos.y));
+
+			if(it.Siguiente().y > pos.y)
+				lugares.AgregarRapido(Posicion(pos.x, pos.y + 1));
+			else if(it.Siguiente().x < pos.x)
+				lugares.AgregarRapido(Posicion(pos.x, pos.y - 1));
+		}
+	}
+
+	return lugares;
+}
+
+// TODO: testear
+bool CampusSeguro::hayAlgoEnPos(Posicion pos){
+	if(this->posicionesAgente[pos.y * this->grilla.Columnas() + pos.x].datos.haySiguiente())
+		return true;
+
+	//OJO QUE SI HAY UN ELEMENTO EN DONDE NO HAY UN HIPPIE O ESTUDIANTE DEBERIA HABER UN STRING VACIO, NO UN ESPACIO
+	if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != "")
+		return true;
+	if(this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] != "")
+		return true;
+
+	if(this->grilla.Ocupada(pos))
+		return true;
+
+	return false;
+}
+
+void CampusSeguro::actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat){
+	if(this->grilla.PosValida(pos)){
+
+		if(this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] != ""){
+			// if(atrapado(pos)){}
+		}
+	}
+}
+
+bool CampusSeguro::atrapado(Posicion pos){
+	return(TodasOcupadas(this->grilla.Vecinos(pos)));
 }
 
 Campus CampusSeguro::campus() const{
