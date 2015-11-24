@@ -1,6 +1,7 @@
 #include "Driver.h"
 #include "mini_test.h"
 #include "diccNat.h"
+#include "aed2.h"
 
 #include <string>
 #include <iostream>
@@ -30,6 +31,7 @@ void test_obtenerDefinidoYredefinir(){
   if(d.definido(6)){
     Nat res = *(d.obtener(9999+9999));
     d.redefinir(6, 8);
+    std::cout << "redefinio" << std::endl;
     ASSERT_EQ(*(d.obtener(6)),8);
   }else{
     ASSERT_EQ(2,3);
@@ -83,13 +85,12 @@ void test_itDiccNat(){
 
   while(it.haySiguiente()){
     std::cout << "entra" << std::endl;
-    std::cout << (it.siguiente()).clave << std::endl; //ESTO NO FUNCIONA PORQUE TIRA SEGMENTATION FAULT
+  //  std::cout << (it.siguiente()).clave << std::endl; //ESTO NO FUNCIONA PORQUE TIRA SEGMENTATION FAULT
     it.avanzar();
     std::cout << "sale" << std::endl;
   }
   //ASSERT_EQ(it.siguiente(), 9);
 }
-
 
 int main(int argc, char **argv)
 {

@@ -11,7 +11,7 @@ using namespace aed2;
 
 template<typename alpha>
 class DiccString{
-	
+
 	public:
 
 	class Iterador;
@@ -23,18 +23,10 @@ class DiccString{
 		typename Conj<String>::Iterador clave;
 		typename Lista<Nodo*>::Iterador infoEnLista;
 	};
-	
+
 	//CrearDiccionario
 	DiccString();
 
-	~DiccString(){
-		//Conj<String>::Iterador itClaves = conjIterable.CrearIt();
-		//while(itClaves.HaySiguiente()){
-		//	itClaves.EliminarSiguiente();
-		//	itClaves.Avanzar();
-		//}
-	}
-	
 	bool Definido(String c);
 	void Definir(String c,alpha significado);
 	alpha& Obtener(String c);
@@ -44,10 +36,10 @@ class DiccString{
 	Iterador CrearIt();
 
 	class Iterador{
-		
+
 		public:
-			
-			Iterador(Lista<Nodo*> lista);
+
+			Iterador(Lista<Nodo*> &lista);
 			bool HaySiguiente();
 			bool HayAnterior();
 			alpha& SiguienteSignificado();
@@ -98,12 +90,12 @@ bool DiccString<alpha>::Definido(String c){
 		Nodo* arr = raiz[letra];
 		i++;
 		letra = ord(c[i]);
-		while(i<c.size()-1 && arr->arbolTrie.Definido(letra)){		
+		while(i<c.size()-1 && arr->arbolTrie.Definido(letra)){
 			arr = arr->arbolTrie[letra];
 			i++;
 			letra = ord(c[i]);
 		}
-		return i==c.size()-1 && arr->arbolTrie.Definido(letra) && arr->arbolTrie[letra]->infoValida;	
+		return i==c.size()-1 && arr->arbolTrie.Definido(letra) && arr->arbolTrie[letra]->infoValida;
 	}
 	else
 	{
@@ -199,7 +191,7 @@ typename DiccString<alpha>::Iterador DiccString<alpha>::CrearIt(){
 }
 
 template<typename alpha>
-DiccString<alpha>::Iterador::Iterador(Lista<Nodo*> lista)
+DiccString<alpha>::Iterador::Iterador(Lista<Nodo*> &lista)
   :     iteradorLista(lista.CrearIt())
 {}
 
