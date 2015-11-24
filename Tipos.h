@@ -9,7 +9,7 @@ namespace aed2{
 		Nat x,y;
 		Posicion(Nat _x, Nat _y){
 			x = _x;
-			y = _y;|
+			y = _y;
 		}
 		bool operator==(const Posicion& pos) const{
 			return (x == pos.x && y == pos.y);
