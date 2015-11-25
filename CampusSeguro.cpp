@@ -1,6 +1,8 @@
 #include "CampusSeguro.h"
 #include "Tipos.h"
 
+#include <cassert>
+
 using namespace aed2;
 
 //ComenzarRastrillaje
@@ -25,10 +27,32 @@ CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& 
 
 	diccNat<datosAgente> diccHash(v);
 	this->personalAS = diccHash;
+	
+	// generarListaMismasSanc
+	typename diccNat<datosAgente>::itDiccNat itDic = diccHash.crearIt();
+	Conj<Agente> conj;
+	kSanc tupla;
+	tupla.sanc = 0;
+	tupla.agentes = conj;
+	this->listaMismasSanc.AgregarAdelante(tupla);
+	typename Lista<kSanc>::Iterador itL = this->listaMismasSanc.CrearIt();
 
-	this->listaMismasSanc = generarListaMismasSanc(diccHash);
-	this->posicionesAgente = vectorizarPos(diccHash, this->grilla.Filas(), this->grilla.Columnas());
-	this->masVigilante = menorPlaca(diccHash);
+	while(itDic.haySiguiente()){
+		typename Conj<Agente>::Iterador itC = itL.Siguiente().agentes.AgregarRapido(itDic.siguiente().clave);
+		itDic.siguiente().significado.itConjMismasSanc = itC;
+		itDic.siguiente().significado.itMismasSanc = itL;
+		
+		assert(itDic.siguiente().significado.itMismasSanc.HaySiguiente());
+		assert(itDic.siguiente().significado.itMismasSanc.Siguiente().agentes.Cardinal() > 0);
+		assert(itDic.siguiente().significado.itMismasSanc.Siguiente().sanc == 0);
+		assert(itL.HaySiguiente());
+		itDic.avanzar();
+	}
+	
+
+	
+	this->posicionesAgente = vectorizarPos(this->personalAS, this->grilla.Filas(), this->grilla.Columnas());
+	this->masVigilante = menorPlaca(this->personalAS);
 	this->mismasSancModificado = true;
 	//los diccionarios con hippies y estudiantes deben iniciar vacios
 
@@ -115,8 +139,8 @@ CampusSeguro::As CampusSeguro::menorPlaca(diccNat<datosAgente>& d){
 	return res;
 }
 
-Lista<CampusSeguro::kSanc> CampusSeguro::generarListaMismasSanc(diccNat<datosAgente>& d){
-	typename diccNat<datosAgente>::itDiccNat itDic = d.crearIt();
+Lista<CampusSeguro::kSanc> CampusSeguro::generarListaMismasSanc(){
+	typename diccNat<datosAgente>::itDiccNat itDic = this->personalAS.crearIt();
 	Lista<kSanc> res;
 
 	Conj<Agente> conj;
@@ -132,6 +156,9 @@ Lista<CampusSeguro::kSanc> CampusSeguro::generarListaMismasSanc(diccNat<datosAge
 		itDic.siguiente().significado.itMismasSanc = itL;
 
 		itDic.avanzar();
+		
+		assert(itC.HaySiguiente());
+		assert(itL.HaySiguiente());
 	}
 	
 	return res;
@@ -1127,7 +1154,7 @@ Agente CampusSeguro::MasVigilante(){
 
 // Pre: a pertenece a personalAS
 Conj<Agente> CampusSeguro::ConMismasSanciones(Agente a) {
-	return personalAS.obtener(a)->itMismasSanc.Siguiente().agentes;
+	return this->personalAS.obtener(a)->itMismasSanc.Siguiente().agentes;
 }
 
 // TODO: testear
