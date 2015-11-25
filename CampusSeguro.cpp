@@ -1,5 +1,4 @@
 #include "CampusSeguro.h"
-#include "Tipos.h"
 
 using namespace aed2;
 
