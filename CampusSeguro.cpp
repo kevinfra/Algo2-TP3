@@ -118,13 +118,13 @@ CampusSeguro::As CampusSeguro::menorPlaca(diccNat<datosAgente>& d){
 Lista<CampusSeguro::kSanc> CampusSeguro::generarListaMismasSanc(diccNat<datosAgente>& d){
 	typename diccNat<datosAgente>::itDiccNat itDic = d.crearIt();
 	Lista<kSanc> res;
-	typename Lista<kSanc>::Iterador itL = res.CrearIt();
 
 	Conj<Agente> conj;
 	kSanc tupla;
 	tupla.sanc = 0;
 	tupla.agentes = conj;
 	res.AgregarAdelante(tupla);
+	typename Lista<kSanc>::Iterador itL = res.CrearIt();
 
 	while(itDic.haySiguiente()){
 		typename Conj<Agente>::Iterador itC = itL.Siguiente().agentes.AgregarRapido(itDic.siguiente().clave);
@@ -133,7 +133,7 @@ Lista<CampusSeguro::kSanc> CampusSeguro::generarListaMismasSanc(diccNat<datosAge
 		
 		itDic.avanzar();
 	}
-
+	
 	return res;
 }
 
@@ -293,7 +293,11 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 		itParaMod = itC.Siguiente().datos;
 		itParaMod.siguiente().significado.cantSanc++;
 
-		typename Lista<kSanc>::Iterador itLis = itParaMod.siguiente().significado.itMismasSanc;
+		/*TODO
+		 * REVISAR BIEN PORQUE ESTE ITERADOR ESTA ACA!
+		 */
+		
+		//typename Lista<kSanc>::Iterador itLis = itParaMod.siguiente().significado.itMismasSanc;
 		
 		if(itParaMod.siguiente().significado.itMismasSanc.HaySiguiente()){
 			itParaMod.siguiente().significado.itMismasSanc.Avanzar();
