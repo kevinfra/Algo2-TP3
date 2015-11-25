@@ -513,6 +513,7 @@ bool CampusSeguro::TodasOcupadas(Conj<Posicion>& c){
 	itC = c.CrearIt();
 	while(itC.HaySiguiente() && !res){
 		if(this->posicionesAgente[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x].datos.haySiguiente()) res = true;
+		itC.Avanzar();
 	}
 
 	itC = c.CrearIt();
