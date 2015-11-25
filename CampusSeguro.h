@@ -13,7 +13,7 @@
 using namespace aed2;
 
 
-class CampusSeguro : public Campus
+class CampusSeguro
 {
 	struct datosAgente;
 	struct kSanc;
@@ -29,7 +29,7 @@ class CampusSeguro : public Campus
 	void MoverEstudiante(Nombre e, Direccion d);
 	void MoverHippie(Nombre h);
 	void MoverAgente(Agente a);
-	class Campus campus() const;
+	const class Campus& campus() const;
 	Conj<Nombre>::Iterador Estudiantes();
 	Conj<Nombre>::Iterador Hippies();
 	Conj<Agente>::Iterador Agentes();

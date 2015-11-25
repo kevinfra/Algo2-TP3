@@ -1,6 +1,7 @@
 #include "Driver.h"
 #include "mini_test.h"
 #include "CampusSeguro.h"
+#include "Campus.h"
 
 #include <string>
 #include <iostream>
