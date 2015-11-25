@@ -4,6 +4,9 @@
 
 using namespace aed2;
 
+CampusSeguro::CampusSeguro(){}
+
+
 //ComenzarRastrillaje
 CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) : grilla(c) {
 
@@ -40,7 +43,7 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 		typename Conj<Agente>::Iterador itC = itL.Siguiente().agentes.AgregarRapido(itDic.siguiente().clave);
 		itDic.siguiente().significado.itConjMismasSanc = itC;
 		itDic.siguiente().significado.itMismasSanc = itL;
-		
+
 		assert(itDic.siguiente().significado.itMismasSanc.HaySiguiente());
 		assert(itDic.siguiente().significado.itMismasSanc.Siguiente().agentes.Cardinal() > 0);
 		assert(itDic.siguiente().significado.itMismasSanc.Siguiente().sanc == 0);
@@ -49,7 +52,7 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 	}
 	this->personalAS = diccHash;
 
-	
+
 	this->posicionesAgente = vectorizarPos(this->personalAS, this->grilla.Filas(), this->grilla.Columnas());
 	this->masVigilante = menorPlaca(this->personalAS);
 	this->mismasSancModificado = true;
@@ -155,9 +158,9 @@ void CampusSeguro::generarListaMismasSanc(){
 		itDic.siguiente().significado.itMismasSanc = itL;
 
 		itDic.avanzar();
-		
+
 	}
-	
+
 	//return res;
 }
 
