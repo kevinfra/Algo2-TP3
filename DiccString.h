@@ -68,7 +68,7 @@ class DiccString{
 	}
 
 
-	bool tieneHermanosEInfo(const Nodo* nodo){
+	bool tieneHermanosOInfo(const Nodo* nodo){
 		return tieneHermanos(nodo) || nodo->infoValida;
 	}
 
@@ -180,7 +180,7 @@ void DiccString<alpha>::Eliminar(String c){
 		i = 1;
 		itPila.Siguiente()->infoEnLista.EliminarSiguiente();
 		itPila.EliminarSiguiente();
-		while(itPila.HaySiguiente() && !tieneHermanosEInfo(itPila.Siguiente())){
+		while(itPila.HaySiguiente() && !tieneHermanosOInfo(itPila.Siguiente())){
 			itPila.EliminarSiguiente();
 			i++;
 		}
