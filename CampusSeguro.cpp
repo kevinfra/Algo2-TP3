@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace aed2;
+using namespace std;
 
 CampusSeguro::CampusSeguro(){}
 
@@ -177,13 +178,12 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 	}
 
 	if(CantHippiesVecinos(conjVecinos) < 2){
-		this->estudiantes.Definir(e,pos);
+		this->estudiantes.Definir(e, pos);
 		this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] = e;
 	} else{
-		this->hippies.Definir(e,pos);
+		this->hippies.Definir(e, pos);
 		this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = e;
 	}
-
 
 	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(conjVecinos);
 
@@ -310,7 +310,6 @@ bool CampusSeguro::HippiesAtrapando(Conj<Posicion>& c){
 void CampusSeguro::SancionarAgentes(Conj<As>& c){
 	typename Conj<As>::Iterador itC = c.CrearIt();
 	typename diccNat<datosAgente>::itDiccNat itParaMod;
-
 	if(c.Cardinal() > 0){
 		this->mismasSancModificado = true;
 	}
@@ -321,32 +320,6 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 	while(itC.HaySiguiente()){
 		itParaMod = itC.Siguiente().datos;
 		Agente agent = itC.Siguiente().agente;
-//		itParaMod.siguiente().significado.cantSanc++;
-//
-//		typename Lista<kSanc>::Iterador itLis = itParaMod.siguiente().significado.itMismasSanc;
-//
-//		if(itParaMod.siguiente().significado.itMismasSanc.HaySiguiente()){
-//			itParaMod.siguiente().significado.itMismasSanc.Avanzar();
-//
-//			if(itParaMod.siguiente().significado.itMismasSanc.Siguiente().sanc != itParaMod.siguiente().significado.cantSanc){
-//				tuplaksanc.agentes = conjVacio;
-//				tuplaksanc.sanc = itParaMod.siguiente().significado.cantSanc;
-//				itParaMod.siguiente().significado.itMismasSanc.AgregarComoAnterior(tuplaksanc);
-//
-//				itParaMod.siguiente().significado.itMismasSanc.Retroceder();
-//			}
-//
-//		} else {
-//			tuplaksanc.agentes = conjVacio;
-//			tuplaksanc.sanc = itParaMod.siguiente().significado.cantSanc;
-//			itParaMod.siguiente().significado.itMismasSanc.AgregarComoSiguiente(tuplaksanc);
-//
-//			itParaMod.siguiente().significado.itMismasSanc.Avanzar();
-//		}
-//
-//		itParaMod.siguiente().significado.itConjMismasSanc.EliminarSiguiente();
-//		itParaMod.siguiente().significado.itConjMismasSanc = itParaMod.siguiente().significado.itMismasSanc.Siguiente().agentes.AgregarRapido(itC.Siguiente().agente);
-//		itC.Avanzar();
 
 		typename Conj<Agente>::Iterador iterConj = itParaMod.siguiente().significado.itConjMismasSanc;
 		iterConj.EliminarSiguiente();
@@ -403,6 +376,8 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 		}
 
 		itParaMod.siguiente().significado.cantSanc++;
+
+		itC.Avanzar();
 	}
 
 }
