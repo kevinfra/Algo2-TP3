@@ -989,7 +989,7 @@ Conj<Agente> CampusSeguro::ConMismasSanciones(Agente a) {
 	return personalAS.obtener(a)->itMismasSanc.Siguiente().agentes;
 }
 
-// TODO: hacer las auxiliares y descomentar
+// TODO: testear
 Conj<Agente> CampusSeguro::ConKSanciones(Nat k) {
 	if(this->mismasSancModificado){
 		hacerArregloMismasSanc();
@@ -997,10 +997,10 @@ Conj<Agente> CampusSeguro::ConKSanciones(Nat k) {
 	}
 
 	Nat i = 0;
-//	bool esta = busqBinAgente(k, i, this->arregloMismasSanc);
-//	if(esta)
-//		return this->arregloMismasSanc[i].Siguiente().agentes;
-//	else
+	bool esta = busqBinAgente(k, i, this->arregloMismasSanc);
+	if(esta)
+		return this->arregloMismasSanc[i].Siguiente().agentes;
+	else
 		return Conj<Agente>();
 }
 
@@ -1019,4 +1019,29 @@ void CampusSeguro::hacerArregloMismasSanc() {
 	}
 
 	this->arregloMismasSanc = arregloNuevo;
+}
+
+// TODO: testear muy a fondo el if
+bool CampusSeguro::busqBinAgente(Nat k, Nat &i, Arreglo<Lista<kSanc>::Iterador> v) {
+	Nat n = 0;
+	Nat m = v.Tamanho();
+	Nat med;
+
+	while(n != m -1 ){
+		med = (n + m) / 2;
+		if(med <= k)
+			n = med;
+		else
+			m = med;
+	}
+
+	if(v[n].Siguiente().sanc == k){
+		i = n;
+		return true;
+	}
+	else{
+		// Aca falta codigo, el del tp2 esta mal
+		return false;
+	}
+
 }

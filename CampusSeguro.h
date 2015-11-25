@@ -103,6 +103,8 @@ class CampusSeguro : public Campus
 	void actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat);
 	bool atrapado(Posicion pos);
 	void hacerArregloMismasSanc();
+	bool busqBinAgente(Nat k, Nat& i, Arreglo<Lista<kSanc>::Iterador> v);
+
 };
 
 #endif
