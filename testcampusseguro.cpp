@@ -67,7 +67,7 @@ void test_ingresar_estudiante(){
 	Agente a;
 	Posicion pos;
 
-	for(Nat i = 0; i < 5; i++){
+	for(Nat i = 1; i < 5; i++){
 		a = i;
 		pos.x = i;
 		pos.y = i;
@@ -76,10 +76,10 @@ void test_ingresar_estudiante(){
 
 	CampusSeguro campusSeguro(campus, dicc);
 
-	Nombre estudiante = "ManuelMena";
-	pos.x = 2;
-	pos.y = 2;
-//	campusSeguro.IngresarEstudiante(estudiante, pos);
+	Nombre estudiante = "manuelmena";
+	pos.x = 1;
+	pos.y = 0;
+	campusSeguro.IngresarEstudiante(estudiante, pos);
 
 }
 
