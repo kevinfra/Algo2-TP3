@@ -11,7 +11,7 @@ LDFLAGS=
 INCDIR=
 
 # Agregar acá los archivos .cpp a compilar [COMPLETAR]
-SOURCES=testcampusseguro.cpp CampusSeguro.cpp
+SOURCES=testcampusseguro.cpp CampusSeguro.cpp Campus.cpp
 
 # Objetos que serán generados (no tocar)
 OBJECTS=$(SOURCES:.cpp=.o)
@@ -20,8 +20,8 @@ OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=test
 
 all: $(SOURCES) $(EXECUTABLE)
-	
-$(EXECUTABLE): $(OBJECTS) 
+
+$(EXECUTABLE): $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 clean:
