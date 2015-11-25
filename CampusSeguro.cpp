@@ -5,7 +5,7 @@
 using namespace aed2;
 
 //ComenzarRastrillaje
-CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& dicc) : grilla(c) {
+CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) : grilla(c) {
 
 	//creo el hash
 	Vector< diccNat<datosAgente>::tupla > v;
