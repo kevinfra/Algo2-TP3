@@ -22,14 +22,14 @@ class CampusSeguro
 	public:
 	CampusSeguro();
 	//ComenzarRastrillaje
-	CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& dicc);
+	CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc);
 
 	void IngresarEstudiante(Nombre e, Posicion p);
 	void IngresarHippie(Nombre h, Posicion p);
 	void MoverEstudiante(Nombre e, Direccion d);
 	void MoverHippie(Nombre h);
 	void MoverAgente(Agente a);
-	const class Campus& campus() const;
+	const Campus& campus() const;
 	Conj<Nombre>::Iterador Estudiantes();
 	Conj<Nombre>::Iterador Hippies();
 	Conj<Agente>::Iterador Agentes();
@@ -63,7 +63,7 @@ class CampusSeguro
 		typename Conj<Agente>::Iterador itConjMismasSanc;
 	};
 
-	class Campus grilla;
+	Campus grilla;
 	diccNat<datosAgente> personalAS;
 	Vector<As> agentesOrdenados;
 	Vector<As> posicionesAgente;
