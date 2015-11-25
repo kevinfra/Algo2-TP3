@@ -1,175 +1,204 @@
 #include "Driver.h"
 
+#include "Campus.h"
+#include "CampusSeguro.h"
+
+
 namespace aed2 {
 
-Driver::Driver() 
-{
-    // TODO
-	assert(false);
-}
+Driver::Driver()
+{}
 
 Driver::~Driver()
-{
-    // TODO
-	assert(false);
-}
+{}
 
 
-/// Generadores del Campus
+// Generadores del Campus
 
 void Driver::crearCampus(Nat ancho, Nat alto)
 {
-    // TODO
-	assert(false);
+	Campus caca(ancho, alto);
+	this->campus = caca;
 }
 
 void Driver::agregarObstaculo(Posicion p)
 {
-    // TODO
-	assert(false);
+	this->campus.AgregarObstaculo(p);
 }
 
 
-/// Observadores del Campus\
+// Observadores del Campus\
 
 Nat Driver::filas() const
 {
-    // TODO
-	assert(false);
+	Campus c = this->campus;
+  return c.Filas();
 }
 
 Nat Driver::columnas() const
 {
-    // TODO
-	assert(false);
+	Campus c = this->campus;
+  return c.Columnas();
 }
 
 bool Driver::ocupada(Posicion p) const
 {
-    // TODO
-	assert(false);
+	Campus c = this->campus;
+  return c.Ocupada(p);
 }
 
 
-/// Generadores de CampusSeguro
+// Generadores de CampusSeguro
 void  Driver::comenzarRastrillaje(const Dicc<Agente,Posicion>& d) {
-    // TODO
-	assert(false);
+	this->campusSeguro = CampusSeguro(this->campus,d);
 }
 
 void Driver::ingresarEstudiante(Nombre n, Posicion p)
 {
-    // TODO
-	assert(false);
+  this->campusSeguro.IngresarEstudiante(n, p);
 }
 
 void Driver::ingresarHippie(Nombre n, Posicion p)
 {
-    // TODO
-	assert(false);
+  this->campusSeguro.IngresarHippie(n,p);
 }
 
 void Driver::moverEstudiante(Nombre n, Direccion d)
 {
-    // TODO
-	assert(false);
+  this->campusSeguro.MoverEstudiante(n,d);
 }
 
 void Driver::moverHippie(Nombre n)
 {
-    // TODO
-	assert(false);
+  this->campusSeguro.MoverHippie(n);
 }
 
 void Driver::moverAgente(Agente pl)
 {
-    // TODO
-	assert(false);
+  this->campusSeguro.MoverAgente(pl);
 }
 
 
-/// Observadores de CampusSeguro
+// Observadores de CampusSeguro
 
 Nombre Driver::iesimoEstudiante(Nat i) const
 {
-    // TODO
-	assert(false);
+	//PRE: i < #estudiantes
+	CampusSeguro cs = this->campusSeguro;
+  Conj<Nombre>::Iterador it = cs.Estudiantes();
+	Nat k = 0;
+	while(k < i && it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return it.Siguiente();
 }
 
 Nombre Driver::iesimoHippie(Nat i) const
 {
-    // TODO
-	assert(false);
+	//PRE: i < #hippies
+	CampusSeguro cs = this->campusSeguro;
+  Conj<Nombre>::Iterador it = cs.Hippies();
+	Nat k = 0;
+	while(k < i && it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return it.Siguiente();
 }
 
 Nat Driver::iesimoAgente(Nat i) const
 {
-    // TODO
-	assert(false);
+	//PRE: i < #Agentes
+	CampusSeguro cs = this->campusSeguro;
+  Conj<Agente>::Iterador it = cs.Agentes();
+	Nat k = 0;
+	while(k < i && it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return it.Siguiente();
 }
 
 Nat Driver::cantEstudiantes() const {
-    // TODO
-	assert(false);
-
+	CampusSeguro cs = this->campusSeguro;
+  Conj<Nombre>::Iterador it = cs.Estudiantes();
+	Nat k = 0;
+	while(it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return k;
 }
 
 Nat Driver::cantHippies() const
-{    // TODO
-	assert(false);
+{
+	CampusSeguro cs = this->campusSeguro;
+  Conj<Nombre>::Iterador it = cs.Hippies();
+	Nat k = 0;
+	while(it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return k;
 }
 
 Nat Driver::cantAgentes() const
 {
-    // TODO
-	assert(false);
+	CampusSeguro cs = this->campusSeguro;
+  Conj<Agente>::Iterador it = cs.Agentes();
+	Nat k = 0;
+	while(it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return k;
 }
 
 Posicion Driver::posEstudianteYHippie(Nombre n) const
 {
-    // TODO
-	assert(false);
+	CampusSeguro cs = this->campusSeguro;
+	return cs.PosEstudianteYHippie(n);
 }
 
 Posicion Driver::posAgente(Agente pl) const
 {
-    // TODO
-	assert(false);
+	CampusSeguro cs = this->campusSeguro;
+	return cs.PosAgente(pl);
 }
 
 Nat Driver::cantSanciones(Agente pl) const
 {
-    // TODO
-	assert(false);
+	CampusSeguro cs = this->campusSeguro;
+	return cs.CantSanciones(pl);
 }
 
 Nat Driver::cantHippiesAtrapados(Agente pl) const
 {
-    // TODO
-	assert(false);
+	CampusSeguro cs = this->campusSeguro;
+	return cs.CantHippiesAtrapados(pl);
 }
 
 
-/// Otras operaciones de CampusSeguro
+// Otras operaciones de CampusSeguro
 
-Agente Driver::másVigilante() const
+Agente Driver::masVigilante() const
 {
-    // TODO
-	assert(false);
+	CampusSeguro cs = this->campusSeguro;
+	return cs.MasVigilante();
 }
 
-const Driver::Conj<Agente> conMismasSanciones(Agente a) const
+const Conj<Agente> Driver::conMismasSanciones(Agente a) const
 {
-    // TODO
-	assert(false);
+	CampusSeguro cs = this->campusSeguro;
+	return cs.ConMismasSanciones(a);
 }
 
-const Driver::Conj<Agente> conKSanciones(Nat k)
+const Conj<Agente> Driver::conKSanciones(Nat k)
 {
-    // TODO
-	assert(false);
+	CampusSeguro cs = this->campusSeguro;
+	return cs.ConKSanciones(k);
 }
 
 
 } // namespace aed2
-

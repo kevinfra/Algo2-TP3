@@ -6,7 +6,8 @@
 #include "aed2/Conj.h"
 #include "aed2/Dicc.h"
 
-//#include ...
+#include "Campus.h"
+#include "CampusSeguro.h"
 
 namespace aed2 {
 
@@ -29,16 +30,16 @@ class Driver
         /// Generadores de CampusSeguro
 		void comenzarRastrillaje(const Dicc<Agente,Posicion>& d);
 		void ingresarEstudiante(Nombre n, Posicion p);
-		void ingresarHippie(Nombre n, Posicion p); 
+		void ingresarHippie(Nombre n, Posicion p);
 		void moverEstudiante(Nombre n, Direccion d);
 		void moverHippie(Nombre n);
 		void moverAgente(Agente pl);
-		
+
         /// Observadores de CampusSeguro
 		Nombre iesimoEstudiante(Nat i) const;
 		Nombre iesimoHippie(Nat i) const;
 		Nat iesimoAgente(Nat i) const;
- 
+
   		Nat cantEstudiantes() const;
  		Nat cantHippies() const;
  		Nat cantAgentes() const;
@@ -53,14 +54,11 @@ class Driver
 		const Conj<Agente> conMismasSanciones(Agente a) const;
 		const Conj<Agente> conKSanciones(Nat k);
 
-   
+
     private:
 
-    /************************************************************************
-     * TODO: Va a ser necesario instanciar privadamente el Modulo principal *
-     * con el cuál interactuar. Además, pueden declarar todas las           *
-     * funciones auxiliares que les hagan falta.                            *
-     ************************************************************************/
+    CampusSeguro campusSeguro;
+    Campus campus;
 
 }; // class Driver
 

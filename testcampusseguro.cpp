@@ -60,10 +60,34 @@ void test_constructor_campus_seguro(){
 
 }
 
+void test_ingresar_estudiante(){
+	Campus campus(10,10);
+	Dicc<Agente,Posicion> dicc;
+
+	Agente a;
+	Posicion pos;
+
+	for(Nat i = 0; i < 5; i++){
+		a = i;
+		pos.x = i;
+		pos.y = i;
+		dicc.Definir(a, pos);
+	}
+
+	CampusSeguro campusSeguro(campus, dicc);
+
+	Nombre estudiante = "ManuelMena";
+	pos.x = 2;
+	pos.y = 2;
+//	campusSeguro.IngresarEstudiante(estudiante, pos);
+
+}
+
 int main(int argc, char **argv)
 {
     RUN_TEST(test_simple);
 	RUN_TEST(test_constructor_campus_seguro);
+	RUN_TEST(test_ingresar_estudiante);
 
 	/********************************************************************
 	 * TODO: escribir casos de test exhaustivos para todas              *
