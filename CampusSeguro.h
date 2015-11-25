@@ -69,7 +69,7 @@ class CampusSeguro : public Campus
 	Vector<As> posicionesAgente;
 	As masVigilante;
 	Lista<kSanc> listaMismasSanc;
-	Lista<kSanc>::Iterador arregloMismasSanc[];
+	Arreglo<Lista<kSanc>::Iterador> arregloMismasSanc;
 	bool mismasSancModificado;
 	DiccString<Posicion> hippies;
 	DiccString<Posicion> estudiantes;
@@ -102,6 +102,7 @@ class CampusSeguro : public Campus
 	bool hayAlgoEnPos(Posicion pos);
 	void actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat);
 	bool atrapado(Posicion pos);
+	void hacerArregloMismasSanc();
 };
 
 #endif

@@ -27,7 +27,7 @@ CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& 
 	this->personalAS = diccHash;
 
 	this->listaMismasSanc = generarListaMismasSanc(diccHash);
-	this->posicionesAgente = vectorizarPos(diccHash,campus().Filas(), campus().Columnas());
+	this->posicionesAgente = vectorizarPos(diccHash, campus().Filas(), campus().Columnas());
 	this->masVigilante = menorPlaca(diccHash);
 	this->mismasSancModificado = true;
 	//los diccionarios con hippies y estudiantes deben iniciar vacios
@@ -992,7 +992,7 @@ Conj<Agente> CampusSeguro::ConMismasSanciones(Agente a) {
 // TODO: hacer las auxiliares y descomentar
 Conj<Agente> CampusSeguro::ConKSanciones(Nat k) {
 	if(this->mismasSancModificado){
-//		hacerArregloMismasSanc();
+		hacerArregloMismasSanc();
 		this->mismasSancModificado = false;
 	}
 
@@ -1004,3 +1004,19 @@ Conj<Agente> CampusSeguro::ConKSanciones(Nat k) {
 		return Conj<Agente>();
 }
 
+// TODO: testear
+// Esta funcion esta distinta del tp, no estaba bien
+void CampusSeguro::hacerArregloMismasSanc() {
+	Arreglo<Lista<kSanc>::Iterador> arregloNuevo(this->listaMismasSanc.Longitud());
+
+	Lista<kSanc>::Iterador it = this->listaMismasSanc.CrearIt();
+	Nat i = 0;
+
+	while(it.HaySiguiente()){
+		arregloNuevo[i] = it;
+		i++;
+		it.Avanzar();
+	}
+
+	this->arregloMismasSanc = arregloNuevo;
+}
