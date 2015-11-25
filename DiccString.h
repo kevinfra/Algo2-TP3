@@ -7,6 +7,7 @@
 #include "aed2/Conj.h"
 #include "aed2/Arreglo.h"
 
+
 using namespace aed2;
 
 template<typename alpha>
@@ -170,8 +171,8 @@ void DiccString<alpha>::Eliminar(String c){
 		letra = ord(c[i]);
 	}
 	arr->clave.EliminarSiguiente();
+	arr->infoValida = false;
 	if(tieneHermanos(arr)){
-		arr->infoValida = false;
 		arr->infoEnLista.EliminarSiguiente();
 	}
 	else
