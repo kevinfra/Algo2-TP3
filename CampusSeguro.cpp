@@ -1,7 +1,6 @@
 #include "CampusSeguro.h"
 #include "Tipos.h"
 
-#include <cassert>
 
 using namespace aed2;
 
@@ -27,9 +26,11 @@ CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& 
 
 	diccNat<datosAgente> diccHash(v);
 	this->personalAS = diccHash;
-	
+	this->generarListaMismasSanc();
+
 	// generarListaMismasSanc
-	typename diccNat<datosAgente>::itDiccNat itDic = diccHash.crearIt();
+	/*
+	typename diccNat<datosAgente>::itDiccNat itDic = this->personalAS.crearIt();
 	Conj<Agente> conj;
 	kSanc tupla;
 	tupla.sanc = 0;
@@ -47,8 +48,9 @@ CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& 
 		assert(itDic.siguiente().significado.itMismasSanc.Siguiente().sanc == 0);
 		assert(itL.HaySiguiente());
 		itDic.avanzar();
-	}
+	}*/
 	
+	//this->personalAS = diccHash;
 
 	
 	this->posicionesAgente = vectorizarPos(this->personalAS, this->grilla.Filas(), this->grilla.Columnas());
@@ -139,16 +141,16 @@ CampusSeguro::As CampusSeguro::menorPlaca(diccNat<datosAgente>& d){
 	return res;
 }
 
-Lista<CampusSeguro::kSanc> CampusSeguro::generarListaMismasSanc(){
+void CampusSeguro::generarListaMismasSanc(){
 	typename diccNat<datosAgente>::itDiccNat itDic = this->personalAS.crearIt();
-	Lista<kSanc> res;
+	//Lista<kSanc> res;
 
 	Conj<Agente> conj;
 	kSanc tupla;
 	tupla.sanc = 0;
 	tupla.agentes = conj;
-	res.AgregarAdelante(tupla);
-	typename Lista<kSanc>::Iterador itL = res.CrearIt();
+	this->listaMismasSanc.AgregarAdelante(tupla);
+	typename Lista<kSanc>::Iterador itL = this->listaMismasSanc.CrearIt();
 
 	while(itDic.haySiguiente()){
 		typename Conj<Agente>::Iterador itC = itL.Siguiente().agentes.AgregarRapido(itDic.siguiente().clave);
@@ -157,11 +159,9 @@ Lista<CampusSeguro::kSanc> CampusSeguro::generarListaMismasSanc(){
 
 		itDic.avanzar();
 		
-		assert(itC.HaySiguiente());
-		assert(itL.HaySiguiente());
 	}
 	
-	return res;
+	//return res;
 }
 
 

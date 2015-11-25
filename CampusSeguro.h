@@ -81,7 +81,7 @@ class CampusSeguro
 	void PremiarAgentes(Conj<As>& c);
 	Vector<As> vectorizarPos(diccNat<datosAgente>& d, Nat f, Nat c);
 	As menorPlaca(diccNat<datosAgente>& d);
-	Lista<kSanc> generarListaMismasSanc(diccNat<datosAgente>& d);
+	void generarListaMismasSanc();
 	Conj<Posicion> EstudiantesRodeadosAs(Conj<Posicion>& c);
 	Conj<NombrePosicion> EstudiantesRodeadosHippies(Conj<Posicion>& c);
 	bool HippiesAtrapando(Conj<Posicion>& c);
