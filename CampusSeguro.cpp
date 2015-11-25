@@ -25,12 +25,10 @@ CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& 
 	}
 
 	diccNat<datosAgente> diccHash(v);
-	this->personalAS = diccHash;
-	this->generarListaMismasSanc();
+	//this->generarListaMismasSanc();
 
 	// generarListaMismasSanc
-	/*
-	typename diccNat<datosAgente>::itDiccNat itDic = this->personalAS.crearIt();
+	typename diccNat<datosAgente>::itDiccNat itDic = diccHash.crearIt();
 	Conj<Agente> conj;
 	kSanc tupla;
 	tupla.sanc = 0;
@@ -48,9 +46,8 @@ CampusSeguro::CampusSeguro(const class Campus& c, const Dicc<Agente, Posicion>& 
 		assert(itDic.siguiente().significado.itMismasSanc.Siguiente().sanc == 0);
 		assert(itL.HaySiguiente());
 		itDic.avanzar();
-	}*/
-	
-	//this->personalAS = diccHash;
+	}
+	this->personalAS = diccHash;
 
 	
 	this->posicionesAgente = vectorizarPos(this->personalAS, this->grilla.Filas(), this->grilla.Columnas());
