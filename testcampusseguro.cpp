@@ -53,9 +53,10 @@ void test_constructor_campus_seguro(){
 		ASSERT(cs1.PosAgente(a1) == pos1);
 		ASSERT(cs1.CantSanciones(a1) == 0);
 		ASSERT(cs1.CantHippiesAtrapados(a1) == 0);
+		Conj<Agente> conjMSan1 = cs1.ConMismasSanciones(a1);
+		Conj<Agente> conjK1 = cs1.ConKSanciones(0);
+		ASSERT(conjMSan1 == conjK1);
 	}
-	a1 = 2;
-	//	Conj<Agente> conj = cs1.ConMismasSanciones(a1);
 
 }
 

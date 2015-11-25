@@ -1,7 +1,9 @@
 #include "CampusSeguro.h"
 #include "Tipos.h"
 
+#include <iostream>
 
+using namespace std;
 using namespace aed2;
 
 //ComenzarRastrillaje
@@ -843,7 +845,6 @@ void CampusSeguro::MoverAgente(Agente a){
 	// Para cada hippie atrapado tengo que premiar a todos los agentes de alrededor y matar el hippie
 	// Conjunto de hippies atrapados por agentes, los agentes ya son premiados
 	Conj<NombrePosicion> hippiesAtrapados = HippiesRodeadosAs(vecinosDeAgente);
-
 	// Recorro el conjunto para eliminar a los malditos hippies que hayan sido atrapados
 	typename Conj<NombrePosicion>::Iterador itHAs = hippiesAtrapados.CrearIt();
 	while(itHAs.HaySiguiente()){
@@ -890,10 +891,10 @@ void CampusSeguro::MoverAgente(Agente a){
 // TODO: testear
 typename diccNat<CampusSeguro::datosAgente>::itDiccNat CampusSeguro::busqBinPorPlaca(Agente a, Vector<As>& v){
 	Nat inf = 0;
-	Nat sup = v.Longitud()-1;
+	Nat sup = v.Longitud() - 1;
 	Nat med;
 
-	while(inf != sup - 1){
+	while(inf + 1 < sup){
 		med = (inf + sup) / 2;
 		if(v[med].agente <= a)
 			inf = med + 1;
@@ -1176,9 +1177,9 @@ void CampusSeguro::hacerArregloMismasSanc() {
 
 	Lista<kSanc>::Iterador it = this->listaMismasSanc.CrearIt();
 	Nat i = 0;
-
+	
 	while(it.HaySiguiente()){
-		arregloNuevo[i] = it;
+		arregloNuevo.Definir(i,it);
 		i++;
 		it.Avanzar();
 	}
@@ -1188,11 +1189,11 @@ void CampusSeguro::hacerArregloMismasSanc() {
 
 bool CampusSeguro::busqBinAgente(Nat k, Nat &i, Arreglo<Lista<kSanc>::Iterador> v) {
 	Nat n = 0;
-	Nat m = v.Tamanho()-1;
-	Nat med;
+	Nat m = v.Tamanho() - 1;
+Nat med;
 	bool res = false;
 
-	while(n != m -1 ){
+	while(n + 1 < m ){
 		med = (n + m) / 2;
 		if(v[med].Siguiente().sanc <= k)
 			n = med;
