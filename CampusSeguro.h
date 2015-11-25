@@ -13,7 +13,8 @@
 using namespace aed2;
 
 
-class CampusSeguro{
+class CampusSeguro : public Campus
+{
 	struct datosAgente;
 	struct kSanc;
 	struct As;
@@ -49,9 +50,9 @@ class CampusSeguro{
 	struct As{
 		Agente agente;
 		typename diccNat<datosAgente>::itDiccNat datos;
-		/*	bool operator==(const As& a) const{
+		bool operator==(const As& a) const{
 			return (agente == a.agente && datos == a.datos);
-		}*/
+		}
 	};
 
 	struct datosAgente{
@@ -76,28 +77,28 @@ class CampusSeguro{
 	Vector<Nombre> posicionesEstudiantes;
 
 	//Funciones Auxiliares
-	void SancionarAgentes(Conj<As> c);
-	void PremiarAgentes(Conj<As> c);
+	void SancionarAgentes(Conj<As>& c);
+	void PremiarAgentes(Conj<As>& c);
 	Vector<As> vectorizarPos(diccNat<datosAgente>& d, Nat f, Nat c);
 	As menorPlaca(diccNat<datosAgente>& d);
 	Lista<kSanc> generarListaMismasSanc(diccNat<datosAgente>& d);
-	Conj<Posicion> EstudiantesRodeadosAs(Conj<Posicion> c);
-	Conj<NombrePosicion> EstudiantesRodeadosHippies(Conj<Posicion> c);
-	bool HippiesAtrapando(Conj<Posicion> c);
-	Conj<NombrePosicion> HippiesRodeadosAs(Conj<Posicion> c);
-	Conj<As> AgParaPremSanc(Conj<Posicion> c);
-	Nat CantHippiesVecinos(Conj<Posicion> c);
-	bool TodosEstudiantes(Conj<Posicion> c);
-	bool TodasOcupadas(Conj<Posicion> c);
-	Conj<NombrePosicion> HippiesRodeadosEstudiantes(Conj<Posicion> c);
-	bool AlMenosUnAgente(Conj<Posicion> c);
-	typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As> v);
-	Posicion proxPos(Posicion pos, DiccString<Posicion> dicc);
-	Nat distanciaMasCorta(Posicion pos, DiccString<Posicion> dicc);
+	Conj<Posicion> EstudiantesRodeadosAs(Conj<Posicion>& c);
+	Conj<NombrePosicion> EstudiantesRodeadosHippies(Conj<Posicion>& c);
+	bool HippiesAtrapando(Conj<Posicion>& c);
+	Conj<NombrePosicion> HippiesRodeadosAs(Conj<Posicion>& c);
+	Conj<As> AgParaPremSanc(Conj<Posicion>& c);
+	Nat CantHippiesVecinos(Conj<Posicion>& c);
+	bool TodosEstudiantes(Conj<Posicion>& c);
+	bool TodasOcupadas(Conj<Posicion>& c);
+	Conj<NombrePosicion> HippiesRodeadosEstudiantes(Conj<Posicion>& c);
+	bool AlMenosUnAgente(Conj<Posicion>& c);
+	typename diccNat<datosAgente>::itDiccNat busqBinPorPlaca(Agente a, Vector<As>& v);
+	Posicion proxPos(Posicion pos, DiccString<Posicion>& dicc);
+	Nat distanciaMasCorta(Posicion pos, DiccString<Posicion>& dicc);
 	Nat distancia(Posicion p1, Posicion p2);
 	Nat modulo(int val);
-	Conj<Posicion> dondeIr(Posicion pos, Nat dist, DiccString<Posicion> dicc);
-	Conj<Posicion> lugaresPosibles(Posicion pos, Conj<Posicion> posiciones);
+	Conj<Posicion> dondeIr(Posicion pos, Nat dist, DiccString<Posicion>& dicc);
+	Conj<Posicion> lugaresPosibles(Posicion pos, Conj<Posicion>& posiciones);
 	bool hayAlgoEnPos(Posicion pos);
 	void actualizarAgente(Posicion pos, Agente a, typename diccNat<datosAgente>::itDiccNat);
 	bool atrapado(Posicion pos);
