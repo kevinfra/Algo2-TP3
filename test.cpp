@@ -1,12 +1,11 @@
 #include "Driver.h"
 #include "mini_test.h"
-#include "Campus.h"
 
 #include <string>
 #include <iostream>
 
 using namespace aed2;
-using namespace std;
+
 
 // ---------------------------------------------------------------------
 
@@ -14,472 +13,584 @@ using namespace std;
  * Ejemplo de caso de test, con llamadas a las rutinas de aserción 
  * definidas en mini_test.h
  */
-void test_simple(){
-    ASSERT(true);
+void test_agregar_obstaculos() {
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
+
+
+	Posicion p;
+	p.x = 2; 
+	p.y = 3;
+
+	campus.agregarObstaculo(p);
+
+	ASSERT(campus.ocupada(p) == true);
+
+	Posicion p2;
+	p2.x = 1; 
+	p2.y = 1;
+
+	ASSERT(campus.ocupada(p2) == false);
+
+
 }
 
-void test_crear_campus_filas_columnas(){
-	// Testeo el constructor de campus, las funciones filas y columnas
-	Campus ctest1(10,10);
-	ASSERT_EQ(ctest1.Filas(),10);
-	ASSERT_EQ(ctest1.Columnas(),10);
-	Campus ctest2(1,7);
-	ASSERT_EQ(ctest2.Filas(),1);
-	ASSERT_EQ(ctest2.Columnas(),7);
-	Campus ctest3(0,3);
-	ASSERT_EQ(ctest3.Filas(),0);
-	ASSERT_EQ(ctest3.Columnas(),3);
-	Campus ctest4(5,0);
-	ASSERT_EQ(ctest4.Filas(),5);
-	ASSERT_EQ(ctest4.Columnas(),0);
-	Campus ctest5(0,0);
-	ASSERT_EQ(ctest5.Filas(), 0);
-	ASSERT_EQ(ctest5.Columnas(),0);
-	Campus ctest6(6,14);
-	ASSERT_EQ(ctest6.Filas(), 6);
-	ASSERT_EQ(ctest6.Columnas(), 14);
+void test_ingresa_estudiante(){
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion p2;
+	p2.x = 1; 
+	p2.y = 1;
+
+	Nombre s = "pepe";
+	campus.ingresarEstudiante(s,p2);	
+
+	ASSERT(campus.ocupada(p2) == true);
+
+	Posicion p3 = campus.posEstudianteYHippie(s);
+	ASSERT(p3.x == p2.x && p3.y == p3.x);
 }
 
-void test_agregar_obstaculo_y_ocupada(){
-	// Testeo la funcion AgregarObstaculo y Ocupada
+// DIFICIL
+void test_ingresa_hippie_y_convierte() {
+	// Testea que cuando ingresa un hippie y esta rodeado de estudiantes se convierte
+	Driver campus;
+	campus.crearCampus(10,10);
 
-	Campus ctest(10,10);
-	Posicion pos;
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
 
-	//estan todas vacias
-	for(int i = 0; i<10; i++){
-		for(int j = 0; j<10; j++){
-			pos.x = i;
-			pos.y = j;
-			ASSERT(!ctest.Ocupada(pos));
-		}
-	}
+	Posicion p1;
+	p1.x = 1; 
+	p1.y = 1;
+
+	Posicion p2;
+	p2.x = 2; 
+	p2.y = 1;
+
+
+	Posicion p3;
+	p3.x = 3; 
+	p3.y = 1;
+
+	Nombre s1 = "pepe";
+	Nombre s2 = "pepo";
+	Nombre s3 = "pepa";
 	
-	//agrego obstaculos en la diagonal principal y reviso si estan
-	for(int i = 0; i<10; i++){
-		pos.x = i;
-		pos.y = i;
-		ctest.AgregarObstaculo(pos);
-		ASSERT(ctest.Ocupada(pos));
-	}
+	// Ingreso 3 estudiantes uno al lado del otro
+	campus.ingresarEstudiante(s1,p1);	
+	campus.ingresarEstudiante(s2,p2);	
+	campus.ingresarEstudiante(s3,p3);	
 
-	//creo otro campus, lo lleno de obstaculos y reviso si estan.
-	Campus ctest2(3,3);
-	for(int i = 0; i < 3; i++){
-		for(int j = 0; j < 3; j++){
-			pos.x = j;
-			pos.y = i;
-			ctest2.AgregarObstaculo(pos);
-			ASSERT(ctest2.Ocupada(pos));
-		}
-	}
-	//idem con filas y columnas de distinto tamaño
-	Campus ctest3(6,14);
-	for(int i = 0; i < 6 ; i++){
-		for(int j = 0; j< 14; j++){
-			pos.x = j;
-			pos.y = i;
-			ctest3.AgregarObstaculo(pos);
-			ASSERT(ctest3.Ocupada(pos));
-		}
-	}
+	// Avanzo el estudiante del medio
+	campus.moverEstudiante(s2,abajo);
+
+	// Ahora hago ingresar un hippie,se tiene que convertir a estudiante
+	Nombre h1 = "wololoHippie";
+	campus.ingresarHippie(h1,p2);
+	ASSERT(campus.cantEstudiantes() == 4);
+	ASSERT(campus.cantHippies() == 0);
 }
 
-void test_posvalida(){
-	Campus ctest1(10,10);
-	Posicion pos;
+// DIFICIL
+void test_mueve_estudiante_y_convierte() {
+	// Testea que cuando se mueve un estudiante y rodea a un hippie se convierte
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion p1;
+	p1.x = 1; 
+	p1.y = 1;
+
+	Posicion p2;
+	p2.x = 2; 
+	p2.y = 1;
+
+
+	Posicion p3;
+	p3.x = 3; 
+	p3.y = 1;
+
+	Nombre s1 = "pepe";
+	Nombre s2 = "pepo";
+	Nombre s3 = "pepa";
 	
-	//todas las posiciones son validas
-	for(int i = 0; i<10 ;i++){
-		for(int j = 0; j<10; j++){
-			pos.x = j;
-			pos.y = i;
-			ASSERT(ctest1.PosValida(pos));
-		}
-	}
-	//posiciones invalidas
-	for(int i = 10; i<20; i++){
-		for(int j = 200; j< 210; j++){
-			pos.x = j;
-			pos.y = i;
-			ASSERT(!ctest1.PosValida(pos));
-		}
-	}
+	// Ingreso 3 estudiantes uno al lado del otro
+	campus.ingresarEstudiante(s1,p1);	
+	campus.ingresarEstudiante(s2,p2);	
+	campus.ingresarEstudiante(s3,p3);	
 
-	Campus ctest2(9,32);
-	//todas las posiciones son validas
-	for(int i = 0; i < 9; i++){
-		for(int j = 0; j < 32; j++){
-			pos.x = j;
-			pos.y = i;
-			ASSERT(ctest2.PosValida(pos));
-		}
-	}
-	//posiciones invalidas
-	for(int i = 10; i < 27; i++){
-		for(int j = 59; j < 81; j++){
-			pos.x = j;
-			pos.y = i;
-			ASSERT(!ctest2.PosValida(pos));
-		}
-	}
+	// Avanzo el estudiante del medio
+	campus.moverEstudiante(s2,abajo);
+	campus.moverEstudiante(s2,abajo);
 
-}
-
-void test_esingreso(){
-	/*	Con EsIngreso se testean IngresoSuperior e IngresoInferior
-	 *	porque depende de esas dos funciones.
-	 */
-	Campus ctest1(12,12);
-	Posicion pos;
-	pos.x = 0;
-
-	pos.y = 0;
-	ASSERT(ctest1.EsIngreso(pos));
-	pos.y = 11;
-	ASSERT(ctest1.EsIngreso(pos));
-	pos.y = 3;
-	ASSERT(!ctest1.EsIngreso(pos));
-	pos.y = 7;
-	ASSERT(!ctest1.EsIngreso(pos));
-
-	Campus ctest2(1,1);
-	pos.y = 0;
-	ASSERT(ctest1.EsIngreso(pos));
-	pos.y = 1;
-	ASSERT(!ctest1.EsIngreso(pos));
-	pos.y = 3;
-	ASSERT(!ctest1.EsIngreso(pos));
-	pos.y = 7;
-	ASSERT(!ctest1.EsIngreso(pos));
-
-	Campus ctest3(0,0);
-	pos.y = 0;
-	ASSERT(ctest3.EsIngreso(pos));
-	pos.y = 1;
-	ASSERT(!ctest3.EsIngreso(pos));
-	pos.y = 3;
-	ASSERT(!ctest3.EsIngreso(pos));
-	pos.y = 7;
-	ASSERT(!ctest3.EsIngreso(pos));
-}
-
-void test_vecinos(){
-
-	Campus ctest1(10,10);
-	Posicion pos;
-
-	//(0,0)
-	pos.x = 0;
-	pos.y = 0;
-	Conj<Posicion> conj1(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj1.Cardinal(), 2);
-	pos.x = 0;
-	pos.y = 1;
-	ASSERT(conj1.Pertenece(pos));
-	pos.x = 1;
-	pos.y = 0;
-	ASSERT(conj1.Pertenece(pos));
-
+	// Ahora hago ingresar un hippie Y NO SE TIENE QUE CONVERTIR
+	Nombre h1 = "wololoHippie";
+	campus.ingresarHippie(h1,p2);
 	
-	//(0,3)
-	pos.x = 3;
-	pos.y = 0;
-	Conj<Posicion> conj2(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj2.Cardinal(), 3);
-	pos.x = 2;
-	pos.y = 0;
-	ASSERT(conj2.Pertenece(pos));
-	pos.x = 3;
-	pos.y = 1;
-	ASSERT(conj2.Pertenece(pos));
-	pos.x = 4;
-	pos.y = 0;
-	ASSERT(conj2.Pertenece(pos));
+	ASSERT(campus.cantEstudiantes() == 3);
+	ASSERT(campus.cantHippies() == 1);
 
+	// Muevo el estudiante hacia arriba y tiene que convertir talannnn
+	campus.moverEstudiante(s2,arriba);
 
-	//(0,9)
-	pos.x = 9;
-	pos.y = 0;
-	Conj<Posicion> conj3(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj3.Cardinal(), 2);
-	pos.x = 8;
-	pos.y = 0;
-	ASSERT(conj3.Pertenece(pos));
-	pos.x = 9;
-	pos.y = 1;
-	ASSERT(conj3.Pertenece(pos));
+	ASSERT(campus.cantEstudiantes() == 4);
+	ASSERT(campus.cantHippies() == 0);
 
+}
 
-	//(5,0)
-	pos.x = 0;
-	pos.y = 5;
-	Conj<Posicion> conj4(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj4.Cardinal(), 3);
-	pos.x = 0;
-	pos.y = 4;
-	ASSERT(conj4.Pertenece(pos));
-	pos.x = 1;
-	pos.y = 5;
-	ASSERT(conj4.Pertenece(pos));
-	pos.x = 0;
-	pos.y = 6;
-	ASSERT(conj4.Pertenece(pos));
+void test_mover_estudiante() {
+	Driver campus;
+	campus.crearCampus(10,10);
 
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
 
-	//(5,9)
-	pos.x = 9;
-	pos.y = 5;
-	Conj<Posicion> conj5(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj5.Cardinal(), 3);
-	pos.x = 8;
-	pos.y = 5;
-	ASSERT(conj5.Pertenece(pos));
-	pos.x = 9;
-	pos.y = 6;
-	ASSERT(conj5.Pertenece(pos));
-	pos.x = 9;
-	pos.y = 4;
-	ASSERT(conj5.Pertenece(pos));
+	Posicion p2;
+	p2.x = 1; 
+	p2.y = 1;
+
+	Nombre s = "pepe";
+	campus.ingresarEstudiante(s,p2);	
+	campus.moverEstudiante(s, abajo);
+
+	Posicion p3;
+	p3.x = 1; 
+	p3.y = 2;
+
+	ASSERT(campus.ocupada(p2) == false);
+	ASSERT(campus.ocupada(p3) == true);
+
+	Posicion p = campus.posEstudianteYHippie(s);
+	ASSERT(p3.x == p.x && p3.y == p.y);
+
+}
+
+void test_mover_estudiante_fuera() {
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion p2;
+	p2.x = 1; 
+	p2.y = 1;
+
+	Nombre s = "pepe";
+	campus.ingresarEstudiante(s,p2);	
+	campus.moverEstudiante(s, arriba);
 
 	
-	//(9,0)
-	pos.x = 0;
-	pos.y = 9;
-	Conj<Posicion> conj6(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj6.Cardinal(), 2);
-	pos.x = 0;
-	pos.y = 8;
-	ASSERT(conj6.Pertenece(pos));
-	pos.x = 1;
-	pos.y = 9;
-	ASSERT(conj6.Pertenece(pos));
+	ASSERT(campus.ocupada(p2) == false);
+	ASSERT(campus.cantEstudiantes() == 0);	
+}
 
+void test_ingresa_hippie() {
+	Driver campus;
+	campus.crearCampus(10,10);
 
-	//(9,4)
-	pos.x = 4;
-	pos.y = 9;
-	Conj<Posicion> conj7(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj7.Cardinal(), 3);
-	pos.x = 3;
-	pos.y = 9;
-	ASSERT(conj7.Pertenece(pos));
-	pos.x = 5;
-	pos.y = 9;
-	ASSERT(conj7.Pertenece(pos));
-	pos.x = 4;
-	pos.y = 8;
-	ASSERT(conj7.Pertenece(pos));
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
 
+	Posicion p2;
+	p2.x = 1; 
+	p2.y = 1;
 
-	//(9,9)
-	pos.x = 9;
-	pos.y = 9;
-	Conj<Posicion> conj8(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj8.Cardinal(), 2);
-	pos.x = 8;
-	pos.y = 9;
-	ASSERT(conj8.Pertenece(pos));
-	pos.x = 9;
-	pos.y = 8;
-	ASSERT(conj8.Pertenece(pos));
-
+	Nombre s = "pepe";
+	campus.ingresarHippie(s,p2);	
 	
-	//(5,5)
-	pos.x = 5;
-	pos.y = 5;
-	Conj<Posicion> conj9(ctest1.Vecinos(pos));
-	ASSERT_EQ(conj9.Cardinal(), 4);
-	pos.x = 6;
-	pos.y = 5;
-	ASSERT(conj9.Pertenece(pos));
-	pos.x = 4;
-	pos.y = 5;
-	ASSERT(conj9.Pertenece(pos));
-	pos.x = 5;
-	pos.y = 4;
-	ASSERT(conj9.Pertenece(pos));
-	pos.x = 5;
-	pos.y = 6;
-	ASSERT(conj9.Pertenece(pos));
+	ASSERT(campus.ocupada(p2) == true);
+
+	Posicion p = campus.posEstudianteYHippie(s);
+	ASSERT(p2.x == p.x && p2.y == p.y);
 
 }
 
-void test_distancia(){
-	// No hace falta inicializar la clase para usar esta funcion.
-	Campus ctest(10,10);
-	Posicion pos1;
-	Posicion pos2;
+void test_ingresa_hippie_y_estudiante() {
+	// Idea de este test es probar el funcionamiento del Trie
+	Driver campus;
+	campus.crearCampus(10,10);
 
-	pos1.x = 0;
-	pos1.y = 0;
-	pos2.x = 0;
-	pos2.y = 0;
-	ASSERT_EQ(ctest.Distancia(pos1,pos2), 0);
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
 
-	pos1.x = 0;
-	pos1.y = 2;
-	pos2.x = 1;
-	pos2.y = 0;
-	ASSERT_EQ(ctest.Distancia(pos1,pos2), 3);
+	Posicion p2;
+	p2.x = 1; 
+	p2.y = 1;
 
-	pos1.x = 0;
-	pos1.y = 1;
-	pos2.x = 2;
-	pos2.y = 1;
-	ASSERT_EQ(ctest.Distancia(pos1,pos2), 2);
+	Nombre s = "pepe";
+	campus.ingresarHippie(s,p2);	
 
-	pos1.x = 1;
-	pos1.y = 1;
-	pos2.x = 5;
-	pos2.y = 5;
-	ASSERT_EQ(ctest.Distancia(pos1,pos2), 8);
-}
+	Posicion p3;
+	p3.x = 1; 
+	p3.y = 2;
 
-void test_moverdir(){
-	Campus ctest(10,10);
-	Posicion pos;
-	Direccion dir;
+	Nombre t = "pepa";
+	campus.ingresarEstudiante(t,p3);
 
-	pos.x = 5;
-	pos.y = 5;
-	dir = izq;
-	pos = ctest.MoverDir(pos,dir);
-	ASSERT_EQ(pos.x, 4);
-	ASSERT_EQ(pos.y, 5);
+	Posicion p;
+	p.x = 1; 
+	p.y = 3;
 
-	dir = der;
-	pos = ctest.MoverDir(pos,dir);
-	ASSERT_EQ(pos.x, 5);
-	ASSERT_EQ(pos.y, 5);
+	Nombre r = "pepen";
+	campus.ingresarEstudiante(r,p);	
 
-	dir = arriba;
-	pos = ctest.MoverDir(pos,dir);
-	ASSERT_EQ(pos.x, 5);
-	ASSERT_EQ(pos.y, 4);
 
-	dir = abajo;
-	pos = ctest.MoverDir(pos,dir);
-	ASSERT_EQ(pos.x, 5);
-	ASSERT_EQ(pos.y, 5);
+	ASSERT(campus.iesimoHippie(0) == s);
+
+	// No importa el orden, pero tienen que estar los dos
+	ASSERT(campus.iesimoEstudiante(0) == t || campus.iesimoEstudiante(1) == t);
+	ASSERT(campus.iesimoEstudiante(0) == r || campus.iesimoEstudiante(1) == r);
 
 }
 
-void test_ingresos_mas_cercanos(){
-	Posicion pos;
 
-	Campus ctest1(3,3);
-	pos.x = 1;
-	pos.y = 1;
-	Conj<Posicion> conj1(ctest1.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj1.Cardinal(), 2);
-	pos.x = 1;
-	pos.y = 0;
-	ASSERT(conj1.Pertenece(pos));
-	pos.x = 1;
-	pos.y = 2;
-	ASSERT(conj1.Pertenece(pos));
+void test_mover_hippie_a_estudiante() {
+	Driver campus;
+	campus.crearCampus(10,10);
 
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion p;
+	p.x = 1; 
+	p.y = 1;
+
+	Nombre t = "pepa";
+	campus.ingresarEstudiante(t,p);
+
+	campus.moverEstudiante(t, abajo);
+	campus.moverEstudiante(t, abajo);
+	campus.moverEstudiante(t, abajo);
+	campus.moverEstudiante(t, abajo);
+	campus.moverEstudiante(t, abajo);
+
+	// Baja el estudiante
+	Posicion p3 = campus.posEstudianteYHippie(t);
+	ASSERT(p3.x == 1 && p3.y == 6);
+
+	Posicion p2;
+	p2.x = 1; 
+	p2.y = 1;
+
+	Nombre s = "pepe";
+	campus.ingresarHippie(s,p2);	
+	campus.moverHippie(s);	
+
+	// El hippie se mueve hacia abajo
+	Posicion p4 = campus.posEstudianteYHippie(s);
+	ASSERT(p4.x == 1 && p4.y == 2);
+
+	Posicion p5;
+	p5.x = 3; 
+	p5.y = 1;
+
+	Nombre r = "pepo";
+	campus.ingresarEstudiante(r,p5);
+
+	// El hippie se mueve hacia el nuevo estudiante
+	campus.moverHippie(s);	
+	p4 = campus.posEstudianteYHippie(s);
+	ASSERT((p4.x == 1 && p4.y == 1) || (p4.x == 2 && p4.y == 2) );
+
+}
+
+
+void test_mover_hippie_a_ingreso() {
+	// Idea del test: el hippie se mueve hacia el estudiante
+	// Luego el estudiante se borra
+	// Luego el hippie se mueve al ingreso mas cercano
+
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
+
+
+	Posicion p;
+	p.x = 1; 
+	p.y = 1;
+
+	Nombre t = "pepa";
+	campus.ingresarEstudiante(t,p);
+
+	for (int i=0; i < 5; i++) {
+		campus.moverEstudiante(t, abajo);
+	}
+
+	// Baja el estudiante
+	Posicion p3 = campus.posEstudianteYHippie(t);
+	ASSERT(p3.x == 1 && p3.y == 6);
+
+	Posicion p2;
+	p2.x = 1; 
+	p2.y = 1;
+
+	Nombre s = "pepe";
+	campus.ingresarHippie(s,p2);	
+	campus.moverHippie(s);	
+	campus.moverHippie(s);	
+
+	// El hippie se mueve hacia abajo
+	Posicion p4 = campus.posEstudianteYHippie(s);
+	ASSERT(p4.x == 1 && p4.y == 3);
+
+	// Hago salir al estudiante, lo muevo a la derecha para no pisar el hippie
+	campus.moverEstudiante(t, der);
+	for (int i=0; i < 6; i++) {
+		campus.moverEstudiante(t, arriba);
+	}
+
+	ASSERT(campus.cantEstudiantes() == 0);	
+
+	// Muevo al hippie , tiene que ir al ingreso mas cercano
+	campus.moverHippie(s);	
 	
-	Campus ctest2(4,4);
-	pos.x = 2;
-	pos.y = 3;
-	Conj<Posicion> conj2(ctest2.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj2.Cardinal(), 1);
-	pos.x = 2;
-	pos.y = 3;
-	ASSERT(conj2.Pertenece(pos));
+	p4 = campus.posEstudianteYHippie(s);
 
-
-	pos.x = 1;
-	pos.y = 1;
-	Conj<Posicion> conj3(ctest2.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj3.Cardinal(), 1);
-	pos.x = 1;
-	pos.y = 0;
-	ASSERT(conj3.Pertenece(pos));
-
-
-	Campus ctest4(0,0);
-	pos.x = 0;
-	pos.y = 0;
-	Conj<Posicion> conj4(ctest4.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj4.Cardinal(), 1);
-	ASSERT(conj4.Pertenece(pos));
-
-
-	Campus ctest5(9,9);
-	pos.x = 2;
-	pos.y = 4;
-	Conj<Posicion> conj5(ctest5.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj5.Cardinal(), 2);
-	pos.x = 2;
-	pos.y = 0;
-	ASSERT(conj5.Pertenece(pos));
-	pos.x = 2;
-	pos.y = 8;
-	ASSERT(conj5.Pertenece(pos));
-
-
-	Campus ctest6(1,5);
-	pos.x = 3;
-	pos.y = 0;
-	Conj<Posicion> conj6(ctest6.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj6.Cardinal(), 1);
-	pos.x = 3;
-	pos.y = 0;
-	ASSERT(conj6.Pertenece(pos));
-
-
-	Campus ctest7(3,1);
-	pos.x = 0;
-	pos.y = 1;
-	Conj<Posicion> conj7(ctest7.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj7.Cardinal(), 2);
-	pos.x = 0;
-	pos.y = 0;
-	ASSERT(conj7.Pertenece(pos));
-	pos.x = 0;
-	pos.y = 2;
-	ASSERT(conj7.Pertenece(pos));
-
-
-	Campus ctest8(16,4);
-	pos.x = 1;
-	pos.y = 1;
-	Conj<Posicion> conj8(ctest8.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj8.Cardinal(), 1);
-	pos.x = 1;
-	pos.y = 0;
-	ASSERT(conj8.Pertenece(pos));
-
-
-	pos.x = 1;
-	pos.y = 0;
-	Conj<Posicion> conj9(ctest8.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj9.Cardinal(), 1);
-	ASSERT(conj9.Pertenece(pos));
-
-
-	pos.x = 2;
-	pos.y = 15;
-	Conj<Posicion> conj10(ctest8.IngresosMasCercanos(pos));
-	ASSERT_EQ(conj10.Cardinal(), 1);
-	ASSERT(conj10.Pertenece(pos));
+	ASSERT(p4.x == 1 && p4.y == 2);
 
 }
+
+
+void test_comenzar_rastrillaje_simple() {
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	Agente a = 1;
+
+	Posicion p;
+	p.x = 1;
+	p.y = 1;
+
+	agentes.Definir(a,p);
+
+	campus.comenzarRastrillaje(agentes);
+	ASSERT(campus.cantAgentes() == 1);
+}
+
+
+void test_rastrillaje_mover_hacia_hippie() {
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	Agente a = 1;
+
+	Posicion p;
+	p.x = 1;
+	p.y = 1;
+
+	agentes.Definir(a,p);
+
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion ph;
+	ph.x = 5;
+	ph.y = 1;
+
+	Nombre h = "hippie";
+	campus.ingresarHippie(h,ph);
+
+	campus.moverAgente(a);
+
+	Posicion p4 = campus.posAgente(a);
+
+	ASSERT(p4.x == 2 && p4.y == 1);
+
+}
+
+
+void test_captura_hippie_entre_agentes()
+{
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	Agente a = 1;
+	Agente a2 = 2;
+	Agente a3 = 3;
+
+	Posicion p;
+	p.x = 1;
+	p.y = 1;
+
+	Posicion p2;
+	p2.x = 2;
+	p2.y = 2;
+
+	Posicion p3;
+	p3.x = 3;
+	p3.y = 1;
+
+	agentes.Definir(a,p);
+	agentes.Definir(a2,p2);
+	agentes.Definir(a3,p3);
+
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion ph;
+	ph.x = 2;
+	ph.y = 1;
+
+	Nombre h = "hippie";
+	campus.ingresarHippie(h,ph);
+
+	ASSERT(campus.cantHippiesAtrapados(a) == 1);
+	ASSERT(campus.cantHippiesAtrapados(a2) == 1);
+	ASSERT(campus.cantHippiesAtrapados(a3) == 1);
+
+	ASSERT(campus.masVigilante() == a || campus.masVigilante() == a2 || campus.masVigilante() == a3);
+
+}
+
+void test_captura_estudiante()
+{
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Dicc<Agente,Posicion> agentes;
+	Agente a = 1;
+	Agente a2 = 2;
+	Agente a3 = 3;
+
+	Posicion p;
+	p.x = 1;
+	p.y = 1;
+
+	Posicion p2;
+	p2.x = 2;
+	p2.y = 2;
+
+	Posicion p3;
+	p3.x = 3;
+	p3.y = 1;
+
+	agentes.Definir(a,p);
+	agentes.Definir(a2,p2);
+	agentes.Definir(a3,p3);
+
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion pe;
+	pe.x = 2;
+	pe.y = 1;
+
+	Nombre e = "pepe";
+	campus.ingresarEstudiante(e,pe);
+
+	ASSERT(campus.conMismasSanciones(a).Cardinal() == 3 );
+	ASSERT(campus.conMismasSanciones(a2).Cardinal() == 3 );
+	ASSERT(campus.conMismasSanciones(a3).Cardinal() == 3 );
+	Nat c = campus.conKSanciones(1).Cardinal();
+	ASSERT(c == 3);
+
+	Nat c2 = campus.conKSanciones(0).Cardinal();
+	ASSERT(c2 == 0 );
+
+
+}
+
+void test_mas_vigilante()
+{
+// 3 primeras lineas antes de que ingresen los estudiantes
+//     1   2   3   4   5
+// 1 | A |   | A |   | O
+// 2 |   | A |   | O | 
+// 3 ...
+// Los hippies ingresan en (2,1) y (4,1) los huecos. El Agente en (3,1) se transforma en el mas vigilante	
+	Driver campus;
+	campus.crearCampus(10,10);
+
+	Posicion o;
+	o.x = 4; 
+	o.y = 2;
+
+	campus.agregarObstaculo(o);
+
+	Posicion o2;
+	o2.x = 5; 
+	o2.y = 1;
+
+	campus.agregarObstaculo(o2);
+
+
+	Dicc<Agente,Posicion> agentes;
+	Agente a = 1;
+	Agente a2 = 2;
+	Agente a3 = 3;
+
+	Posicion p;
+	p.x = 1;
+	p.y = 1;
+
+	Posicion p2;
+	p2.x = 2;
+	p2.y = 2;
+
+	Posicion p3;
+	p3.x = 3;
+	p3.y = 1;
+
+	agentes.Definir(a,p);
+	agentes.Definir(a2,p2);
+	agentes.Definir(a3,p3);
+
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion ph;
+	ph.x = 2;
+	ph.y = 1;
+
+	Nombre h = "hippie";
+	campus.ingresarHippie(h,ph);
+
+	Posicion ph2;
+	ph2.x = 4;
+	ph2.y = 1;
+
+	Nombre h2 = "hippie2";
+	campus.ingresarHippie(h2,ph2);
+
+	ASSERT(campus.cantHippiesAtrapados(a) == 1);
+	ASSERT(campus.cantHippiesAtrapados(a2) == 1);
+	ASSERT(campus.cantHippiesAtrapados(a3) == 2);
+
+	ASSERT(campus.masVigilante() == a3);
+
+}
+
 
 int main(int argc, char **argv)
 {
-    RUN_TEST(test_simple);
-	RUN_TEST(test_crear_campus_filas_columnas);
-	RUN_TEST(test_agregar_obstaculo_y_ocupada);
-	RUN_TEST(test_posvalida);
-	RUN_TEST(test_esingreso);
-	RUN_TEST(test_vecinos);
-	RUN_TEST(test_distancia);
-	RUN_TEST(test_ingresos_mas_cercanos);
-
+    RUN_TEST(test_agregar_obstaculos);
+	RUN_TEST(test_ingresa_estudiante);
+	RUN_TEST(test_mover_estudiante);
+	RUN_TEST(test_mover_estudiante_fuera);
+	RUN_TEST(test_ingresa_hippie);
+	RUN_TEST(test_ingresa_hippie_y_estudiante);
+	RUN_TEST(test_mover_hippie_a_estudiante);
+	RUN_TEST(test_mover_hippie_a_ingreso);
+	RUN_TEST(test_ingresa_hippie_y_convierte);
+	RUN_TEST(test_mueve_estudiante_y_convierte);
+	RUN_TEST(test_comenzar_rastrillaje_simple);
+	RUN_TEST(test_rastrillaje_mover_hacia_hippie);
+	RUN_TEST(test_captura_hippie_entre_agentes);
+	RUN_TEST(test_captura_estudiante);
+	RUN_TEST(test_mas_vigilante);
 
 	/********************************************************************
 	 * TODO: escribir casos de test exhaustivos para todas              *
