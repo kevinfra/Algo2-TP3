@@ -84,6 +84,8 @@ void test_ingresar_estudiante(){
 	Conj<Nombre>::Iterador it = campusSeguro.Estudiantes();
 	ASSERT_EQ(it.Siguiente(), "manuelmena");
 
+	ASSERT_EQ(campusSeguro.PosEstudianteYHippie("manuelmena"), pos);
+
 }
 
 void test_ingresar_hippie(){
