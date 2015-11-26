@@ -81,6 +81,9 @@ void test_ingresar_estudiante(){
 	pos.y = 0;
 	campusSeguro.IngresarEstudiante(estudiante, pos);
 
+	Conj<Nombre>::Iterador it = campusSeguro.Estudiantes();
+	ASSERT_EQ(it.Siguiente(), "manuelmena");
+
 }
 
 int main(int argc, char **argv)

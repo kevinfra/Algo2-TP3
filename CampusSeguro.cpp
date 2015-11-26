@@ -42,15 +42,11 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 	this->listaMismasSanc.AgregarAdelante(tupla);
 	typename Lista<kSanc>::Iterador itL = this->listaMismasSanc.CrearIt();
 
+	// Recorre el diccionario agregando cada agente al unico conj de agentes en el unico nodo de la lista de sanciones y asigna los iteradores
 	while(itDic.haySiguiente()){
 		typename Conj<Agente>::Iterador itC = itL.Siguiente().agentes.AgregarRapido(itDic.siguiente().clave);
 		itDic.siguiente().significado.itConjMismasSanc = itC;
 		itDic.siguiente().significado.itMismasSanc = itL;
-
-		assert(itDic.siguiente().significado.itMismasSanc.HaySiguiente());
-		assert(itDic.siguiente().significado.itMismasSanc.Siguiente().agentes.Cardinal() > 0);
-		assert(itDic.siguiente().significado.itMismasSanc.Siguiente().sanc == 0);
-		assert(itL.HaySiguiente());
 		itDic.avanzar();
 	}
 	this->personalAS = diccHash;
@@ -68,7 +64,7 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 		i++;
 	}
 
-	typename diccNat<datosAgente>::itDiccNat it = diccHash.crearIt();
+	typename diccNat<datosAgente>::itDiccNat it = this->personalAS.crearIt();
 	bool ordenado;
 	while(it.haySiguiente()){
 		i = 0;
@@ -86,6 +82,7 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 		this->agentesOrdenados.AgregarAtras(tupla);
 		it.avanzar();
 	}
+
 }
 
 Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Nat f, Nat c){
@@ -169,7 +166,6 @@ void CampusSeguro::generarListaMismasSanc(){
 
 
 void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
-
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
 
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
@@ -249,6 +245,8 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 		}
 	}
 
+
+
 }
 
 
@@ -313,9 +311,6 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 	if(c.Cardinal() > 0){
 		this->mismasSancModificado = true;
 	}
-
-	kSanc tuplaksanc;
-	Conj<Agente> conjVacio;
 
 	while(itC.HaySiguiente()){
 		itParaMod = itC.Siguiente().datos;
