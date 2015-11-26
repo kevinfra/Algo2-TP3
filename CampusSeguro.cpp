@@ -1,6 +1,7 @@
 #include "CampusSeguro.h"
 #include "Tipos.h"
 
+#include <cassert>
 #include <iostream>
 
 using namespace std;
@@ -31,7 +32,6 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 	}
 
 	diccNat<datosAgente> diccHash(v);
-	//this->generarListaMismasSanc();
 
 	// generarListaMismasSanc
 	typename diccNat<datosAgente>::itDiccNat itDic = diccHash.crearIt();
@@ -464,8 +464,7 @@ bool CampusSeguro::TodosEstudiantes(Conj<Posicion>& c){
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 	bool res = true;
 
-
-	while(itC.HaySiguiente()){
+	while(itC.HaySiguiente() && res){
 		if(this->posicionesEstudiantes[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] == " ") res = false;
 
 		itC.Avanzar();
@@ -475,31 +474,31 @@ bool CampusSeguro::TodosEstudiantes(Conj<Posicion>& c){
 
 
 bool CampusSeguro::TodasOcupadas(Conj<Posicion>& c){
-	bool res = false;
+	Nat i = 0;
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 
 
-	while(itC.HaySiguiente() && !res){
-		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") res = true;
+	while(itC.HaySiguiente() && i < c.Cardinal()){
+		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") i++;
 
-		if(this->posicionesEstudiantes[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") res = true;
+		if(this->posicionesEstudiantes[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") i++;
 
 		itC.Avanzar();
 	}
 
 	itC = c.CrearIt();
-	while(itC.HaySiguiente() && !res){
-		if(this->posicionesAgente[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x].datos.haySiguiente()) res = true;
+	while(itC.HaySiguiente() && i < c.Cardinal()){
+		if(this->posicionesAgente[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x].datos.haySiguiente()) i++;
 		itC.Avanzar();
 	}
 
 	itC = c.CrearIt();
-	while(itC.HaySiguiente() && !res){
-		if(this->grilla.Ocupada(itC.Siguiente())) res = true;
+	while(itC.HaySiguiente() && i < c.Cardinal()){
+		if(this->grilla.Ocupada(itC.Siguiente())) i++;
 		itC.Avanzar();
 	}
-
-	return res;
+	
+	return (i == c.Cardinal());
 }
 
 
@@ -512,7 +511,7 @@ Conj<NombrePosicion> CampusSeguro::HippiesRodeadosEstudiantes(Conj<Posicion>& c)
 
 	while(itC.HaySiguiente()){
 		conjVecinos = this->grilla.Vecinos(itC.Siguiente());
-		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(conjVecinos) && TodosEstudiantes(conjVecinos)){
+		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(conjVecinos) && TodosEstudiantes(conjVecinos) && conjVecinos.Cardinal() == 4){
 			np.nombre = this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x];
 			np.pos = itC.Siguiente();
 
@@ -548,15 +547,12 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
 		Conj<As> conjAgParaPrem = AgParaPremSanc(conjVecinos);
 		PremiarAgentes(conjAgParaPrem);
-	} else if(TodasOcupadas(conjVecinos) && TodosEstudiantes(conjVecinos)){
-		this->estudiantes.Definir(h,pos);
-		this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] = h;
 	} else {
 		this->hippies.Definir(h,pos);
 		this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = h;
 	}
 
-
+	
 	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(conjVecinos);
 
 	if (conjHippiesRodEst.Cardinal() > 0) {

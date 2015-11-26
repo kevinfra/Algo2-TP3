@@ -27,7 +27,7 @@ void Driver::agregarObstaculo(Posicion p)
 }
 
 
-// Observadores del Campus\
+// Observadores del Campus
 
 Nat Driver::filas() const
 {

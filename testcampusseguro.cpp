@@ -83,11 +83,81 @@ void test_ingresar_estudiante(){
 
 }
 
+void test_ingresar_hippie(){
+	//Test 1 hay 2 agentes y meto al hippie, el hippie no queda atrapado
+	Campus campus(5,5);
+	Posicion pos;
+	pos.y = 0;
+	pos.x = 0;
+	campus.AgregarObstaculo(pos);
+	pos.y = 4;
+	pos.x = 0;
+	campus.AgregarObstaculo(pos);
+	pos.y = 3;
+	pos.x = 2;
+	campus.AgregarObstaculo(pos);
+	pos.y = 1;
+	pos.x = 3;
+	campus.AgregarObstaculo(pos);
+	pos.y = 1;
+	pos.x = 4;
+	campus.AgregarObstaculo(pos);	
+
+	Dicc<Agente,Posicion> dicc;
+	Agente a;
+	a = 1;
+	pos.y = 0;
+	pos.x = 1;
+	dicc.Definir(a,pos);
+	a = 2;
+	pos.y = 1;
+	pos.x = 2;
+	dicc.Definir(a,pos);
+	CampusSeguro cs1(campus,dicc);
+
+	Nombre h = "joel";
+	pos.y = 0;
+	pos.x = 2;
+	cs1.IngresarHippie(h,pos);
+	Conj<Nombre>::Iterador it1 = cs1.Hippies();
+	ASSERT(it1.HaySiguiente());
+	ASSERT(cs1.PosEstudianteYHippie(h) == pos);
+	Conj<Agente> conj1 = cs1.ConKSanciones(0);
+	ASSERT(conj1.Cardinal() == 2);
+	ASSERT(conj1.Pertenece(1));
+	ASSERT(conj1.Pertenece(2));
+	ASSERT(0 == cs1.CantHippiesAtrapados(1));
+	ASSERT(0 == cs1.CantHippiesAtrapados(2));
+/*	
+	//test2 hay tres agentes y meto al hippie en un lugar donde queda encerrado.
+	a = 3;
+	pos.y = 0;
+	pos.x = 3;
+	dicc.Definir(a,pos);
+	CampusSeguro cs2(campus,dicc);
+	pos.y = 0;
+	pos.x = 2;
+	//cs2.IngresarHippie(h,pos);
+	//Conj<Nombre>::Iterador it2 = cs2.Hippies();
+	//ASSERT(!it2.HaySiguiente());
+	Conj<Agente> conj2 = cs2.ConKSanciones(0);
+	ASSERT(conj2.Cardinal() == 3);
+	ASSERT(conj2.Pertenece(1));
+	ASSERT(conj2.Pertenece(2));
+	ASSERT(conj2.Pertenece(3));
+	ASSERT(0 == cs1.CantHippiesAtrapados(1));
+	ASSERT(0 == cs1.CantHippiesAtrapados(2));
+	ASSERT(0 == cs1.CantHippiesAtrapados(3));
+
+*/
+}
+
 int main(int argc, char **argv)
 {
     RUN_TEST(test_simple);
 	RUN_TEST(test_constructor_campus_seguro);
 	RUN_TEST(test_ingresar_estudiante);
+	RUN_TEST(test_ingresar_hippie);
 
 	/********************************************************************
 	 * TODO: escribir casos de test exhaustivos para todas              *
