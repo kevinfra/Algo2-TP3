@@ -125,19 +125,23 @@ CampusSeguro::As CampusSeguro::menorPlaca(diccNat<datosAgente>& d){
 
 	//creo el iterador con el diccionario
 	typename diccNat<datosAgente>::itDiccNat itMenor = d.crearIt();
-	//idem que en funcion anterior.
-	Nat placaMenor = it.siguiente().clave;
 
-	while(it.haySiguiente()){
-		if (it.siguiente().clave < placaMenor){
-			placaMenor = it.siguiente().clave;
-			itMenor = it;
-		}
-		it.avanzar();
-	}
+	//if para salvar el caso de 0 agentes
 	As res;
-	res.agente = placaMenor;
-	res.datos = itMenor;
+	if(it.haySiguiente()){
+		//idem que en funcion anterior.
+		Nat placaMenor = it.siguiente().clave;
+
+		while(it.haySiguiente()){
+			if (it.siguiente().clave < placaMenor){
+				placaMenor = it.siguiente().clave;
+				itMenor = it;
+			}
+			it.avanzar();
+		}
+		res.agente = placaMenor;
+		res.datos = itMenor;
+	}
 	return res;
 }
 
@@ -166,6 +170,7 @@ void CampusSeguro::generarListaMismasSanc(){
 
 
 void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
+	if(!this->grilla.Ocupada(pos)){
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
 
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
@@ -245,6 +250,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 		}
 	}
 
+	}
 
 
 }
@@ -492,7 +498,7 @@ bool CampusSeguro::TodasOcupadas(Conj<Posicion>& c){
 		if(this->grilla.Ocupada(itC.Siguiente())) i++;
 		itC.Avanzar();
 	}
-	
+
 	return (i == c.Cardinal());
 }
 
@@ -547,7 +553,7 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 		this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = h;
 	}
 
-	
+
 	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(conjVecinos);
 
 	if (conjHippiesRodEst.Cardinal() > 0) {
@@ -1147,7 +1153,7 @@ void CampusSeguro::hacerArregloMismasSanc() {
 
 	Lista<kSanc>::Iterador it = this->listaMismasSanc.CrearIt();
 	Nat i = 0;
-	
+
 	while(it.HaySiguiente()){
 		arregloNuevo.Definir(i,it);
 		i++;
