@@ -62,17 +62,22 @@ void test_constructor_campus_seguro(){
 
 void test_ingresar_estudiante(){
 	Campus campus(10,10);
+	Posicion obs;
+
+	obs.x = 0;
+	obs.y = 0;
+	campus.AgregarObstaculo(obs);
+
+	obs.x = 1;
+	obs.y = 1;
+	campus.AgregarObstaculo(obs);
+
 	Dicc<Agente,Posicion> dicc;
 
-	Agente a;
 	Posicion pos;
-
-	for(Nat i = 1; i < 5; i++){
-		a = i;
-		pos.x = i;
-		pos.y = i;
-		dicc.Definir(a, pos);
-	}
+	pos.x = 2;
+	pos.y = 0;
+	dicc.Definir(0, pos);
 
 	CampusSeguro campusSeguro(campus, dicc);
 
@@ -82,10 +87,11 @@ void test_ingresar_estudiante(){
 	campusSeguro.IngresarEstudiante(estudiante, pos);
 
 	Conj<Nombre>::Iterador it = campusSeguro.Estudiantes();
-	ASSERT_EQ(it.Siguiente(), "manuelmena");
+	ASSERT(it.Siguiente() == "manuelmena");
 
-	ASSERT_EQ(campusSeguro.PosEstudianteYHippie("manuelmena"), pos);
+	ASSERT(campusSeguro.PosEstudianteYHippie("manuelmena") == pos);
 
+	ASSERT_EQ(campusSeguro.CantSanciones(0), 1);
 }
 
 void test_ingresar_hippie(){
