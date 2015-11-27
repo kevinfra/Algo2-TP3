@@ -41,6 +41,10 @@ class CampusSeguro
 	Conj<Agente> ConMismasSanciones(Agente a);
 	Conj<Agente> ConKSanciones(Nat k);
 
+	//Acordarse de quitar estas funciones, nos sirven para testear nomas
+	void PonerHippie(Nombre h, Posicion pos);
+	void PonerEstudiante(Nombre e, Posicion pos);
+
 	private:
 	struct kSanc{
 		Nat sanc;
