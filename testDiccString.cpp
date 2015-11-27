@@ -66,6 +66,15 @@ void test_itDiccString(){
 	ASSERT_EQ(i,3);
 }
 
+void test_definirYRedefinir(){
+	DiccString<int> midic;
+	midic.Definir("hola",5);
+	assert(midic.Obtener("hola") == 5);
+	midic.Definir("hola",9);
+	assert(midic.Obtener("hola") != 5);
+	assert(midic.Obtener("hola") == 9);
+}
+
 
 int main(int argc, char **argv)
 {
@@ -75,7 +84,6 @@ int main(int argc, char **argv)
   RUN_TEST(test_Eliminar);
   RUN_TEST(test_iteradorClaves);
   RUN_TEST(test_itDiccString);
+	RUN_TEST(test_definirYRedefinir);
   return 0;
 }
-
-
