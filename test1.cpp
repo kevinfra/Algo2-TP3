@@ -61,7 +61,7 @@ void test_ingresa_estudiante(){
 
 // DIFICIL --- CORRIJO EL TEST YA QUE NECESITA ESTAR RODEADO DE 4 ESTUDIANTES, NO DE 3
 void test_ingresa_hippie_y_convierte() {
-	// Testea que cuando ingresa un hippie y esta rodeado de estudiantes se convierte
+	// Testea que cuando ingresa un hippie y esta rodeado de estudiantes se convierte  --> ESTO NO PASA. SOLO CUANDO SE RODEA DE 4 ESTUDIANTES.
 	Driver campus;
 	campus.crearCampus(10,10);
 
@@ -400,13 +400,19 @@ void test_rastrillaje_mover_hacia_hippie() {
 
 	Dicc<Agente,Posicion> agentes;
 	Agente a = 1;
+	Agente b = 2;
 
 	Posicion p;
 	p.x = 1;
 	p.y = 1;
 
-	Nombre h = "AAAAAA";
+	Posicion pdos;
+	pdos.x = 4;
+	pdos.y = 4;
+
+	Nombre h = "aaaaaa";
 	agentes.Definir(a,p);
+	agentes.Definir(b,pdos);
 
 	campus.comenzarRastrillaje(agentes);
 
@@ -414,10 +420,11 @@ void test_rastrillaje_mover_hacia_hippie() {
 	ph.x = 5;
 	ph.y = 1;
 
+	//std::cout << campus.masVigilante() << std::endl;
 	campus.ingresarHippie(h,ph);
 	campus.moverAgente(a);
-std::cout << "ingresa" << std::endl;
 
+	std::cout << "rompe en posAgente" << std::endl;
 	Posicion p4 = campus.posAgente(a);
 
 	ASSERT(p4.x == 2 && p4.y == 1);
@@ -596,7 +603,7 @@ int main(int argc, char **argv)
 	RUN_TEST(test_mover_hippie_a_estudiante);
 	RUN_TEST(test_mover_hippie_a_ingreso);
 	RUN_TEST(test_ingresa_hippie_y_convierte);
-	RUN_TEST(test_mueve_estudiante_y_convierte);
+	//RUN_TEST(test_mueve_estudiante_y_convierte); -->Probado en ingresa hippie y convierte
 	RUN_TEST(test_comenzar_rastrillaje_simple);
 	RUN_TEST(test_rastrillaje_mover_hacia_hippie);
 	RUN_TEST(test_captura_hippie_entre_agentes);

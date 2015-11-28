@@ -77,12 +77,14 @@ void test_itDiccNat(){
   }
   diccNat<Nat> d(v);
   diccNat<Nat>::itDiccNat it = d.crearIt();
-  it.haySiguiente();
 
-  while(it.haySiguiente() && it.siguiente().clave != 6){
+  Nat k = 0;
+  while(it.haySiguiente()){
+    ASSERT(it.siguiente().clave == k);
+    ASSERT(it.siguiente().significado == k + 10);
     it.avanzar();
+    k++;
   }
-  ASSERT_EQ(it.siguiente().clave, 6);
 }
 
 int main(int argc, char **argv)
