@@ -3,6 +3,7 @@
 #include "Driver.h"
 #include "mini_test.h"
 #include "aed2.h"
+#include "Tipos.h"
 
 using namespace std;
 using namespace aed2;
@@ -85,6 +86,18 @@ void test_MayusculasNumeros(){
 	assert(midic.Obtener("Jaja123") == 1);
 }
 
+void test_EliminarDePosicion(){
+	DiccString<Posicion> midic;
+	Posicion mipos;
+	mipos.x = 2;
+	mipos.y = 3;
+	midic.Definir("huno",mipos);
+	assert(midic.Obtener("huno").x == mipos.x);
+	assert(midic.Definido("huno"));
+	midic.Eliminar("huno");
+	assert(!midic.Definido("huno"));
+}
+
 
 int main(int argc, char **argv)
 {
@@ -96,5 +109,6 @@ int main(int argc, char **argv)
   RUN_TEST(test_itDiccString);
   RUN_TEST(test_definirYRedefinir);
   RUN_TEST(test_MayusculasNumeros);
+  RUN_TEST(test_EliminarDePosicion);
   return 0;
 }
