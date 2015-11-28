@@ -43,6 +43,7 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 	tupla.sanc = 0;
 	tupla.agentes = conj;
 	this->listaMismasSanc.AgregarAdelante(tupla);
+
 	// Creo un iterador de la lista de MismasSanciones
 	typename Lista<kSanc>::Iterador itL = this->listaMismasSanc.CrearIt();
 
@@ -221,6 +222,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 		SancionarAgentes(conjAgParaSanc);
 	}
 
+	// Si esta rodeado por 2 hippies lo agrego directo como hippie, sino lo agrego como estudiante
 	if(CantHippiesVecinos(conjVecinos) < 2){
 		this->estudiantes.Definir(e, pos);
 		this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] = e;
@@ -366,6 +368,7 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 	// Creo un iterador
 	typename Conj<As>::Iterador iteradorConjuntoAs = c.CrearIt();
 	typename diccNat<datosAgente>::itDiccNat itParaMod;
+
 	if(c.Cardinal() > 0){
 		this->mismasSancModificado = true;
 	}
