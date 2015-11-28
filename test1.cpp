@@ -66,9 +66,13 @@ void test_ingresa_hippie_y_convierte() {
 	campus.crearCampus(10,10);
 
 	Dicc<Agente,Posicion> agentes;
+	// Posicion pAgente;
+	// pAgente.x = 9;
+	// pAgente.y = 9;
+	// agentes.Definir(0,pAgente);
 	campus.comenzarRastrillaje(agentes);
 
-	//Las posiciones para entrar son en 0 y van par arriba
+	//Las posiciones para entrar son en 0 y van para arriba
 	Posicion p1;
 	p1.x = 1;
 	p1.y = 0;
@@ -82,23 +86,29 @@ void test_ingresa_hippie_y_convierte() {
 	p3.x = 3;
 	p3.y = 0;
 
-	//falta completar
-
 	Nombre s1 = "pepe";
 	Nombre s2 = "pepo";
 	Nombre s3 = "pepa";
+	Nombre s4 = "mclovin";
 
 	// Ingreso 3 estudiantes uno al lado del otro
-	campus.ingresarEstudiante(s1,p1);
 	campus.ingresarEstudiante(s2,p2);
-	campus.ingresarEstudiante(s3,p3);
-	// Avanzo el estudiante del medio
 	campus.moverEstudiante(s2,arriba);
-
+	campus.moverEstudiante(s2,arriba);
+	// Avanzo el estudiante del medio -- NO! Avanzo TODOS los estudiantes hacia arriba y una vez mas el del medio
+	//Siendo que primero entra el del medio, luego avanza dos veces, luego entra el hippie y luego rodean al hippie los otros estudiantes
 	// Ahora hago ingresar un hippie,se tiene que convertir a estudiante
-	Nombre h1 = "wololoHippie";
+	Nombre h1 = "wololohippie";
 	campus.ingresarHippie(h1,p2);
-	ASSERT(campus.cantEstudiantes() == 4);
+	campus.moverHippie(h1);
+
+	campus.ingresarEstudiante(s1,p1);
+	campus.moverEstudiante(s1,arriba);
+	campus.ingresarEstudiante(s3,p3);
+	campus.moverEstudiante(s3,arriba);
+	campus.ingresarEstudiante(s4,p2);
+	campus.moverEstudiante(s4,arriba);
+	ASSERT(campus.cantEstudiantes() == 5);
 	ASSERT(campus.cantHippies() == 0);
 }
 

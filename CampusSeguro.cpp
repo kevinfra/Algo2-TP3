@@ -189,7 +189,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 
 	//As as = posicionesAgente[3];
 	//as.datos.siguienteSignificado().itConjMismasSanc.Avanzar();
-	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
+/*	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 		if(this->posicionesAgente[i].datos.haySiguiente()){
 			cout << endl;
 			cout << "agente: " << this->posicionesAgente[i].agente << endl;
@@ -203,7 +203,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 			cout << endl;
 		}
 	}
-
+*/
 	if(!this->grilla.Ocupada(pos)){
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
 
@@ -354,7 +354,7 @@ bool CampusSeguro::HippiesAtrapando(Conj<Posicion>& c){
 
 void CampusSeguro::SancionarAgentes(Conj<As>& c){
 
-	// Creo un iterador 
+	// Creo un iterador
 	typename Conj<As>::Iterador iteradorConjuntoAs = c.CrearIt();
 	typename diccNat<datosAgente>::itDiccNat itParaMod;
 	if(c.Cardinal() > 0){
@@ -586,7 +586,7 @@ bool CampusSeguro::AlMenosUnAgente(Conj<Posicion>& c){
 void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 	//As as = posicionesAgente[3];
 	//as.datos.siguienteSignificado().itConjMismasSanc.Avanzar();
-	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
+/*	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 		if(this->posicionesAgente[i].datos.haySiguiente()){
 			cout << endl;
 			cout << "agente: " << this->posicionesAgente[i].agente << endl;
@@ -600,9 +600,8 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 			cout << endl;
 		}
 	}
-
+*/
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
-
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
 		Conj<As> conjAgParaPrem = AgParaPremSanc(conjVecinos);
 		PremiarAgentes(conjAgParaPrem);
@@ -674,7 +673,6 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 			itEstAs.Avanzar();
 		}
 	}
-
 }
 
 
@@ -790,6 +788,7 @@ void CampusSeguro::MoverEstudiante(Nombre e, Direccion d){
 void CampusSeguro::MoverHippie(Nombre h){
 	Posicion actualPos = this->hippies.Obtener(h);
 	Posicion pos = proxPos(actualPos, this->estudiantes);
+	std::cout << pos.x << "y " << pos.y << std::endl;
 
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
 
@@ -798,7 +797,6 @@ void CampusSeguro::MoverHippie(Nombre h){
 		this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = h;
 		this->hippies.Definir(h,pos);
 	}
-
 
 	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(conjVecinos);
 
@@ -953,7 +951,6 @@ typename diccNat<CampusSeguro::datosAgente>::itDiccNat CampusSeguro::busqBinPorP
 // Tengo que ponerle return fuera del if?
 Posicion CampusSeguro::proxPos(Posicion pos, DiccString<Posicion>& dicc){
 	Nat distCorta = distanciaMasCorta(pos, dicc);
-
 	Conj<Posicion> conjDondeIr = dondeIr(pos, distCorta, dicc);
 	Conj<Posicion> conjLugaresPosibles = lugaresPosibles(pos, conjDondeIr);
 
@@ -1016,29 +1013,34 @@ Conj<Posicion> CampusSeguro::dondeIr(Posicion pos, Nat dist, DiccString<Posicion
 Conj<Posicion> CampusSeguro::lugaresPosibles(Posicion pos, Conj<Posicion>& posiciones){
 	typename Conj<Posicion>::Iterador it = posiciones.CrearIt();
 	Conj<Posicion> lugares;
-	Posicion auxPos;
+	Posicion auxPos = pos;
 
 	while(it.HaySiguiente()){
 		if(hayAlgoEnPos(it.Siguiente())){
 			if(it.Siguiente().x > pos.x){
 				auxPos.x = pos.x + 1;
 				auxPos.y = pos.y;
+				if(!lugares.Pertenece(auxPos))
 				lugares.AgregarRapido(auxPos);
 			}
 			else if(it.Siguiente().x < pos.x){
 				auxPos.x = pos.x - 1;
 				auxPos.y = pos.y;
+				if(!lugares.Pertenece(auxPos))
 				lugares.AgregarRapido(auxPos);
+
 			}
 
 			if(it.Siguiente().y > pos.y){
 				auxPos.x = pos.x;
 				auxPos.y = pos.y + 1;
+				if(!lugares.Pertenece(auxPos))
 				lugares.AgregarRapido(auxPos);
 			}
-			else if(it.Siguiente().x < pos.x){
+			else if(it.Siguiente().y < pos.y){
 				auxPos.x = pos.x;
 				auxPos.y = pos.y - 1;
+				if(!lugares.Pertenece(auxPos))
 				lugares.AgregarRapido(auxPos);
 			}
 		}
