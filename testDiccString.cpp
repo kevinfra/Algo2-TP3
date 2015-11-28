@@ -68,11 +68,21 @@ void test_itDiccString(){
 
 void test_definirYRedefinir(){
 	DiccString<int> midic;
-	midic.Definir("hola",5);
-	assert(midic.Obtener("hola") == 5);
-	midic.Definir("hola",9);
-	assert(midic.Obtener("hola") != 5);
-	assert(midic.Obtener("hola") == 9);
+	midic.Definir("holz",5);
+	assert(midic.Obtener("holz") == 5);
+	midic.Definir("holz",9);
+	assert(midic.Obtener("holz") != 5);
+	assert(midic.Obtener("holz") == 9);
+}
+
+void test_MayusculasNumeros(){
+	DiccString<int> midic;
+	midic.Definir("Hola",2);
+	assert(midic.Obtener("Hola") == 2);
+	midic.Definir("Jaja123",9);
+	assert(midic.Obtener("Jaja123") == 9);
+	midic.Definir("Jaja123",1);
+	assert(midic.Obtener("Jaja123") == 1);
 }
 
 
@@ -84,6 +94,7 @@ int main(int argc, char **argv)
   RUN_TEST(test_Eliminar);
   RUN_TEST(test_iteradorClaves);
   RUN_TEST(test_itDiccString);
-	RUN_TEST(test_definirYRedefinir);
+  RUN_TEST(test_definirYRedefinir);
+  RUN_TEST(test_MayusculasNumeros);
   return 0;
 }
