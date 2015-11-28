@@ -6,7 +6,6 @@
 
 using namespace std;
 using namespace aed2;
-using namespace std;
 
 CampusSeguro::CampusSeguro(){}
 
@@ -189,7 +188,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 
 	//As as = posicionesAgente[3];
 	//as.datos.siguienteSignificado().itConjMismasSanc.Avanzar();
-	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
+	/*for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 		if(this->posicionesAgente[i].datos.haySiguiente()){
 			cout << endl;
 			cout << "agente: " << this->posicionesAgente[i].agente << endl;
@@ -202,7 +201,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 			cout << "cantAtrapados: " << this->posicionesAgente[i].datos.siguiente().significado.cantAtrapados << endl;
 			cout << endl;	
 		}
-	}
+	}*/
 
 	if(!this->grilla.Ocupada(pos)){
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
@@ -587,7 +586,7 @@ bool CampusSeguro::AlMenosUnAgente(Conj<Posicion>& c){
 void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 	//As as = posicionesAgente[3];
 	//as.datos.siguienteSignificado().itConjMismasSanc.Avanzar();
-	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
+	/*for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 		if(this->posicionesAgente[i].datos.haySiguiente()){
 			cout << endl;
 			cout << "agente: " << this->posicionesAgente[i].agente << endl;
@@ -600,7 +599,7 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 			cout << "cantAtrapados: " << this->posicionesAgente[i].datos.siguiente().significado.cantAtrapados << endl;
 			cout << endl;	
 		}
-	}
+	}*/
 
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
 
