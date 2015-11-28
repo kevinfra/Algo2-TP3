@@ -100,6 +100,354 @@ void test_ingresar_estudiante(){
 	ASSERT(campusSeguro.PosEstudianteYHippie("manuelmena") == pos);
 
 	ASSERT_EQ(campusSeguro.CantSanciones(0), 1);
+
+
+	//AGREGO TESTS CON VARIOS CASOS 
+	Campus campus1(5,5);
+	Agente a;
+	Nombre e;
+	Nombre h;
+	Nat i;
+	pos.y = 0;
+	pos.x = 0;
+	campus1.AgregarObstaculo(pos);
+	pos.y = 4;
+	pos.x = 0;
+	campus1.AgregarObstaculo(pos);
+	pos.y = 3;
+	pos.x = 2;
+	campus1.AgregarObstaculo(pos);
+	pos.y = 1;
+	pos.x = 3;
+	campus1.AgregarObstaculo(pos);
+	pos.y = 1;
+	pos.x = 4;
+	campus1.AgregarObstaculo(pos);
+
+
+	/*	Test1: Hay un agente y entra un estudiante, no queda atrapado.
+	 */
+	Dicc<Agente, Posicion> dicc1;
+	a = 1;
+	pos.y = 3;
+	pos.x = 3;
+	dicc1.Definir(a,pos);
+	CampusSeguro cs1(campus1,dicc1);
+	pos.y = 0;
+	pos.x = 2;
+	e = "euno";
+	cs1.IngresarEstudiante(e,pos);
+	ASSERT(cs1.PosEstudianteYHippie(e) == pos);
+	pos.y = 3;
+	pos.x = 3;
+	ASSERT(cs1.PosAgente(a) == pos);
+	Conj<Nombre>::Iterador itEst1 = cs1.Estudiantes();
+	ASSERT(itEst1.HaySiguiente());
+	i = 0;
+	while(itEst1.HaySiguiente()){
+		ASSERT(itEst1.Siguiente() == e);
+		i++;
+		itEst1.Avanzar();
+	}
+	//hay un estudiante
+	ASSERT(i == 1);
+	Conj<Nombre>::Iterador itHip1 = cs1.Hippies();
+	ASSERT(!itHip1.HaySiguiente());
+	Conj<Agente>::Iterador itAg1 = cs1.Agentes();
+	ASSERT(itAg1.HaySiguiente());
+	i = 0;
+	while(itAg1.HaySiguiente()){
+		ASSERT(itAg1.Siguiente() == 1);
+		i++;
+		itAg1.Avanzar();
+	}
+	//hay 1 agente
+	ASSERT(i == 1);
+	Conj<Agente> conjK1 = cs1.ConKSanciones(0);
+	ASSERT(conjK1.Cardinal() == 1);
+	ASSERT(conjK1.Pertenece(1));
+	Conj<Agente> conjMS1_a = cs1.ConMismasSanciones(1);
+	ASSERT(conjMS1_a == conjK1);
+	ASSERT(cs1.MasVigilante() == 1);
+	ASSERT(cs1.CantSanciones(1) == 0);
+	ASSERT(cs1.CantHippiesAtrapados(1) == 0);
+
+
+	/*	Test2: Hay dos agentes y entra un estudiante, queda atrapado entre
+	 *	los dos agentes y un obstaculo, los agentes son sancionados.
+	 */
+	Dicc<Agente, Posicion> dicc2;
+	a = 1;
+	pos.y = 0;
+	pos.x = 2;
+	dicc2.Definir(a,pos);
+	a = 2;
+	pos.y = 1;
+	pos.x = 1;
+	dicc2.Definir(a,pos);
+	CampusSeguro cs2(campus1,dicc2);
+	pos.y = 0;
+	pos.x = 1;
+	e = "euno";
+	cs2.IngresarEstudiante(e,pos);
+	ASSERT(cs2.PosEstudianteYHippie(e) == pos);
+	pos.y = 1;
+	pos.x = 1;
+	ASSERT(cs2.PosAgente(a) == pos);
+	a = 1;
+	pos.y = 0;
+	pos.x = 2;
+	ASSERT(cs2.PosAgente(a) == pos);
+	Conj<Nombre>::Iterador itEst2 = cs2.Estudiantes();
+	ASSERT(itEst2.HaySiguiente());
+	i = 0;
+	while(itEst2.HaySiguiente()){
+		ASSERT(itEst2.Siguiente() == e);
+		i++;
+		itEst2.Avanzar();
+	}
+	//hay un estudiante
+	ASSERT(i == 1);
+	Conj<Nombre>::Iterador itHip2 = cs2.Hippies();
+	ASSERT(!itHip2.HaySiguiente());
+	Conj<Agente>::Iterador itAg2 = cs2.Agentes();
+	ASSERT(itAg2.HaySiguiente());
+	i = 0;
+	while(itAg2.HaySiguiente()){
+		ASSERT(itAg2.Siguiente() == 1);
+		i++;
+		itAg2.Avanzar();
+	}
+	//hay 2 agentes
+	ASSERT(i == 2);
+	Conj<Agente> conjK2 = cs2.ConKSanciones(0);
+	ASSERT(conjK2.Cardinal() == 1);
+	ASSERT(conjK2.Pertenece(1));
+	ASSERT(conjK2.Pertenece(2));
+	Conj<Agente> conjMS2_a = cs2.ConMismasSanciones(1);
+	Conj<Agente> conjMS2_b = cs2.ConMismasSanciones(2);
+	ASSERT(conjMS2_a == conjK2 && conjMS2_b == conjK2);
+	ASSERT(cs2.MasVigilante() == 1);
+	ASSERT(cs2.CantHippiesAtrapados(1) == 0);
+	ASSERT(cs2.CantHippiesAtrapados(2) == 0);
+	ASSERT(cs2.CantSanciones(1) == 0);
+	ASSERT(cs2.CantSanciones(2) == 0);
+
+
+	/*	Test3: Hay 2 Hippies y un Agente, el agente esta lejos.
+	 *	Entra un estudiante y queda atrapado por hippies, se debe transformar
+	 *	a hippie.
+	 */
+	Dicc<Agente, Posicion> dicc3;
+	a = 1;
+	pos.y = 4;
+	pos.x = 3;
+	dicc3.Definir(a,pos);
+	CampusSeguro cs3(campus1,dicc3);
+	pos.y = 0;
+	pos.x = 2;
+	h = "huno";
+	cs3.PonerHippie(h,pos);
+	pos.y = 1;
+	pos.x = 1;
+	h = "hdos";
+	cs3.PonerHippie(h,pos);
+	pos.y = 0;
+	pos.x = 1;
+	e = "euno";
+	cs3.IngresarEstudiante(e,pos);
+	ASSERT(cs3.PosEstudianteYHippie(e) == pos);
+	pos.y = 1;
+	pos.x = 1;
+	ASSERT(cs3.PosEstudianteYHippie(h) == pos);
+	pos.y = 0;
+	pos.x = 2;
+	h = "huno";
+	ASSERT(cs3.PosEstudianteYHippie(h) == pos);
+	pos.y = 4;
+	pos.x = 3;
+	ASSERT(cs3.PosAgente(a) == pos);
+	Conj<Nombre>::Iterador itEst3 = cs3.Estudiantes();
+	ASSERT(!itEst3.HaySiguiente());
+	Conj<Nombre>::Iterador itHip3 = cs3.Hippies();
+	ASSERT(itHip3.HaySiguiente());
+	i = 0;
+	while(itHip3.HaySiguiente()){
+		ASSERT(itHip3.Siguiente() == "huno" || itHip3.Siguiente() == "hdos" || itHip3.Siguiente() == "euno");
+		i++;
+		itHip3.Avanzar();
+	}
+	//hay tres hippies
+	ASSERT(i == 3);
+	Conj<Agente>::Iterador itAg3 = cs3.Agentes();
+	ASSERT(itAg3.HaySiguiente());
+	i = 0;
+	while(itAg3.HaySiguiente()){
+		ASSERT(itAg3.Siguiente() == 1);
+		i++;
+		itAg3.Avanzar();
+	}
+	//hay 1 agente
+	ASSERT(i == 1);
+	Conj<Agente> conjK3 = cs3.ConKSanciones(0);
+	ASSERT(conjK3.Cardinal() == 1);
+	ASSERT(conjK3.Pertenece(1));
+	Conj<Agente> conjMS3_a = cs3.ConMismasSanciones(1);
+	ASSERT(conjMS3_a == conjK3);
+	ASSERT(cs3.MasVigilante() == 1);
+	ASSERT(cs3.CantHippiesAtrapados(1) == 0);
+	ASSERT(cs3.CantSanciones(1) == 0);
+
+
+	/*	Test4: Hay 1 Hippie y 2 Agentes, los agentes estan rodeando al hippie.
+	 *	Entra un estudiante y el hippie queda atrapado por los agentes, y
+	 *	debe desaparecer.
+	 */
+	Dicc<Agente, Posicion> dicc4;
+	a = 1;
+	pos.y = 2;
+	pos.x = 3;
+	dicc4.Definir(a,pos);
+	a = 2;
+	pos.y = 3;
+	pos.x = 4;
+	dicc4.Definir(a,pos);
+	CampusSeguro cs4(campus1,dicc4);
+	pos.y = 3;
+	pos.x = 3;
+	h = "huno";
+	cs3.PonerHippie(h,pos);
+	pos.y = 4;
+	pos.x = 3;
+	e = "euno";
+	cs4.IngresarEstudiante(e,pos);
+	ASSERT(cs4.PosEstudianteYHippie(e) == pos);
+	pos.y = 3;
+	pos.x = 4;
+	ASSERT(cs4.PosAgente(a) == pos);
+	a = 1;
+	pos.y = 2;
+	pos.x = 3;
+	ASSERT(cs4.PosAgente(a) == pos);
+	Conj<Nombre>::Iterador itEst4 = cs4.Estudiantes();
+	ASSERT(itEst4.HaySiguiente());
+	i = 0;
+	while(itEst4.HaySiguiente()){
+		ASSERT(itEst4.Siguiente() == e);
+		i++;
+		itEst4.Avanzar();
+	}
+	//hay un estudiante
+	ASSERT(i == 1);
+	Conj<Nombre>::Iterador itHip4 = cs4.Hippies();
+	ASSERT(!itHip4.HaySiguiente());
+	Conj<Agente>::Iterador itAg4 = cs4.Agentes();
+	ASSERT(itAg4.HaySiguiente());
+	i = 0;
+	while(itAg4.HaySiguiente()){
+		ASSERT(itAg4.Siguiente() == 1 || itAg4.Siguiente() == 2);
+		i++;
+		itAg4.Avanzar();
+	}
+	//hay 2 agentes
+	ASSERT(i == 2);
+	Conj<Agente> conjK4 = cs4.ConKSanciones(0);
+	ASSERT(conjK4.Cardinal() == 2);
+	ASSERT(conjK4.Pertenece(1));
+	ASSERT(conjK4.Pertenece(2));
+	Conj<Agente> conjMS4_a = cs4.ConMismasSanciones(1);
+	Conj<Agente> conjMS4_b = cs4.ConMismasSanciones(2);
+	ASSERT(conjMS4_a == conjK4 && conjMS4_b == conjK4);
+	ASSERT(cs4.MasVigilante() == 1 || cs4.MasVigilante() == 2);
+	ASSERT(cs4.CantHippiesAtrapados(1) == 1);
+	ASSERT(cs4.CantHippiesAtrapados(2) == 1);
+	ASSERT(cs4.CantSanciones(1) == 0);
+	ASSERT(cs4.CantSanciones(2) == 0);
+
+
+	/*	Test5: Hay 3 estudiantes, un hippie y un agente. El agente esta lejos.
+	 *	Los estudiantes estan atrapando al hippie y hago entrar a uno mas que
+	 *	lo hace quedar completamente atrapado y debe transformarse.
+	 */
+	Dicc<Agente, Posicion> dicc5;
+	a = 1;
+	pos.y = 4;
+	pos.x = 1;
+	dicc5.Definir(a,pos);
+	CampusSeguro cs5(campus1,dicc5);
+	pos.y = 1;
+	pos.x = 1;
+	h = "huno";
+	cs3.PonerHippie(h,pos);
+	pos.y = 1;
+	pos.x = 0;
+	e = "euno";
+	cs3.PonerEstudiante(e,pos);
+	pos.y = 1;
+	pos.x = 2;
+	e = "edos";
+	cs3.PonerEstudiante(e,pos);
+	pos.y = 2;
+	pos.x = 1;
+	e = "etres";
+	cs3.PonerEstudiante(e,pos);
+
+	pos.y = 0;
+	pos.x = 1;
+	e = "ecuatro";
+	cs5.IngresarEstudiante(e,pos);
+	ASSERT(cs5.PosEstudianteYHippie(e) == pos);
+	pos.y = 1;
+	pos.x = 1;
+	h = "huno";
+	ASSERT(cs5.PosEstudianteYHippie(h) == pos);
+	pos.y = 1;
+	pos.x = 0;
+	e = "euno";
+	ASSERT(cs5.PosEstudianteYHippie(e) == pos);
+	pos.y = 1;
+	pos.x = 2;
+	e = "edos";
+	ASSERT(cs5.PosEstudianteYHippie(e) == pos);
+	pos.y = 2;
+	pos.x = 1;
+	e = "etres";
+	ASSERT(cs5.PosEstudianteYHippie(e) == pos);
+	pos.y = 4;
+	pos.x = 1;
+	ASSERT(cs5.PosAgente(a) == pos);
+	Conj<Nombre>::Iterador itEst5 = cs5.Estudiantes();
+	ASSERT(itEst5.HaySiguiente());
+	i = 0;
+	while(itEst5.HaySiguiente()){
+		ASSERT(itEst5.Siguiente() == "huno" || itEst5.Siguiente() == "euno" || itEst5.Siguiente() == "edos" || itEst5.Siguiente() == "etres" || itEst5.Siguiente() == "ecuatro");
+		i++;
+		itEst5.Avanzar();
+	}
+	//hay cinco estudiantes
+	ASSERT(i == 5);
+	Conj<Nombre>::Iterador itHip5 = cs5.Hippies();
+	ASSERT(!itHip5.HaySiguiente());
+	Conj<Agente>::Iterador itAg5 = cs5.Agentes();
+	ASSERT(itAg5.HaySiguiente());
+	i = 0;
+	while(itAg5.HaySiguiente()){
+		ASSERT(itAg5.Siguiente() == 1);
+		i++;
+		itAg5.Avanzar();
+	}
+	//hay 1 agente
+	ASSERT(i == 1);
+	Conj<Agente> conjK5 = cs5.ConKSanciones(0);
+	ASSERT(conjK5.Cardinal() == 1);
+	ASSERT(conjK5.Pertenece(1));
+	Conj<Agente> conjMS5_a = cs5.ConMismasSanciones(1);
+	ASSERT(conjMS5_a == conjK5);
+	ASSERT(cs5.MasVigilante() == 1);
+	ASSERT(cs5.CantHippiesAtrapados(1) == 0);
+	ASSERT(cs5.CantSanciones(1) == 0);
+
+
 }
 
 void test_ingresar_hippie(){
@@ -449,7 +797,7 @@ void test_mover_estudiante(){
 	 *  entre 2 agentes y muevo uno que hace que ese quede atrapado. Los
 	 *	agentes tienen que ser sancionados.
 	 */
-	
+
 	Dicc<Agente,Posicion> dicc2;
 	a = 0;
 	pos.y = 0;
@@ -524,7 +872,7 @@ void test_mover_estudiante(){
 	 *  entre 2 agentes y muevo uno que hace que ese quede atrapado. Los
 	 *	agentes tienen que ser sancionados.
 	 */
-	
+
 	Dicc<Agente,Posicion> dicc3;
 	a = 0;
 	pos.y = 0;
@@ -694,7 +1042,7 @@ void test_mover_estudiante(){
 	e = "euno";
 	pos.y = 0;
 	pos.x = 3;
-	cs4.PonerHippie(e,pos);
+	cs5.PonerEstudiante(e,pos);
 	ASSERT(cs5.PosEstudianteYHippie(e) == pos);
 	d = abajo;
 	cs5.MoverEstudiante(e,d);
@@ -706,13 +1054,13 @@ void test_mover_estudiante(){
 	ASSERT(itAg5.HaySiguiente());
 	i = 0;
 	while(itAg5.HaySiguiente()){
-		ASSERT(itAg5.Siguiente() == 0 || itAg5.Siguiente() == 1);
+		ASSERT(itAg5.Siguiente() == 0);
 		i++;
 		itAg5.Avanzar();
 	}
 	//hay 1 agente
 	ASSERT(i == 1);
-	Conj<Agente> conjK5 = cs5.ConKSanciones(1);
+	Conj<Agente> conjK5 = cs5.ConKSanciones(0);
 	ASSERT(conjK5.Cardinal() == 1);
 	ASSERT(conjK5.Pertenece(0));
 	Conj<Agente> conjMS5_a = cs5.ConMismasSanciones(0);
