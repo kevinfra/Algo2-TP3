@@ -92,6 +92,15 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 		it.avanzar();
 	}
 
+	//ESTO ES PARA TESTING DE POSICIONESAGENTE[I]. DESCOMENTAR PARA TESTEAR
+/*	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
+			if(this->posicionesAgente[i].datos.haySiguiente()){
+				cout << endl;
+				cout << "agente: " << this->posicionesAgente[i].agente << endl;
+				cout << "clave: " << this->posicionesAgente[i].datos.siguiente().clave << endl;
+			}}
+*/
+
 }
 
 Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Nat f, Nat c){
@@ -99,8 +108,6 @@ Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Na
 	Nat i = 0;
 	// Creo un iterador del diccionario de agentes pasado como parametro
 	typename diccNat<datosAgente>::itDiccNat it = d.crearIt();
-
-
 
 	Vector< diccNat<datosAgente>::tupla > v;
 	diccNat<datosAgente> dVacio(v);
@@ -123,10 +130,11 @@ Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Na
 	// datos del agente
 	As tuplaAAgregar;
 	while(it.haySiguiente()){
-		typename diccNat<datosAgente>::itDiccNat itPos = it;
 		tuplaAAgregar.agente = it.siguiente().clave;
-		tuplaAAgregar.datos = itPos;
+		tuplaAAgregar.datos = it;
+	//DESCOMENTAR para testear	std::cout << "LOS DATOS EN TUPLA SON: " << tuplaAAgregar.datos.siguiente().clave << std::endl;
 		res[it.siguiente().significado.posicion.y * c + it.siguiente().significado.posicion.x] = tuplaAAgregar;
+	//DESCOMENTAR para testear	std::cout << "TU VIEJA EN 4 ES: " << res[it.siguiente().significado.posicion.y * c + it.siguiente().significado.posicion.x].datos.siguiente().clave << std::endl;
 		it.avanzar();
 	}
 
@@ -588,6 +596,7 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 	//As as = posicionesAgente[3];
 	//as.datos.siguienteSignificado().itConjMismasSanc.Avanzar();
 
+//ESTO ES PARA TESTING DE POSICIONESAGENTE[I]. DESCOMENTAR PARA TESTEAR
 /*	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 		if(this->posicionesAgente[i].datos.haySiguiente()){
 			cout << endl;
@@ -602,6 +611,14 @@ void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 			cout << endl;
 		}
 	}
+*/
+
+
+//DESCOMENTAR para testear:
+/*
+diccNat<datosAgente>::itDiccNat itDicc = this->personalAS.crearIt();
+while(itDicc.haySiguiente()){ Nat clave = itDicc.siguiente().clave;
+std::cout << "dame la clave ahora: " << clave << std::endl;itDicc.avanzar();}
 */
 
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
@@ -791,7 +808,6 @@ void CampusSeguro::MoverEstudiante(Nombre e, Direccion d){
 void CampusSeguro::MoverHippie(Nombre h){
 	Posicion actualPos = this->hippies.Obtener(h);
 	Posicion pos = proxPos(actualPos, this->estudiantes);
-	std::cout << pos.x << "y " << pos.y << std::endl;
 
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
 
@@ -1188,17 +1204,18 @@ Posicion CampusSeguro::PosEstudianteYHippie(Nombre id){
 
 // Pre: a pertenece a personalAS
 Posicion CampusSeguro::PosAgente(Agente a){
-	return this->personalAS.obtener(a)->posicion;
+	datosAgente res = this->personalAS.obtener(a);
+	return res.posicion;
 }
 
 // Pre: a pertenece a personalAS
 Nat CampusSeguro::CantSanciones(Agente a) {
-	return this->personalAS.obtener(a)->cantSanc;
+	return this->personalAS.obtener(a).cantSanc;
 }
 
 // Pre: a pertenece a personalAS
 Nat CampusSeguro::CantHippiesAtrapados(Agente a) {
-	return this->personalAS.obtener(a)->cantAtrapados;
+	return this->personalAS.obtener(a).cantAtrapados;
 }
 
 Agente CampusSeguro::MasVigilante(){
@@ -1207,7 +1224,7 @@ Agente CampusSeguro::MasVigilante(){
 
 // Pre: a pertenece a personalAS
 Conj<Agente> CampusSeguro::ConMismasSanciones(Agente a) {
-	return this->personalAS.obtener(a)->itMismasSanc.Siguiente().agentes;
+	return this->personalAS.obtener(a).itMismasSanc.Siguiente().agentes;
 }
 
 // TODO: testear
