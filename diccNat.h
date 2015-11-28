@@ -22,6 +22,9 @@ public:
   diccNat();
   diccNat(const Vector<tupla> &v); //CrearDiccionario
 
+  //Destructor
+//  ~diccNat();
+
   //Operaciones Basicas
   void redefinir(Nat n, const alpha &a);
   alpha& obtener(Nat n);
@@ -80,6 +83,15 @@ diccNat<alpha>::diccNat(const Vector<tupla> &v){
 
 template<typename alpha>
 diccNat<alpha>::diccNat(){}
+
+/*template<typename alpha>
+diccNat<alpha>::~diccNat(){
+  typename Lista<tupla*>::Iterador it = _listaIterable.CrearIt();
+  while(it.HaySiguiente()){
+    delete it.Siguiente();
+    it.Avanzar();
+  }
+}*/
 
 template<typename alpha>
 void diccNat<alpha>::redefinir(Nat n, const alpha &a){
