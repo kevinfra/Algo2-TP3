@@ -74,14 +74,14 @@ class DiccString{
 	}
 
 	Nat ord(char caracter){
-		return int(caracter) - 48;
+		return int(caracter);
 	}
 
 };
 
 template <typename alpha>
 DiccString<alpha>::DiccString(){
-	raiz = Arreglo<Nodo>(75);
+	raiz = Arreglo<Nodo>(256);
 }
 
 template <typename alpha>
@@ -114,7 +114,7 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 	Nat letra = ord(c[0]);
 	if(!raiz.Definido(letra)){
 		Nodo nodo;
-		nodo.arbolTrie = Arreglo<Nodo>(75);
+		nodo.arbolTrie = Arreglo<Nodo>(256);
 		nodo.infoValida = false;
 		raiz.Definir(letra,nodo);
 	}
@@ -124,7 +124,7 @@ void DiccString<alpha>::Definir(String c,alpha significado){
 		letra = ord(c[i]);
 		if(!arr->arbolTrie.Definido(letra)){
 			Nodo nuevoHijo;
-			nuevoHijo.arbolTrie = Arreglo<Nodo>(75);
+			nuevoHijo.arbolTrie = Arreglo<Nodo>(256);
 			nuevoHijo.infoValida = false;
 			arr->arbolTrie.Definir(letra,nuevoHijo);
 		}

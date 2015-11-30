@@ -98,6 +98,22 @@ void test_EliminarDePosicion(){
 	assert(!midic.Definido("huno"));
 }
 
+void test_SimbolosRaros(){
+	DiccString<Posicion> *midic = new DiccString<Posicion>();
+	Posicion mipos;
+	mipos.x = 0;
+	mipos.y = 1;
+	midic->Definir("?':-",mipos);
+	midic->Definir("v",mipos);
+	midic->Definir(";;;+++*}{",mipos);
+	assert(midic->Definido(";;;+++*}{"));
+	assert(midic->Obtener("?':-").x == mipos.x);
+	assert(midic->Definido("?':-"));
+	midic->Eliminar("?':-");
+	assert(!midic->Definido("?':-"));
+	delete midic;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -110,5 +126,6 @@ int main(int argc, char **argv)
   RUN_TEST(test_definirYRedefinir);
   RUN_TEST(test_MayusculasNumeros);
   RUN_TEST(test_EliminarDePosicion);
+  RUN_TEST(test_SimbolosRaros);
   return 0;
 }
