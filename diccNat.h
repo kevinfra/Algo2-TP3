@@ -46,6 +46,7 @@ public:
     typename diccNat<alpha>::tupla& siguiente();
     alpha& siguienteSignificado();
     void avanzar();
+    void Retroceder();
     bool operator==(const typename diccNat<alpha>::itDiccNat& otro) const;
 
   private:
@@ -169,6 +170,11 @@ alpha& diccNat<alpha>::itDiccNat::siguienteSignificado(){
 template<typename alpha>
 void diccNat<alpha>::itDiccNat::avanzar(){
 	this->_iteradorLista.Avanzar();
+}
+
+template<typename alpha>
+void diccNat<alpha>::itDiccNat::Retroceder(){
+  this->_iteradorLista.Retroceder();
 }
 
 template<typename alpha>
