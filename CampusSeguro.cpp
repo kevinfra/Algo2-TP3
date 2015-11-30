@@ -61,7 +61,8 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 	this->personalAS = diccHash;
 
 	// Asigno el vector (vectorizado en base a la posicion) con los agentes al campo de posicionesAgente de la clase
-	this->posicionesAgente = vectorizarPos(this->personalAS, this->grilla.Filas(), this->grilla.Columnas());
+	//this->posicionesAgente = vectorizarPos(this->personalAS, this->grilla.Filas(), this->grilla.Columnas());
+	vectorizarPos(this->personalAS, this->grilla.Filas(), this->grilla.Columnas());
 	this->masVigilante = menorPlaca(this->personalAS);
 	this->mismasSancModificado = true;
 
@@ -94,13 +95,13 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 	}
 
 	//ESTO ES PARA TESTING DE POSICIONESAGENTE[I]. DESCOMENTAR PARA TESTEAR
-/*	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
+	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 			if(this->posicionesAgente[i].datos.haySiguiente()){
 				cout << endl;
 				cout << "agente: " << this->posicionesAgente[i].agente << endl;
 				cout << "clave: " << this->posicionesAgente[i].datos.siguiente().clave << endl;
 			}}
-*/
+
 
 }
 
@@ -108,7 +109,7 @@ Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Na
 	Vector<As> res;
 	Nat i = 0;
 	// Creo un iterador del diccionario de agentes pasado como parametro
-	typename diccNat<datosAgente>::itDiccNat it = d.crearIt();
+	typename diccNat<datosAgente>::itDiccNat it = this->personalAS.crearIt();
 
 	Vector< diccNat<datosAgente>::tupla > v;
 	diccNat<datosAgente> dVacio(v);
@@ -123,7 +124,7 @@ Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Na
 	// Agrego tuplas vacias al vector que voy a devolver para luego llenarlas con las tuplas
 	// correspondientes
 	while(i < f*c){
-		res.AgregarAtras(tuplaVacia);
+		this->posicionesAgente.AgregarAtras(tuplaVacia);
 		i++;
 	}
 
@@ -134,7 +135,7 @@ Vector<CampusSeguro::As> CampusSeguro::vectorizarPos(diccNat<datosAgente>& d, Na
 		tuplaAAgregar.agente = it.siguiente().clave;
 		tuplaAAgregar.datos = it;
 	//DESCOMENTAR para testear	std::cout << "LOS DATOS EN TUPLA SON: " << tuplaAAgregar.datos.siguiente().clave << std::endl;
-		res[it.siguiente().significado.posicion.y * c + it.siguiente().significado.posicion.x] = tuplaAAgregar;
+		this->posicionesAgente[it.siguiente().significado.posicion.y * c + it.siguiente().significado.posicion.x] = tuplaAAgregar;
 	//DESCOMENTAR para testear	std::cout << "TU VIEJA EN 4 ES: " << res[it.siguiente().significado.posicion.y * c + it.siguiente().significado.posicion.x].datos.siguiente().clave << std::endl;
 		it.avanzar();
 	}
@@ -197,7 +198,6 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 
 	//As as = posicionesAgente[3];
 	//as.datos.siguienteSignificado().itConjMismasSanc.Avanzar();
-
 	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 		if(this->posicionesAgente[i].datos.haySiguiente()){
 			cout << endl;

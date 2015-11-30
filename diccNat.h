@@ -24,9 +24,6 @@ public:
   diccNat();
   diccNat(const Vector<tupla> &v); //CrearDiccionario
 
-  //Destructor
-//  ~diccNat();
-
   //Operaciones Basicas
   void redefinir(Nat n, const alpha &a);
   alpha& obtener(Nat n);
@@ -41,7 +38,7 @@ public:
   class itDiccNat{
   public:
     itDiccNat();
-    itDiccNat(Lista<tupla*> &l);
+    itDiccNat(Lista<tupla> &l);
     bool haySiguiente();
     typename diccNat<alpha>::tupla& siguiente();
     alpha& siguienteSignificado();
@@ -50,13 +47,13 @@ public:
     bool operator==(const typename diccNat<alpha>::itDiccNat& otro) const;
 
   private:
-    typename Lista<tupla*>::Iterador _iteradorLista;
+    typename Lista<tupla>::Iterador _iteradorLista;
   };
 
 
 private:
   Vector< Lista<tupla> > _tabla;
-  Lista<tupla*> _listaIterable;
+  Lista<tupla> _listaIterable;
   Conj<Nat> _clavesIterables; //SOLUCION A LA COMPLEJIDAD PEDIDA PARA ITERADOR DE CLAVES
 };
 
@@ -74,9 +71,9 @@ diccNat<alpha>::diccNat(const Vector<tupla> &v){
     Nat k = (v[i].clave % v.Longitud());
     this->_tabla[k].AgregarAtras(v[i]);
     Nat q = this->_tabla[k].Longitud();
-    tupla* puntATupla = new tupla();
-    *puntATupla = (this->_tabla[k][q-1]);
-    this->_listaIterable.AgregarAtras(puntATupla);
+    //tupla* puntATupla = new tupla();
+    //*puntATupla = (this->_tabla[k][q-1]);
+    this->_listaIterable.AgregarAtras(this->_tabla[k][q-1]);
 
     //Creo _clavesIterables
     this->_clavesIterables.Agregar(v[i].clave);
@@ -144,7 +141,7 @@ typename diccNat<alpha>::itDiccNat diccNat<alpha>::crearIt(){
 }
 
 template<typename alpha>
-diccNat<alpha>::itDiccNat::itDiccNat(Lista<tupla*> &l)
+diccNat<alpha>::itDiccNat::itDiccNat(Lista<tupla> &l)
   :     _iteradorLista(l.CrearIt())
 {}
 
@@ -158,12 +155,12 @@ bool diccNat<alpha>::itDiccNat::haySiguiente(){
 
 template<typename alpha>
 typename diccNat<alpha>::tupla& diccNat<alpha>::itDiccNat::siguiente(){
-	return *(this->_iteradorLista.Siguiente());
+	return (this->_iteradorLista.Siguiente());
 }
 
 template<typename alpha>
 alpha& diccNat<alpha>::itDiccNat::siguienteSignificado(){
-	return (this->_iteradorLista.Siguiente())->significado;
+	return (this->_iteradorLista.Siguiente()).significado;
 }
 
 
@@ -181,5 +178,6 @@ template<typename alpha>
 bool diccNat<alpha>::itDiccNat::operator==(const typename diccNat<alpha>::itDiccNat& otro) const{
 	return (_iteradorLista == otro._iteradorLista);
 }
+
 
 #endif //DICCIONARIO_NAT_FIJO
