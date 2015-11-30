@@ -12,15 +12,10 @@ public:
   //forward declarations
   class itDiccNat;
 
-  //Tupla clave-significado
-  struct tupla{
-    Nat clave;
-    alpha significado;
-  };
 
   //Constructor
   diccNat();
-  diccNat(const Vector<tupla> &v); //CrearDiccionario
+  diccNat(const Vector<typename diccNat<alpha>::tupla> &v); //CrearDiccionario
 
   //Destructor
 //  ~diccNat();
@@ -39,19 +34,25 @@ public:
   class itDiccNat{
   public:
     itDiccNat();
-    itDiccNat(Lista<tupla*> &l);
+    itDiccNat(Lista<typename diccNat<alpha>::tupla*> &l);
     bool haySiguiente();
-    tupla& siguiente();
+    typename diccNat<alpha>::tupla& siguiente();
     alpha& siguienteSignificado();
     void avanzar();
     bool operator==(const typename diccNat<alpha>::itDiccNat& otro) const;
 
   private:
-    typename Lista<tupla*>::Iterador _iteradorLista;
+    typename Lista<typename diccNat<alpha>::tupla*>::Iterador _iteradorLista;
   };
 
 
 private:
+  //Tupla clave-significado
+  struct tupla{
+    Nat clave;
+    alpha significado;
+  };
+
   Vector< Lista<tupla> > _tabla;
   Lista<tupla*> _listaIterable;
   Conj<Nat> _clavesIterables; //SOLUCION A LA COMPLEJIDAD PEDIDA PARA ITERADOR DE CLAVES
