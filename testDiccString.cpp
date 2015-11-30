@@ -164,17 +164,18 @@ void test_IteradorAFondo(){
 	it.Retroceder();
 	assert(it.SiguienteSignificado() == mipos);
 	assert(it.AnteriorSignificado() == mipos2);
+	it.Retroceder();
+	it.Retroceder();
 	midicfull->Eliminar(".");
 	DiccString<Posicion>::Iterador itNuevo =  midicfull->CrearIt();
 	i = 0;
 	assert(itNuevo.HaySiguiente());
 	assert(itNuevo.SiguienteSignificado() == mipos3);
 	while(itNuevo.HaySiguiente()){
-		i++;
-		itNuevo.Avanzar();
+	 	i++;
+	 	itNuevo.Avanzar();
 	}
 	assert(i==2);
-	it.Retroceder();
 	delete midicfull;
 }
 

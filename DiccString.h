@@ -17,15 +17,6 @@ class DiccString{
 
 	class Iterador;
 
-	struct Nodo{
-		Arreglo<Nodo> arbolTrie;
-		alpha info;
-		bool infoValida;
-		typename Conj<String>::Iterador clave;
-		typename Lista<Nodo*>::Iterador infoEnLista;
-	};
-
-	//CrearDiccionario
 	DiccString();
 
 	bool Definido(String c);
@@ -40,7 +31,7 @@ class DiccString{
 
 		public:
 
-			Iterador(Lista<Nodo*> &lista);
+			Iterador(Lista<typename DiccString<alpha>::Nodo*> &lista);
 			bool HaySiguiente();
 			bool HayAnterior();
 			alpha& SiguienteSignificado();
@@ -50,10 +41,18 @@ class DiccString{
 			bool operator == (const typename DiccString<alpha>::Iterador& otro) const;
 
 
-		private: typename Lista<Nodo*>::Iterador iteradorLista;
+		private: typename Lista<typename DiccString<alpha>::Nodo*>::Iterador iteradorLista;
 	};
 
 	private:
+
+	struct Nodo{
+		Arreglo<Nodo> arbolTrie;
+		alpha info;
+		bool infoValida;
+		typename Conj<String>::Iterador clave;
+		typename Lista<Nodo*>::Iterador infoEnLista;
+	};
 
 	Arreglo<Nodo> raiz;
 	Lista<Nodo*> listaIterable;
@@ -75,8 +74,7 @@ class DiccString{
 
 	Nat ord(char caracter){
 		return int(caracter);
-	}
-
+	}	
 };
 
 template <typename alpha>
