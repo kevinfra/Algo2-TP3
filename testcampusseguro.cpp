@@ -85,7 +85,7 @@ void test_ingresar_estudiante(){
 	Posicion pos;
 	pos.x = 2;
 	pos.y = 0;
-	dicc.Definir(0, pos);
+	dicc.Definir(2, pos);
 
 	CampusSeguro campusSeguro(campus, dicc);
 
@@ -99,8 +99,10 @@ void test_ingresar_estudiante(){
 
 	ASSERT(campusSeguro.PosEstudianteYHippie("manuelmena") == pos);
 
-	ASSERT_EQ(campusSeguro.CantSanciones(0), 1);
 
+	ASSERT_EQ(campusSeguro.CantSanciones(2), 1);
+
+	cout << "asdsdds" << endl;
 
 	//AGREGO TESTS CON VARIOS CASOS 
 	Campus campus1(5,5);
@@ -1072,11 +1074,11 @@ void test_mover_estudiante(){
 
 int main(int argc, char **argv)
 {
-	RUN_TEST(test_simple);
-	RUN_TEST(test_constructor_campus_seguro);
+	//RUN_TEST(test_simple);
+	//RUN_TEST(test_constructor_campus_seguro);
 	RUN_TEST(test_ingresar_estudiante);
-	RUN_TEST(test_ingresar_hippie);
-	RUN_TEST(test_mover_estudiante);
+	//RUN_TEST(test_ingresar_hippie);
+	//RUN_TEST(test_mover_estudiante);
 
 	/********************************************************************
 	 * TODO: escribir casos de test exhaustivos para todas              *

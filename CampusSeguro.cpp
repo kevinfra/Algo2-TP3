@@ -198,7 +198,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 	//As as = posicionesAgente[3];
 	//as.datos.siguienteSignificado().itConjMismasSanc.Avanzar();
 
-/*	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
+	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 		if(this->posicionesAgente[i].datos.haySiguiente()){
 			cout << endl;
 			cout << "agente: " << this->posicionesAgente[i].agente << endl;
@@ -212,11 +212,10 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 			cout << endl;
 		}
 	}
-}*/
+
 
 	if(!this->grilla.Ocupada(pos)){
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
-
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
 		Conj<As> conjAgParaSanc = AgParaPremSanc(conjVecinos);
 		SancionarAgentes(conjAgParaSanc);
@@ -226,9 +225,11 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 	if(CantHippiesVecinos(conjVecinos) < 2){
 		this->estudiantes.Definir(e, pos);
 		this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] = e;
+
 	} else{
 		this->hippies.Definir(e, pos);
 		this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = e;
+
 	}
 
 	Conj<NombrePosicion> conjHippiesRodEst = HippiesRodeadosEstudiantes(conjVecinos);
@@ -247,11 +248,12 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 		}
 	}
 
-
 	//Las Capturas se actualizan en HippiesRodeadosAs
 	Conj<NombrePosicion> conjHippiesRodAs = HippiesRodeadosAs(conjVecinos);
+							
 
 	if(conjHippiesRodAs.Cardinal() > 0){
+
 		typename Conj<NombrePosicion>::Iterador itHAs = conjHippiesRodAs.CrearIt();
 		while(itHAs.HaySiguiente()){
 			this->hippies.Eliminar(itHAs.Siguiente().nombre);
@@ -261,10 +263,11 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 		}
 	}
 
-
 	Conj<NombrePosicion> conjEstRodHip = EstudiantesRodeadosHippies(conjVecinos);
+		
 
 	if(conjEstRodHip.Cardinal() > 0){
+
 		typename Conj<NombrePosicion>::Iterador itEstH = conjEstRodHip.CrearIt();
 		while(itEstH.HaySiguiente()){
 			this->estudiantes.Eliminar(itEstH.Siguiente().nombre);
@@ -277,8 +280,8 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 		}
 	}
 
-
 	Conj<Posicion> conjEstRodAs = EstudiantesRodeadosAs(conjVecinos);
+
 
 	if(conjEstRodAs.Cardinal() > 0){
 		typename Conj<Posicion>::Iterador itEstAs = conjEstRodAs.CrearIt();
@@ -296,8 +299,8 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 	}
 
 	}
-
-
+	personalAS.obtener(2).cantSanc++;
+ cout << personalAS.obtener(2).cantSanc << endl;
 }
 
 

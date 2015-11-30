@@ -9,13 +9,20 @@ using namespace aed2;
 template<typename alpha>
 class diccNat{
 public:
+
+  //Tupla clave-significado
+  struct tupla{
+    Nat clave;
+    alpha significado;
+  };
+
   //forward declarations
   class itDiccNat;
 
 
   //Constructor
   diccNat();
-  diccNat(const Vector<typename diccNat<alpha>::tupla> &v); //CrearDiccionario
+  diccNat(const Vector<tupla> &v); //CrearDiccionario
 
   //Destructor
 //  ~diccNat();
@@ -34,7 +41,7 @@ public:
   class itDiccNat{
   public:
     itDiccNat();
-    itDiccNat(Lista<typename diccNat<alpha>::tupla*> &l);
+    itDiccNat(Lista<tupla*> &l);
     bool haySiguiente();
     typename diccNat<alpha>::tupla& siguiente();
     alpha& siguienteSignificado();
@@ -42,17 +49,11 @@ public:
     bool operator==(const typename diccNat<alpha>::itDiccNat& otro) const;
 
   private:
-    typename Lista<typename diccNat<alpha>::tupla*>::Iterador _iteradorLista;
+    typename Lista<tupla*>::Iterador _iteradorLista;
   };
 
 
 private:
-  //Tupla clave-significado
-  struct tupla{
-    Nat clave;
-    alpha significado;
-  };
-
   Vector< Lista<tupla> > _tabla;
   Lista<tupla*> _listaIterable;
   Conj<Nat> _clavesIterables; //SOLUCION A LA COMPLEJIDAD PEDIDA PARA ITERADOR DE CLAVES
@@ -72,9 +73,9 @@ diccNat<alpha>::diccNat(const Vector<tupla> &v){
     Nat k = (v[i].clave % v.Longitud());
     this->_tabla[k].AgregarAtras(v[i]);
     Nat q = this->_tabla[k].Longitud();
-    tupla* puntATupla = new tupla;
-    *puntATupla = (this->_tabla[k][q-1]);
-    this->_listaIterable.AgregarAtras(puntATupla);
+    //tupla* puntATupla = new tupla;
+    //*puntATupla = (this->_tabla[k][q-1]);
+    this->_listaIterable.AgregarAtras(*this->_tabla[k][q-1]);
 
     //Creo _clavesIterables
     this->_clavesIterables.Agregar(v[i].clave);
