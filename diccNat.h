@@ -73,9 +73,9 @@ diccNat<alpha>::diccNat(const Vector<tupla> &v){
     Nat k = (v[i].clave % v.Longitud());
     this->_tabla[k].AgregarAtras(v[i]);
     Nat q = this->_tabla[k].Longitud();
-    //tupla* puntATupla = new tupla;
-    //*puntATupla = (this->_tabla[k][q-1]);
-    this->_listaIterable.AgregarAtras(*this->_tabla[k][q-1]);
+    tupla* puntATupla = new tupla();
+    *puntATupla = (this->_tabla[k][q-1]);
+    this->_listaIterable.AgregarAtras(puntATupla);
 
     //Creo _clavesIterables
     this->_clavesIterables.Agregar(v[i].clave);

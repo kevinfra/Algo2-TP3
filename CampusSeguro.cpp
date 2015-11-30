@@ -299,8 +299,6 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 	}
 
 	}
-	personalAS.obtener(2).cantSanc++;
- cout << personalAS.obtener(2).cantSanc << endl;
 }
 
 
