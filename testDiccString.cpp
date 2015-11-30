@@ -27,6 +27,14 @@ void test_ObtenerDefinido(){
 	ASSERT_EQ(midic.Obtener("ab"),3);
 }
 
+void test_NombreSuperLargo(){
+	DiccString<char> midic;
+	midic.Definir("SuperNombreDeHippieEstudianteTodoJunto",'a');
+	ASSERT_EQ(midic.Obtener("SuperNombreDeHippieEstudianteTodoJunto"),'a');
+	midic.Eliminar("SuperNombreDeHippieEstudianteTodoJunto");
+	ASSERT_EQ(midic.Definido("SuperNombreDeHippieEstudianteTodoJunto"),false);
+}
+
 void test_Eliminar(){
 	DiccString<int> midic;
 	midic.Definir("abc",45);
@@ -103,15 +111,71 @@ void test_SimbolosRaros(){
 	Posicion mipos;
 	mipos.x = 0;
 	mipos.y = 1;
+	Posicion mipos2;
+	mipos2.x = 1;
+	mipos2.y = 1;
+	Posicion mipos3;
+	mipos3.x = 2;
+	mipos3.y = 2;
 	midic->Definir("?':-",mipos);
 	midic->Definir("v",mipos);
 	midic->Definir(";;;+++*}{",mipos);
+	midic->Definir("?':",mipos2);
+	midic->Definir("?':2",mipos3);
+	midic->Definir("1",mipos);
+	midic->Definir("2",mipos3);
 	assert(midic->Definido(";;;+++*}{"));
 	assert(midic->Obtener("?':-").x == mipos.x);
 	assert(midic->Definido("?':-"));
 	midic->Eliminar("?':-");
+	midic->Eliminar("1");
+	assert(midic->Obtener("?':2").y == 2);
 	assert(!midic->Definido("?':-"));
+	assert(midic->Definido("?':"));
+	assert(midic->Definido("?':2"));
 	delete midic;
+}
+
+void test_IteradorAFondo(){
+	DiccString<Posicion> *midicfull = new DiccString<Posicion>();
+	Posicion mipos;
+	mipos.x = 0;
+	mipos.y = 1;
+	Posicion mipos2;
+	mipos2.x = 1;
+	mipos2.y = 1;
+	Posicion mipos3;
+	mipos3.x = 2;
+	mipos3.y = 2;
+	midicfull->Definir(".",mipos);
+	midicfull->Definir("++",mipos2);
+	midicfull->Definir("+.",mipos3);
+	DiccString<Posicion>::Iterador it =  midicfull->CrearIt();
+	int i = 0;
+	assert(it.HaySiguiente());
+	assert(it.SiguienteSignificado() == mipos3);
+	while(it.HaySiguiente()){
+		i++;
+		it.Avanzar();
+	}
+	assert(it.HayAnterior());
+	assert(i==3);
+	assert(it.AnteriorSignificado() == mipos);
+	it.Retroceder();
+	assert(it.SiguienteSignificado() == mipos);
+	assert(it.AnteriorSignificado() == mipos2);
+	midicfull->Eliminar(".");
+	DiccString<Posicion>::Iterador itNuevo =  midicfull->CrearIt();
+	i = 0;
+	assert(itNuevo.HaySiguiente());
+	assert(itNuevo.SiguienteSignificado() == mipos3);
+	while(itNuevo.HaySiguiente()){
+		i++;
+		itNuevo.Avanzar();
+	}
+	assert(i==2);
+	it.Retroceder();
+	delete midicfull;
 }
 
 
@@ -127,5 +191,7 @@ int main(int argc, char **argv)
   RUN_TEST(test_MayusculasNumeros);
   RUN_TEST(test_EliminarDePosicion);
   RUN_TEST(test_SimbolosRaros);
+  RUN_TEST(test_IteradorAFondo);
+  RUN_TEST(test_NombreSuperLargo);
   return 0;
 }
