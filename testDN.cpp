@@ -21,7 +21,7 @@ void test_crearDic(){
 
 void test_obtenerDefinidoYredefinir(){
   Vector< diccNat<Nat>::tupla > v;
-  for(Nat i = 0;i < 10000;i++){
+  for(Nat i = 0;i < 100;i++){
     diccNat<Nat>::tupla t;
     t.clave = i+i;
     t.significado = i+10;
@@ -29,7 +29,6 @@ void test_obtenerDefinidoYredefinir(){
   }
   diccNat<Nat> d(v);
   if(d.definido(6)){
-    Nat res = (d.obtener(9999+9999));
     d.redefinir(6, 8);
     ASSERT_EQ((d.obtener(6)),8);
   }
