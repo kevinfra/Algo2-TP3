@@ -95,13 +95,13 @@ CampusSeguro::CampusSeguro(const Campus& c, const Dicc<Agente, Posicion>& dicc) 
 	}
 
 	//ESTO ES PARA TESTING DE POSICIONESAGENTE[I]. DESCOMENTAR PARA TESTEAR
-	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
+/*	for(Nat i = 0; i < this->grilla.Filas()*this->grilla.Columnas(); i++){
 			if(this->posicionesAgente[i].datos.haySiguiente()){
 				cout << endl;
 				cout << "agente: " << this->posicionesAgente[i].agente << endl;
 				cout << "clave: " << this->posicionesAgente[i].datos.siguiente().clave << endl;
 			}}
-
+*/
 
 }
 
@@ -250,7 +250,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 
 	//Las Capturas se actualizan en HippiesRodeadosAs
 	Conj<NombrePosicion> conjHippiesRodAs = HippiesRodeadosAs(conjVecinos);
-							
+
 
 	if(conjHippiesRodAs.Cardinal() > 0){
 
@@ -264,7 +264,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 	}
 
 	Conj<NombrePosicion> conjEstRodHip = EstudiantesRodeadosHippies(conjVecinos);
-		
+
 
 	if(conjEstRodHip.Cardinal() > 0){
 

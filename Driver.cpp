@@ -23,7 +23,10 @@ void Driver::crearCampus(Nat ancho, Nat alto)
 
 void Driver::agregarObstaculo(Posicion p)
 {
-	this->campus.AgregarObstaculo(p);
+	Posicion pNueva;
+	pNueva.x = p.x-1;
+	pNueva.y = p.y-1;
+	this->campus.AgregarObstaculo(pNueva);
 }
 
 
@@ -44,7 +47,10 @@ Nat Driver::columnas() const
 bool Driver::ocupada(Posicion p) const
 {
 	Campus c = this->campus;
-  return c.Ocupada(p);
+	Posicion pNueva;
+	pNueva.x = p.x-1;
+	pNueva.y = p.y-1;
+  return c.Ocupada(pNueva);
 }
 
 
@@ -55,17 +61,29 @@ void  Driver::comenzarRastrillaje(const Dicc<Agente,Posicion>& d) {
 
 void Driver::ingresarEstudiante(Nombre n, Posicion p)
 {
-  this->campusSeguro.IngresarEstudiante(n, p);
+	Posicion pNueva;
+	pNueva.x = p.x-1;
+	pNueva.y = p.y-1;
+  this->campusSeguro.IngresarEstudiante(n, pNueva);
 }
 
 void Driver::ingresarHippie(Nombre n, Posicion p)
 {
-  this->campusSeguro.IngresarHippie(n,p);
+	Posicion pNueva;
+	pNueva.x = p.x-1;
+	pNueva.y = p.y-1;
+  this->campusSeguro.IngresarHippie(n,pNueva);
 }
 
 void Driver::moverEstudiante(Nombre n, Direccion d)
 {
-  this->campusSeguro.MoverEstudiante(n,d);
+	Direccion dirPosta;
+	if(d == arriba){
+		dirPosta = abajo;
+	}else if(d == abajo){
+		dirPosta = arriba;
+	}
+  this->campusSeguro.MoverEstudiante(n,dirPosta);
 }
 
 void Driver::moverHippie(Nombre n)
@@ -158,7 +176,11 @@ Nat Driver::cantAgentes() const
 Posicion Driver::posEstudianteYHippie(Nombre n) const
 {
 	CampusSeguro cs = this->campusSeguro;
-	return cs.PosEstudianteYHippie(n);
+	Posicion pFinal = cs.PosEstudianteYHippie(n);
+	pFinal.y +=1;
+	pFinal.x +=1;
+	return pFinal;
+
 }
 
 Posicion Driver::posAgente(Agente pl) const
