@@ -77,13 +77,12 @@ void Driver::ingresarHippie(Nombre n, Posicion p)
 
 void Driver::moverEstudiante(Nombre n, Direccion d)
 {
-	Direccion dirPosta;
 	if(d == arriba){
-		dirPosta = abajo;
+		d = abajo;
 	}else if(d == abajo){
-		dirPosta = arriba;
+		d = arriba;
 	}
-  this->campusSeguro.MoverEstudiante(n,dirPosta);
+  this->campusSeguro.MoverEstudiante(n,d);
 }
 
 void Driver::moverHippie(Nombre n)
