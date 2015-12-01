@@ -11,7 +11,7 @@ LDFLAGS=
 INCDIR=
 
 # Agregar acá los archivos .cpp a compilar [COMPLETAR]
-SOURCES=testcampusseguro.cpp CampusSeguro.cpp Campus.cpp Driver.cpp
+SOURCES=test.cpp CampusSeguro.cpp Campus.cpp Driver.cpp
 
 # Objetos que serán generados (no tocar)
 OBJECTS=$(SOURCES:.cpp=.o)
