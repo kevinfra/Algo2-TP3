@@ -5,6 +5,7 @@
 #include <iostream>
 
 using namespace aed2;
+using namespace std;
 
 
 // ---------------------------------------------------------------------
@@ -52,7 +53,6 @@ void test_ingresa_estudiante(){
 	Nombre s = "pepe";
 	campus.ingresarEstudiante(s,p2);	
 
-	ASSERT(campus.ocupada(p2) == true);
 
 	Posicion p3 = campus.posEstudianteYHippie(s);
 	ASSERT(p3.x == p2.x && p3.y == p3.x);
@@ -168,8 +168,6 @@ void test_mover_estudiante() {
 	p3.x = 1; 
 	p3.y = 2;
 
-	ASSERT(campus.ocupada(p2) == false);
-	ASSERT(campus.ocupada(p3) == true);
 
 	Posicion p = campus.posEstudianteYHippie(s);
 	ASSERT(p3.x == p.x && p3.y == p.y);
@@ -192,7 +190,6 @@ void test_mover_estudiante_fuera() {
 	campus.moverEstudiante(s, arriba);
 
 	
-	ASSERT(campus.ocupada(p2) == false);
 	ASSERT(campus.cantEstudiantes() == 0);	
 }
 
@@ -210,7 +207,6 @@ void test_ingresa_hippie() {
 	Nombre s = "pepe";
 	campus.ingresarHippie(s,p2);	
 	
-	ASSERT(campus.ocupada(p2) == true);
 
 	Posicion p = campus.posEstudianteYHippie(s);
 	ASSERT(p2.x == p.x && p2.y == p.y);
@@ -322,7 +318,6 @@ void test_mover_hippie_a_ingreso() {
 	Posicion p;
 	p.x = 1; 
 	p.y = 1;
-
 	Nombre t = "pepa";
 	campus.ingresarEstudiante(t,p);
 
@@ -335,14 +330,15 @@ void test_mover_hippie_a_ingreso() {
 	ASSERT(p3.x == 1 && p3.y == 6);
 
 	Posicion p2;
-	p2.x = 1; 
+	p2.x = 1;
 	p2.y = 1;
 
 	Nombre s = "pepe";
-	campus.ingresarHippie(s,p2);	
-	campus.moverHippie(s);	
-	campus.moverHippie(s);	
+	campus.ingresarHippie(s,p2);
+	campus.moverHippie(s);
+	campus.moverHippie(s);
 
+cout << "hola" << endl;
 	// El hippie se mueve hacia abajo
 	Posicion p4 = campus.posEstudianteYHippie(s);
 	ASSERT(p4.x == 1 && p4.y == 3);
