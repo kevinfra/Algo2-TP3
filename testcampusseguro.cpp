@@ -225,44 +225,17 @@ void test_ingresar_estudiante(){
 	ASSERT(conjK2.Pertenece(1));
 	ASSERT(conjK2.Pertenece(2));
 	Conj<Agente> conjMS2_a = cs2.ConMismasSanciones(1);
-//	TODO cuando quiero el conjunto de conmismassanciones del segundo agente se rompe todo
-//	Conj<Agente> conjMS2_b = cs2.ConMismasSanciones(2);
+	Conj<Agente> conjMS2_b = cs2.ConMismasSanciones(2);
 	ASSERT(conjMS2_a.Cardinal() == 2);
-
-/*	
-	typename Conj<Agente>::Iterador it1 = conjK2.CrearIt();
-	cout << endl << endl;
-	cout << "conksanciones" << endl;
-	while(it1.HaySiguiente()){
-		cout << "agente: " << it1.Siguiente() << endl;
-		it1.Avanzar();
-	}
-
-	typename Conj<Agente>::Iterador it2 = conjMS2_a.CrearIt();
-	cout << endl << endl;
-	cout << "con mismas sanciones 1" << endl;
-	while(it2.HaySiguiente()){
-		cout << "agente: " << it2.Siguiente() << endl;
-		it2.Avanzar();
-	}
-
-	typename Conj<Agente>::Iterador it3 = conjMS2_b.CrearIt();
-	cout << endl << endl;
-	cout << "con mismas sanciones 2" << endl;
-	while(it3.HaySiguiente()){
-		cout << "agente: " << it3.Siguiente() << endl;
-		it3.Avanzar();
-	}
-*/
-/*	ASSERT(conjMS2_a == conjK2);
-	//TODO No funciona justo este conjunto de los dos de ConMismasSanciones
-//	ASSERT(conjMS2_b == conjK2);
+	ASSERT(conjMS2_b.Cardinal() == 2);
+	ASSERT(conjMS2_a == conjK2);
+	ASSERT(conjMS2_b == conjK2);
 	ASSERT(cs2.MasVigilante() == 1);
 	ASSERT(cs2.CantHippiesAtrapados(1) == 0);
 	ASSERT(cs2.CantHippiesAtrapados(2) == 0);
 	ASSERT(cs2.CantSanciones(1) == 1);
 	ASSERT(cs2.CantSanciones(2) == 1);
-*/
+
 
 	/*	Test3: Hay 2 Hippies y un Agente, el agente esta lejos.
 	 *	Entra un estudiante y queda atrapado por hippies, se debe transformar
