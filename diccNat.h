@@ -30,6 +30,7 @@ public:
   bool definido(Nat n);
   Nat cantClaves();
   Conj<Nat>::Iterador crearItClaves();
+  diccNat<alpha>& operator=(const diccNat<alpha>& otro);
 
   //Operaciones del Iterador
   itDiccNat crearIt();
@@ -38,7 +39,7 @@ public:
   class itDiccNat{
   public:
     itDiccNat();
-    itDiccNat(Lista<tupla> &l);
+    itDiccNat(Lista<tupla*> &l);
     bool haySiguiente();
     typename diccNat<alpha>::tupla& siguiente();
     alpha& siguienteSignificado();
@@ -47,13 +48,13 @@ public:
     bool operator==(const typename diccNat<alpha>::itDiccNat& otro) const;
 
   private:
-    typename Lista<tupla>::Iterador _iteradorLista;
+    typename Lista<tupla*>::Iterador _iteradorLista;
   };
 
 
 private:
   Vector< Lista<tupla> > _tabla;
-  Lista<tupla> _listaIterable;
+  Lista<tupla*> _listaIterable;
   Conj<Nat> _clavesIterables; //SOLUCION A LA COMPLEJIDAD PEDIDA PARA ITERADOR DE CLAVES
 };
 
@@ -73,7 +74,7 @@ diccNat<alpha>::diccNat(const Vector<tupla> &v){
     Nat q = this->_tabla[k].Longitud();
     //tupla* puntATupla = new tupla();
     //*puntATupla = (this->_tabla[k][q-1]);
-    this->_listaIterable.AgregarAtras(this->_tabla[k][q-1]);
+    this->_listaIterable.AgregarAtras(&this->_tabla[k][q-1]);
 
     //Creo _clavesIterables
     this->_clavesIterables.Agregar(v[i].clave);
@@ -141,7 +142,7 @@ typename diccNat<alpha>::itDiccNat diccNat<alpha>::crearIt(){
 }
 
 template<typename alpha>
-diccNat<alpha>::itDiccNat::itDiccNat(Lista<tupla> &l)
+diccNat<alpha>::itDiccNat::itDiccNat(Lista<tupla*> &l)
   :     _iteradorLista(l.CrearIt())
 {}
 
@@ -155,12 +156,12 @@ bool diccNat<alpha>::itDiccNat::haySiguiente(){
 
 template<typename alpha>
 typename diccNat<alpha>::tupla& diccNat<alpha>::itDiccNat::siguiente(){
-	return (this->_iteradorLista.Siguiente());
+	return *(this->_iteradorLista.Siguiente());
 }
 
 template<typename alpha>
 alpha& diccNat<alpha>::itDiccNat::siguienteSignificado(){
-	return (this->_iteradorLista.Siguiente()).significado;
+	return (this->_iteradorLista.Siguiente())->significado;
 }
 
 
@@ -179,5 +180,26 @@ bool diccNat<alpha>::itDiccNat::operator==(const typename diccNat<alpha>::itDicc
 	return (_iteradorLista == otro._iteradorLista);
 }
 
+template<typename alpha>
+diccNat<alpha>& diccNat<alpha>::operator=(const diccNat<alpha>& otro){
+  this->_listaIterable = Lista<tupla*>();
+  this->_tabla = otro._tabla;
+  this->_clavesIterables = otro._clavesIterables;
+  Conj<Nat>::Iterador itClaves = this->crearItClaves();
+  while(itClaves.HaySiguiente()){
+    Nat k = (itClaves.Siguiente() % this->_tabla.Longitud());
+    Nat q = 0;
+    typename Lista<tupla>::Iterador itLista = this->_tabla[k].CrearIt();
+    while(itLista.HaySiguiente() && itLista.Siguiente().clave != itClaves.Siguiente()){
+      itLista.Avanzar();
+      q++;
+    }
+    if(itLista.HaySiguiente() && itLista.Siguiente().clave == this->_tabla[k][q].clave){
+      this->_listaIterable.AgregarAtras(&this->_tabla[k][q]);
+    }
+          itClaves.Avanzar();
+   }
+   return *this;
+}
 
 #endif //DICCIONARIO_NAT_FIJO
