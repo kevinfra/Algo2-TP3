@@ -7,18 +7,22 @@
 namespace aed2 {
 
 Driver::Driver()
-{}
+{
+	campus = NULL;
+	campusSeguro = NULL;
+}
 
-Driver::~Driver()
-{}
+Driver::~Driver() {
+	delete campusSeguro;
+	delete campus;
+}
 
 
 // Generadores del Campus
 
 void Driver::crearCampus(Nat ancho, Nat alto)
 {
-	Campus caca(ancho, alto);
-	this->campus = caca;
+	this->campus = new Campus(ancho, alto);
 }
 
 void Driver::agregarObstaculo(Posicion p)
@@ -26,7 +30,7 @@ void Driver::agregarObstaculo(Posicion p)
 	Posicion pNueva;
 	pNueva.x = p.x-1;
 	pNueva.y = p.y-1;
-	this->campus.AgregarObstaculo(pNueva);
+	this->campus->AgregarObstaculo(pNueva);
 }
 
 
@@ -34,29 +38,33 @@ void Driver::agregarObstaculo(Posicion p)
 
 Nat Driver::filas() const
 {
-	Campus c = this->campus;
-  return c.Filas();
+  return this->campus->Filas();
 }
 
 Nat Driver::columnas() const
 {
-	Campus c = this->campus;
-  return c.Columnas();
+  return this->campus->Columnas();
 }
 
 bool Driver::ocupada(Posicion p) const
 {
-	Campus c = this->campus;
 	Posicion pNueva;
 	pNueva.x = p.x-1;
 	pNueva.y = p.y-1;
-  return c.Ocupada(pNueva);
+  return this->campus->Ocupada(pNueva);
 }
 
 
 // Generadores de CampusSeguro
 void  Driver::comenzarRastrillaje(const Dicc<Agente,Posicion>& d) {
-	this->campusSeguro = CampusSeguro(this->campus,d);
+	Dicc<Agente, Posicion> dicc = d;
+	Dicc<Agente, Posicion>::Iterador itDicc = dicc.CrearIt();
+	while(itDicc.HaySiguiente()) {
+		itDicc.Siguiente().significado.x = itDicc.Siguiente().significado.x - 1;
+		itDicc.Siguiente().significado.y = itDicc.Siguiente().significado.y - 1;
+		itDicc.Avanzar();
+	}
+	this->campusSeguro = new CampusSeguro(*(this->campus), dicc);
 }
 
 void Driver::ingresarEstudiante(Nombre n, Posicion p)
@@ -64,7 +72,7 @@ void Driver::ingresarEstudiante(Nombre n, Posicion p)
 	Posicion pNueva;
 	pNueva.x = p.x-1;
 	pNueva.y = p.y-1;
-  this->campusSeguro.IngresarEstudiante(n, pNueva);
+  this->campusSeguro->IngresarEstudiante(n, pNueva);
 }
 
 void Driver::ingresarHippie(Nombre n, Posicion p)
@@ -72,22 +80,22 @@ void Driver::ingresarHippie(Nombre n, Posicion p)
 	Posicion pNueva;
 	pNueva.x = p.x-1;
 	pNueva.y = p.y-1;
-  this->campusSeguro.IngresarHippie(n,pNueva);
+  this->campusSeguro->IngresarHippie(n,pNueva);
 }
 
 void Driver::moverEstudiante(Nombre n, Direccion d)
 {
-  this->campusSeguro.MoverEstudiante(n,d);
+  this->campusSeguro->MoverEstudiante(n,d);
 }
 
 void Driver::moverHippie(Nombre n)
 {
-  this->campusSeguro.MoverHippie(n);
+  this->campusSeguro->MoverHippie(n);
 }
 
 void Driver::moverAgente(Agente pl)
 {
-  this->campusSeguro.MoverAgente(pl);
+  this->campusSeguro->MoverAgente(pl);
 }
 
 
@@ -96,8 +104,8 @@ void Driver::moverAgente(Agente pl)
 Nombre Driver::iesimoEstudiante(Nat i) const
 {
 	//PRE: i < #estudiantes
-	CampusSeguro cs = this->campusSeguro;
-  Conj<Nombre>::Iterador it = cs.Estudiantes();
+	CampusSeguro cs = *(this->campusSeguro);
+  	Conj<Nombre>::Iterador it = cs.Estudiantes();
 	Nat k = 0;
 	while(k < i && it.HaySiguiente()){
 		it.Avanzar();
@@ -109,8 +117,8 @@ Nombre Driver::iesimoEstudiante(Nat i) const
 Nombre Driver::iesimoHippie(Nat i) const
 {
 	//PRE: i < #hippies
-	CampusSeguro cs = this->campusSeguro;
-  Conj<Nombre>::Iterador it = cs.Hippies();
+	CampusSeguro cs = *(this->campusSeguro);
+  	Conj<Nombre>::Iterador it = cs.Hippies();
 	Nat k = 0;
 	while(k < i && it.HaySiguiente()){
 		it.Avanzar();
@@ -122,7 +130,7 @@ Nombre Driver::iesimoHippie(Nat i) const
 Nat Driver::iesimoAgente(Nat i) const
 {
 	//PRE: i < #Agentes
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
   Conj<Agente>::Iterador it = cs.Agentes();
 	Nat k = 0;
 	while(k < i && it.HaySiguiente()){
@@ -133,7 +141,7 @@ Nat Driver::iesimoAgente(Nat i) const
 }
 
 Nat Driver::cantEstudiantes() const {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
   Conj<Nombre>::Iterador it = cs.Estudiantes();
 	Nat k = 0;
 	while(it.HaySiguiente()){
@@ -145,7 +153,7 @@ Nat Driver::cantEstudiantes() const {
 
 Nat Driver::cantHippies() const
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
   Conj<Nombre>::Iterador it = cs.Hippies();
 	Nat k = 0;
 	while(it.HaySiguiente()){
@@ -157,7 +165,7 @@ Nat Driver::cantHippies() const
 
 Nat Driver::cantAgentes() const
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
   Conj<Agente>::Iterador it = cs.Agentes();
 	Nat k = 0;
 	while(it.HaySiguiente()){
@@ -169,7 +177,7 @@ Nat Driver::cantAgentes() const
 
 Posicion Driver::posEstudianteYHippie(Nombre n) const
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
 	Posicion pFinal = cs.PosEstudianteYHippie(n);
 	pFinal.y +=1;
 	pFinal.x +=1;
@@ -179,19 +187,19 @@ Posicion Driver::posEstudianteYHippie(Nombre n) const
 
 Posicion Driver::posAgente(Agente pl) const
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
 	return cs.PosAgente(pl);
 }
 
 Nat Driver::cantSanciones(Agente pl) const
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
 	return cs.CantSanciones(pl);
 }
 
 Nat Driver::cantHippiesAtrapados(Agente pl) const
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
 	return cs.CantHippiesAtrapados(pl);
 }
 
@@ -200,19 +208,19 @@ Nat Driver::cantHippiesAtrapados(Agente pl) const
 
 Agente Driver::masVigilante() const
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
 	return cs.MasVigilante();
 }
 
 const Conj<Agente> Driver::conMismasSanciones(Agente a) const
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
 	return cs.ConMismasSanciones(a);
 }
 
 const Conj<Agente> Driver::conKSanciones(Nat k)
 {
-	CampusSeguro cs = this->campusSeguro;
+	CampusSeguro cs = *(this->campusSeguro);
 	return cs.ConKSanciones(k);
 }
 
