@@ -1408,7 +1408,7 @@ CampusSeguro& CampusSeguro::operator= (const CampusSeguro& otro){
 	this->posicionesHippies 	= otro.posicionesHippies;
 
 	// Crea el vector agentes ordenados por clave y se lo asigna al campo agentesOrdenados de otro
-	typename diccNat<datosAgente>::itDiccNat it = otro.personalAS.crearIt();
+	typename diccNat<datosAgente>::itDiccNat it = this->personalAS.crearIt();
 	bool ordenado;
 	while(it.haySiguiente()){
 		Nat i = 0;
