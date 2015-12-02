@@ -1406,33 +1406,71 @@ CampusSeguro& CampusSeguro::operator= (const CampusSeguro& otro){
 	this->hippies				= otro.hippies;					// TODO: fijarse si hay que reformar el operator= por cuestiones de iteradores para el DiccString
 	this->posicionesEstudiantes = otro.posicionesEstudiantes;
 	this->posicionesHippies 	= otro.posicionesHippies;
+	this->personalAS 			= otro.personalAS;				// Los iteradores quedan rotos, los arreglo mas abajo
+	this->posicionesAgente 		= otro.posicionesAgente; 		// Los iteradores quedan rotos, los arreglo mas abajo
+	this->masVigilante 			= otro.masVigilante;			// El iterador queda roto, lo arreglo mas abajo
 
+	// personalAS
+	// Itero sobre la tabla. Para cada elemento reemplazo los iteradores dentro de datosAgente con el iterador correspondiente de listaMismasSanc y el del conjunto que contiene
+	typename diccNat<datosAgente>::itDiccNat itHash = this->personalAS.crearIt();
+//	while(itHash.haySiguiente()){
+//		// Itero sobre la lista hasta encontrar el nodo correspondiente
+//		Lista<kSanc>::Iterador itLista = this->listaMismasSanc.CrearIt();
+//		while(itLista.HaySiguiente() && itHash.siguiente().significado.cantSanc != itLista.Siguiente().sanc)
+//			itLista.Avanzar();
+//
+//		// Asigno el iterador de la lista
+//		itHash.siguiente().significado.itMismasSanc = itLista;
+//
+//		// Itero sobre el conjunto hasta encontrar el agente correspondiente
+//		Conj<Agentes>::Iterador itConjAgentes = itLista.Siguiente().agentes.CrearIt();
+//		while(itConjAgentes.HaySiguiente() && itConjAgentes.Siguiente() != itHash.siguiente().clave)
+//			itConjAgentes.Avanzar();
+//
+//		// Asigno el iterador del conjunto
+//		itHash.siguiente().significado.itConjMismasSanc = itConjAgentes;
+//	}
+
+	// agentesOrdenados
 	// Crea el vector agentes ordenados por clave y se lo asigna al campo agentesOrdenados de otro
-	typename diccNat<datosAgente>::itDiccNat it = otro.personalAS.crearIt();
+	itHash = this->personalAS.crearIt();
 	bool ordenado;
-	while(it.haySiguiente()){
+	while(itHash.haySiguiente()){
 		Nat i = 0;
 		ordenado = true;
-		while(i < otro.agentesOrdenados.Longitud() && ordenado){
-			if (otro.agentesOrdenados[i].agente > it.siguiente().clave){
+		while(i < this->agentesOrdenados.Longitud() && ordenado){
+			if (this->agentesOrdenados[i].agente > itHash.siguiente().clave){
 				ordenado = false;
 			}
 			i++;
 		}
 
 		As tupla;
-		tupla.agente = it.siguiente().clave;
-		tupla.datos = it;
+		tupla.agente = itHash.siguiente().clave;
+		tupla.datos = itHash;
 		this->agentesOrdenados.AgregarAtras(tupla);
-		it.avanzar();
+		itHash.avanzar();
 	}
 
+	// posicionesAgente
+	// Itero sobre la tabla. Arreglo en posicionesAgente los iteradores
+	itHash = this->personalAS.crearIt();
+	while(itHash.haySiguiente()){
+		Posicion posAgente = itHash.siguiente().significado.posicion;
+		this->posicionesAgente[posAgente.y * this->grilla.Columnas() + posAgente.x].datos = itHash;
+		itHash.avanzar();
+	}
 
+	// masVigilante
+	// Itero la tabla en busca del masVigilante
+	itHash = this->personalAS.crearIt();
+	while(itHash.haySiguiente() && itHash.siguiente().clave != otro.masVigilante.agente)
+		itHash.avanzar();
+	this->masVigilante.datos = itHash;
+
+	//arregloMismasSanc
 
 	// TODO: falta
-	// personalAS
-	// posicionesAgente
-	// masVigilante
 	// arregloMismasSanc
 
 	return(*this);
