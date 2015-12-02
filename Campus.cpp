@@ -16,7 +16,8 @@ Campus::Campus(const Nat ancho, const Nat alto){
 }
 
 void Campus::AgregarObstaculo(const Posicion pos){
-	this->obstaculos.Agregar(pos.y*this->columnas + pos.x, true);
+	//this->obstaculos.Agregar(pos.y*this->columnas + pos.x, true);
+	this->obstaculos[pos.y*this->columnas + pos.x] = true;
 }
 
 Nat Campus::Filas(){
