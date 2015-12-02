@@ -348,7 +348,9 @@ void test_mover_hippie_a_ingreso() {
 	ASSERT(p4.x == 1 && p4.y == 3);
 
 	// Hago salir al estudiante, lo muevo a la derecha para no pisar el hippie
+		std::cout << campus.posEstudianteYHippie(t).x << std::endl;
 	campus.moverEstudiante(t, der);
+	std::cout << campus.posEstudianteYHippie(t).x << std::endl;
 	for (int i=0; i < 6; i++) {
 		campus.moverEstudiante(t, arriba);
 	}
@@ -359,7 +361,6 @@ void test_mover_hippie_a_ingreso() {
 	campus.moverHippie(s);
 
 	p4 = campus.posEstudianteYHippie(s);
-
 	//ASSERT(p4.x == 1 && p4.y == 2); COMENTO ESTA LINEA PORQUE EN NUESTRO CASO EL HIPPIE SE QUEDA DONDE ESTA. cout
 
 }
@@ -378,6 +379,7 @@ void test_comenzar_rastrillaje_simple() {
 
 	agentes.Definir(a,p);
 
+	std::cout << "ASD" << std::endl;
 	campus.comenzarRastrillaje(agentes);
 	ASSERT(campus.cantAgentes() == 1);
 }
