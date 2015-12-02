@@ -188,7 +188,10 @@ Posicion Driver::posEstudianteYHippie(Nombre n) const
 Posicion Driver::posAgente(Agente pl) const
 {
 	CampusSeguro cs = *(this->campusSeguro);
-	return cs.PosAgente(pl);
+	Posicion res = cs.PosAgente(pl);
+	res.x++;
+	res.y++;
+	return res;
 }
 
 Nat Driver::cantSanciones(Agente pl) const
