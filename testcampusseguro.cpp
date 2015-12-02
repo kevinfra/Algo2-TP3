@@ -169,6 +169,7 @@ void test_ingresar_estudiante(){
 	Conj<Agente> conjK1 = cs1.ConKSanciones(0);
 	ASSERT(conjK1.Cardinal() == 1);
 	ASSERT(conjK1.Pertenece(1));
+	cout << "peroo" << endl;
 	//TODO falla aca. ConMismasSanciones no funciona
 	Conj<Agente> conjMS1_a = cs1.ConMismasSanciones(1);
 	ASSERT(conjMS1_a == conjK1);
