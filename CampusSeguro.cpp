@@ -429,7 +429,7 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 			itParaMod.siguiente().significado.itMismasSanc = iterListaMismasSanc;
 		}
 
-		if(!iterConjMismasSancCP.HaySiguiente()){	// Veo si el conjunto dentro del nodo quedo vacio
+		if(!iterConjMismasSancCP.HaySiguiente() && !iterConjMismasSancCP.HayAnterior()) {	// Veo si el conjunto dentro del nodo quedo vacio
 			// Borro el nodo anterior de la lista porque no tiene agentes
 			iterListaMismasSancAnterior.EliminarSiguiente();
 		}
