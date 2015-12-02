@@ -256,7 +256,7 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 
 	if(conjHippiesRodAs.Cardinal() > 0){
 		typename Conj<NombrePosicion>::Iterador itHAs = conjHippiesRodAs.CrearIt();
-		
+
 		while(itHAs.HaySiguiente()){
 			this->hippies.Eliminar(itHAs.Siguiente().nombre);
 			this->posicionesHippies[itHAs.Siguiente().pos.y * this->grilla.Columnas() + itHAs.Siguiente().pos.x] = " ";
@@ -455,10 +455,10 @@ Conj<NombrePosicion> CampusSeguro::HippiesRodeadosAs(Conj<Posicion>& c){
 	while(itC.HaySiguiente()){
 		conjVecinos = this->grilla.Vecinos(itC.Siguiente());
 
-		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " " 
-			&& TodasOcupadas(conjVecinos) 
+		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " "
+			&& TodasOcupadas(conjVecinos)
 			&& AlMenosUnAgente(conjVecinos)){
-			
+
 			np.nombre = this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x];
 			np.pos = itC.Siguiente();
 
@@ -481,9 +481,9 @@ Conj<CampusSeguro::As> CampusSeguro::AgParaPremSanc(Conj<Posicion>& c){
 
 	while(itC.HaySiguiente()){
 		if(this->posicionesAgente[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x].datos.haySiguiente()){
-		
+
 		res.AgregarRapido(this->posicionesAgente[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x]);
-						
+
 		}
 		itC.Avanzar();
 	}
@@ -1309,6 +1309,77 @@ void CampusSeguro::PonerHippie(Nombre h, Posicion pos){
 	this->hippies.Definir(h,pos);
 	this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = h;
 }
+
+Nombre CampusSeguro::iesimoEstudiante(Nat i) const{
+	//PRE: i < #estudiantes
+	DiccString<Posicion> copia(this->estudiantes);
+	Conj<Nombre>::Iterador it = copia.CrearItClaves();
+	Nat k = 0;
+	while(k < i && it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return it.Siguiente();
+}
+
+Nombre CampusSeguro::iesimoHippie(Nat i) const{
+	//PRE: i < #hippies
+	DiccString<Posicion> copia(this->hippies);
+  Conj<Nombre>::Iterador it = copia.CrearItClaves();
+	Nat k = 0;
+	while(k < i && it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return it.Siguiente();
+}
+
+Nat CampusSeguro::iesimoAgente(Nat i) const{
+	//PRE: i < #Agentes
+	diccNat<datosAgente> copia = this->personalAS;
+  Conj<Agente>::Iterador it = copia.crearItClaves();
+	Nat k = 0;
+	while(k < i && it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return it.Siguiente();
+}
+
+Nat CampusSeguro::cantEstudiantes() const{
+	DiccString<Posicion> copia(this->estudiantes);
+	Conj<Nombre>::Iterador it = copia.CrearItClaves();
+	Nat k = 0;
+	while(it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return k;
+}
+
+Nat CampusSeguro::cantHippies() const{
+	DiccString<Posicion> copia(this->hippies);
+  Conj<Nombre>::Iterador it = copia.CrearItClaves();
+	Nat k = 0;
+	while(it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return k;
+}
+
+
+Nat CampusSeguro::cantAgentes() const{
+	diccNat<datosAgente> copia = this->personalAS;
+  Conj<Agente>::Iterador it = copia.crearItClaves();
+	Nat k = 0;
+	while(it.HaySiguiente()){
+		it.Avanzar();
+		k++;
+	}
+	return k;
+}
+
 /*
 void CampusSeguro::QuitarHippie(Nombre h, Posicion pos){
 	if(this->hippies.Definido(h)){

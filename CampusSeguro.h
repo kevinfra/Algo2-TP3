@@ -47,6 +47,14 @@ class CampusSeguro
 	void QuitarHippie(Nombre h, Posicion pos);
 	void QuitarEstudiante(Nombre e, Posicion pos);
 
+	//Funciones que se usan en el driver
+	Nombre iesimoEstudiante(Nat i) const;
+	Nombre iesimoHippie(Nat i) const;
+	Nat iesimoAgente(Nat i) const;
+	Nat cantEstudiantes() const;
+	Nat cantHippies() const;
+	Nat cantAgentes() const;
+
 	private:
 	struct kSanc{
 		Nat sanc;
