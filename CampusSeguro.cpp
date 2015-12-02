@@ -220,7 +220,6 @@ void CampusSeguro::IngresarEstudiante(Nombre e, Posicion pos){
 		Conj<As> conjAgParaSanc = AgParaPremSanc(conjVecinos);
 		SancionarAgentes(conjAgParaSanc);
 	}
-
 	// Si esta rodeado por 2 hippies lo agrego directo como hippie, sino lo agrego como estudiante
 	if(CantHippiesVecinos(conjVecinos) < 2){
 		this->estudiantes.Definir(e, pos);
@@ -372,17 +371,14 @@ bool CampusSeguro::HippiesAtrapando(Conj<Posicion>& c){
 
 void CampusSeguro::SancionarAgentes(Conj<As>& c){
 
-	// Creo un iterador
-	typename Conj<As>::Iterador iteradorConjuntoAs = c.CrearIt();
+	typename Conj<As>::Iterador itAs = c.CrearIt();
 	typename diccNat<datosAgente>::itDiccNat itParaMod;
+	typename Lista<kSanc>::Iterador itL;
 
-	if(c.Cardinal() > 0){
-		this->mismasSancModificado = true;
-	}
+	while(itAs.HaySiguiente()){
+		itParaMod = itAs.Siguiente().datos;
+		Agente agent = itAs.Siguiente().agente;
 
-	while(iteradorConjuntoAs.HaySiguiente()){
-		itParaMod = iteradorConjuntoAs.Siguiente().datos;
-		Agente agent = iteradorConjuntoAs.Siguiente().agente;
 		typename Conj<Agente>::Iterador iterConjMismasSancCP = itParaMod.siguiente().significado.itConjMismasSanc;
 		iterConjMismasSancCP.EliminarSiguiente();
 
@@ -400,6 +396,7 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 			if(iterListaMismasSanc.Siguiente().sanc == sanciones + 1){
 				// Lo agrego al conjunto y guardo su iterador
 				itParaMod.siguiente().significado.itConjMismasSanc = iterListaMismasSanc.Siguiente().agentes.AgregarRapido(agent);
+				itParaMod.siguiente().significado.itMismasSanc.Avanzar();
 			}
 			else{
 				// Creo un nuevo nodo en el medio
@@ -439,7 +436,7 @@ void CampusSeguro::SancionarAgentes(Conj<As>& c){
 
 		itParaMod.siguiente().significado.cantSanc++;
 
-		iteradorConjuntoAs.Avanzar();
+		itAs.Avanzar();
 	}
 
 }
@@ -638,8 +635,8 @@ std::cout << "dame la clave ahora: " << clave << std::endl;itDicc.avanzar();}
 
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
-		//Conj<As> conjAgParaPrem = AgParaPremSanc(conjVecinos);
-		//PremiarAgentes(conjAgParaPrem);
+		Conj<As> conjAgParaPrem = AgParaPremSanc(conjVecinos);
+		PremiarAgentes(conjAgParaPrem);
 	} else {
 		this->hippies.Definir(h,pos);
 		this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = h;
@@ -715,7 +712,7 @@ void CampusSeguro::MoverEstudiante(Nombre e, Direccion d){
 	Posicion actualPos = this->estudiantes.Obtener(e);
 	Posicion pos = actualPos;
 
-	if(!(pos.y == 0 && d == abajo)){ //primero me fijo si la proxima posicion no me va a sacar de Nat
+	if(!(pos.y == 0 && d == arriba)){ //primero me fijo si la proxima posicion no me va a sacar de Nat
 
 		if(d == izq){
 			pos.x = pos.x -1;
@@ -901,8 +898,8 @@ void CampusSeguro::MoverHippie(Nombre h){
 // Funcion distinta al tp
 void CampusSeguro::MoverAgente(Agente a){
 	typename diccNat<datosAgente>::itDiccNat it = busqBinPorPlaca(a, this->agentesOrdenados);
-	cout << it.siguiente().clave << endl;
-	cout << it.siguiente().significado.posicion.x << " " << it.siguiente().significado.posicion.y << endl;
+//	cout << it.siguiente().clave << endl;
+//	cout << it.siguiente().significado.posicion.x << " " << it.siguiente().significado.posicion.y << endl;
 //	this->listaMismasSanc = Lista();
 
 	// Actualizo la posicion del agente
