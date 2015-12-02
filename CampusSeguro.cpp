@@ -541,27 +541,14 @@ bool CampusSeguro::TodasOcupadas(Conj<Posicion>& c){
 	Nat i = 0;
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 
-
+//Dado que no puede pasar todo al mismo tiempo
 	while(itC.HaySiguiente() && i < c.Cardinal()){
 		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") i++;
-
-		if(this->posicionesEstudiantes[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") i++;
-
-		itC.Avanzar();
-	}
-
-	itC = c.CrearIt();
-	while(itC.HaySiguiente() && i < c.Cardinal()){
 		if(this->posicionesAgente[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x].datos.haySiguiente()) i++;
-		itC.Avanzar();
-	}
-
-	itC = c.CrearIt();
-	while(itC.HaySiguiente() && i < c.Cardinal()){
+		if(this->posicionesEstudiantes[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") i++;
 		if(this->grilla.Ocupada(itC.Siguiente())) i++;
 		itC.Avanzar();
 	}
-
 	return (i == c.Cardinal());
 }
 

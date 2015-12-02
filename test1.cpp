@@ -473,7 +473,6 @@ void test_captura_estudiante()
 	pe.y = 0;
 
 	Nombre e = "pepe";
-	std::cout << e << std::endl;
 	cs.IngresarEstudiante(e,pe);
 
 	ASSERT(cs.ConMismasSanciones(a).Cardinal() == 3 );
@@ -550,7 +549,6 @@ void test_mas_vigilante()
 
 	ASSERT(cs.CantHippiesAtrapados(a) == 1);
 	ASSERT(cs.CantHippiesAtrapados(a2) == 1);
-	std::cout << cs.CantHippiesAtrapados(a3) << std::endl;
 	ASSERT(cs.CantHippiesAtrapados(a3) == 2);
 
 	ASSERT(cs.MasVigilante() == a3);
@@ -573,7 +571,7 @@ int main(int argc, char **argv)
 	RUN_TEST(test_comenzar_rastrillaje_simple);
 	RUN_TEST(test_rastrillaje_mover_hacia_hippie);
 	RUN_TEST(test_captura_hippie_entre_agentes);
-//	RUN_TEST(test_captura_estudiante);
+	RUN_TEST(test_captura_estudiante);
 	RUN_TEST(test_mas_vigilante);
 
 	/********************************************************************
