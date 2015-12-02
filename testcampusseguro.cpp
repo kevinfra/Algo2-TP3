@@ -61,12 +61,12 @@ void test_constructor_campus_seguro(){
 		//ASSERT(conjMSan1 == conjK1);
 	}
 	
-	/*
+	
 	//Test 2 sin agentes
-	Campus grilla2(3,3);
+/*	Campus grilla2(3,3);
 	Dicc<Agente,Posicion> dicc2;
 	CampusSeguro cs2(grilla2, dicc2);
-	*/
+*/	
 }
 
 void test_ingresar_estudiante(){
@@ -84,7 +84,7 @@ void test_ingresar_estudiante(){
 	Dicc<Agente,Posicion> dicc;
 
 	Posicion pos;
-	pos.x = 2;
+/*	pos.x = 2;
 	pos.y = 0;
 	dicc.Definir(2, pos);
 
@@ -100,10 +100,8 @@ void test_ingresar_estudiante(){
 	ASSERT(it.Siguiente() == "manuelmena");
 
 	ASSERT(campusSeguro.PosEstudianteYHippie("manuelmena") == pos);
-
-
-	//ASSERT_EQ(campusSeguro.CantSanciones(2), 1);
-
+	//ASSERT_EQ(campusSeguro.CantSanciones(0), 1);
+*/
 
 	//AGREGO TESTS CON VARIOS CASOS 
 	Campus campus1(5,5);
@@ -130,7 +128,7 @@ void test_ingresar_estudiante(){
 
 	/*	Test1: Hay un agente y entra un estudiante, no queda atrapado.
 	 */
-	Dicc<Agente, Posicion> dicc1;
+/*	Dicc<Agente, Posicion> dicc1;
 	a = 1;
 	pos.y = 3;
 	pos.x = 3;
@@ -175,12 +173,12 @@ void test_ingresar_estudiante(){
 	ASSERT(cs1.MasVigilante() == 1);
 	ASSERT(cs1.CantSanciones(1) == 0);
 	ASSERT(cs1.CantHippiesAtrapados(1) == 0);
-
+*/
 
 	/*	Test2: Hay dos agentes y entra un estudiante, queda atrapado entre
 	 *	los dos agentes y un obstaculo, los agentes son sancionados.
 	 */
-	Dicc<Agente, Posicion> dicc2;
+/*	Dicc<Agente, Posicion> dicc2;
 	a = 1;
 	pos.y = 0;
 	pos.x = 2;
@@ -218,17 +216,17 @@ void test_ingresar_estudiante(){
 	ASSERT(itAg2.HaySiguiente());
 	i = 0;
 	while(itAg2.HaySiguiente()){
-		ASSERT(itAg2.Siguiente() == 1);
+		ASSERT(itAg2.Siguiente() == 1 || itAg2.Siguiente() == 2);
 		i++;
 		itAg2.Avanzar();
 	}
 	//hay 2 agentes
 	ASSERT(i == 2);
-	Conj<Agente> conjK2 = cs2.ConKSanciones(0);
-	ASSERT(conjK2.Cardinal() == 1);
+	Conj<Agente> conjK2 = cs2.ConKSanciones(1);
+	ASSERT(conjK2.Cardinal() == 2);
 	ASSERT(conjK2.Pertenece(1));
 	ASSERT(conjK2.Pertenece(2));
-	Conj<Agente> conjMS2_a = cs2.ConMismasSanciones(1);
+*/	/*Conj<Agente> conjMS2_a = cs2.ConMismasSanciones(1);
 	Conj<Agente> conjMS2_b = cs2.ConMismasSanciones(2);
 	ASSERT(conjMS2_a == conjK2 && conjMS2_b == conjK2);
 	ASSERT(cs2.MasVigilante() == 1);
@@ -236,13 +234,13 @@ void test_ingresar_estudiante(){
 	ASSERT(cs2.CantHippiesAtrapados(2) == 0);
 	ASSERT(cs2.CantSanciones(1) == 0);
 	ASSERT(cs2.CantSanciones(2) == 0);
-
+*/
 
 	/*	Test3: Hay 2 Hippies y un Agente, el agente esta lejos.
 	 *	Entra un estudiante y queda atrapado por hippies, se debe transformar
 	 *	a hippie.
 	 */
-	Dicc<Agente, Posicion> dicc3;
+/*	Dicc<Agente, Posicion> dicc3;
 	a = 1;
 	pos.y = 4;
 	pos.x = 3;
@@ -301,7 +299,7 @@ void test_ingresar_estudiante(){
 	ASSERT(cs3.MasVigilante() == 1);
 	ASSERT(cs3.CantHippiesAtrapados(1) == 0);
 	ASSERT(cs3.CantSanciones(1) == 0);
-
+*/
 
 	/*	Test4: Hay 1 Hippie y 2 Agentes, los agentes estan rodeando al hippie.
 	 *	Entra un estudiante y el hippie queda atrapado por los agentes, y
@@ -320,7 +318,8 @@ void test_ingresar_estudiante(){
 	pos.y = 3;
 	pos.x = 3;
 	h = "huno";
-	cs3.PonerHippie(h,pos);
+	cs4.PonerHippie(h,pos);
+	ASSERT(cs4.PosEstudianteYHippie(h) == pos);
 	pos.y = 4;
 	pos.x = 3;
 	e = "euno";
@@ -359,7 +358,7 @@ void test_ingresar_estudiante(){
 	ASSERT(conjK4.Cardinal() == 2);
 	ASSERT(conjK4.Pertenece(1));
 	ASSERT(conjK4.Pertenece(2));
-	Conj<Agente> conjMS4_a = cs4.ConMismasSanciones(1);
+/*	Conj<Agente> conjMS4_a = cs4.ConMismasSanciones(1);
 	Conj<Agente> conjMS4_b = cs4.ConMismasSanciones(2);
 	ASSERT(conjMS4_a == conjK4 && conjMS4_b == conjK4);
 	ASSERT(cs4.MasVigilante() == 1 || cs4.MasVigilante() == 2);
@@ -367,13 +366,13 @@ void test_ingresar_estudiante(){
 	ASSERT(cs4.CantHippiesAtrapados(2) == 1);
 	ASSERT(cs4.CantSanciones(1) == 0);
 	ASSERT(cs4.CantSanciones(2) == 0);
-
+*/
 
 	/*	Test5: Hay 3 estudiantes, un hippie y un agente. El agente esta lejos.
 	 *	Los estudiantes estan atrapando al hippie y hago entrar a uno mas que
 	 *	lo hace quedar completamente atrapado y debe transformarse.
 	 */
-	Dicc<Agente, Posicion> dicc5;
+/*	Dicc<Agente, Posicion> dicc5;
 	a = 1;
 	pos.y = 4;
 	pos.x = 1;
@@ -450,7 +449,7 @@ void test_ingresar_estudiante(){
 	ASSERT(cs5.MasVigilante() == 1);
 	ASSERT(cs5.CantHippiesAtrapados(1) == 0);
 	ASSERT(cs5.CantSanciones(1) == 0);
-
+*/
 
 }
 
@@ -1077,8 +1076,8 @@ void test_mover_estudiante(){
 int main(int argc, char **argv)
 {
 	RUN_TEST(test_simple);
-	//RUN_TEST(test_constructor_campus_seguro);
-	RUN_TEST(test_ingresar_estudiante);
+	RUN_TEST(test_constructor_campus_seguro);
+	//RUN_TEST(test_ingresar_estudiante);
 	//RUN_TEST(test_ingresar_hippie);
 	//RUN_TEST(test_mover_estudiante);
 

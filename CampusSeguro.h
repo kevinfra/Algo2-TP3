@@ -44,6 +44,8 @@ class CampusSeguro
 	//Acordarse de quitar estas funciones, nos sirven para testear nomas
 	void PonerHippie(Nombre h, Posicion pos);
 	void PonerEstudiante(Nombre e, Posicion pos);
+	void QuitarHippie(Nombre h, Posicion pos);
+	void QuitarEstudiante(Nombre e, Posicion pos);
 
 	private:
 	struct kSanc{
@@ -90,7 +92,7 @@ class CampusSeguro
 	Conj<NombrePosicion> EstudiantesRodeadosHippies(Conj<Posicion>& c);
 	bool HippiesAtrapando(Conj<Posicion>& c);
 	Conj<NombrePosicion> HippiesRodeadosAs(Conj<Posicion>& c);
-	Conj<As> AgParaPremSanc(Conj<Posicion>& c);
+	void AgParaPremSanc(Conj<Posicion>& c, Nat n);
 	Nat CantHippiesVecinos(Conj<Posicion>& c);
 	bool TodosEstudiantes(Conj<Posicion>& c);
 	bool TodasOcupadas(Conj<Posicion>& c);
