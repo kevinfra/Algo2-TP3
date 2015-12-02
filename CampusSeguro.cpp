@@ -636,8 +636,8 @@ std::cout << "dame la clave ahora: " << clave << std::endl;itDicc.avanzar();}
 
 	Conj<Posicion> conjVecinos = this->grilla.Vecinos(pos);
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
-		//Conj<As> conjAgParaPrem = AgParaPremSanc(conjVecinos);
-		//PremiarAgentes(conjAgParaPrem);
+		Conj<As> conjAgParaPrem = AgParaPremSanc(conjVecinos);
+		PremiarAgentes(conjAgParaPrem);
 	} else {
 		this->hippies.Definir(h,pos);
 		this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = h;
@@ -699,8 +699,8 @@ std::cout << "dame la clave ahora: " << clave << std::endl;itDicc.avanzar();}
 		while(itEstAs.HaySiguiente()){
 			conjERAsVecinos = this->grilla.Vecinos(itEstAs.Siguiente());
 			if(TodasOcupadas(conjERAsVecinos) && AlMenosUnAgente(conjERAsVecinos)){
-				//Conj<As> conjAgParaSanc = AgParaPremSanc(conjERAsVecinos);
-				//SancionarAgentes(conjAgParaSanc);
+				Conj<As> conjAgParaSanc = AgParaPremSanc(conjERAsVecinos);
+				SancionarAgentes(conjAgParaSanc);
 			}
 
 			itEstAs.Avanzar();

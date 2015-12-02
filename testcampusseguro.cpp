@@ -490,7 +490,6 @@ void test_ingresar_hippie(){
 	dicc.Definir(a,pos);
 	CampusSeguro cs1(campus,dicc);
 
-
 	pos.y = 0;
 	pos.x = 2;
 	cs1.IngresarHippie(h,pos);
@@ -648,7 +647,7 @@ void test_ingresar_hippie(){
 	 * Los agentes son sancionados.
 	 */
 
-	Dicc<Agente, Posicion> dicc5;
+/*	Dicc<Agente, Posicion> dicc5;
 	a = 0;
 	pos.y = 3;
 	pos.x = 0;
@@ -670,7 +669,7 @@ void test_ingresar_hippie(){
 	ASSERT(itHip5.HaySiguiente());
 	i=0;
 	while(itHip5.HaySiguiente()){
-		ASSERT(itHip5.Siguiente() == "wololo");
+		ASSERT(itHip5.Siguiente() == "hippieohippy");
 		i++;
 		itHip5.Avanzar();	
 	}
@@ -681,9 +680,9 @@ void test_ingresar_hippie(){
 	ASSERT(itEst5.HaySiguiente());
 	i=0;
 	while(itEst5.HaySiguiente()){
-		ASSERT(itHip5.Siguiente() == "wololo");
+		ASSERT(itEst5.Siguiente() == "cantar");
 		i++;
-		itHip5.Avanzar();	
+		itEst5.Avanzar();	
 	}
 	//la cantidad de estudiantes es 1
 	ASSERT(i == 1);
@@ -697,7 +696,51 @@ void test_ingresar_hippie(){
 	ASSERT(conjK5 == conjMS5_a && conjK5 == conjMS5_b);
 	ASSERT(0 == cs5.CantHippiesAtrapados(1));
 	ASSERT(0 == cs5.CantHippiesAtrapados(0));
+*/
 
+//	test como el de la catedra
+	Campus camp(5,5);
+
+	pos.y = 0;
+	pos.x = 4;
+	camp.AgregarObstaculo(pos);
+	pos.y = 1;
+	pos.x = 3;
+	camp.AgregarObstaculo(pos);
+
+	Dicc<Agente,Posicion> dicc6;
+	a = 1;
+	pos.y = 0;
+	pos.x = 0;
+	dicc6.Definir(a,pos);
+	a = 2;
+	pos.y = 1;
+	pos.x = 1;
+	dicc6.Definir(a,pos);
+	a = 3;
+	pos.y = 0;
+	pos.x = 2;
+	dicc6.Definir(a,pos);
+
+	CampusSeguro cs6(camp,dicc6);
+
+	h = "hippie";
+	pos.y = 0;
+	pos.x = 1;
+	cs6.IngresarHippie(h,pos);
+	h = "hippie2";
+	pos.y = 0;
+	pos.x = 3;
+	cs6.IngresarHippie(h,pos);
+
+	ASSERT(cs6.CantHippiesAtrapados(1) == 1);
+	ASSERT(cs6.CantHippiesAtrapados(2) == 1);
+	ASSERT(cs6.CantHippiesAtrapados(3) == 2);
+
+	pos.y = 1;
+	pos.x = 3;
+	Campus c = cs6.campus();
+	ASSERT(c.Ocupada(pos));
 
 }
 
@@ -1077,7 +1120,7 @@ int main(int argc, char **argv)
 	RUN_TEST(test_simple);
 	RUN_TEST(test_constructor_campus_seguro);
 	RUN_TEST(test_ingresar_estudiante);
-	//RUN_TEST(test_ingresar_hippie);
+	RUN_TEST(test_ingresar_hippie);
 	//RUN_TEST(test_mover_estudiante);
 
 	/********************************************************************
