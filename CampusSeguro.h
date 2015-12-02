@@ -92,7 +92,7 @@ class CampusSeguro
 	Conj<NombrePosicion> EstudiantesRodeadosHippies(Conj<Posicion>& c);
 	bool HippiesAtrapando(Conj<Posicion>& c);
 	Conj<NombrePosicion> HippiesRodeadosAs(Conj<Posicion>& c);
-	void AgParaPremSanc(Conj<Posicion>& c, Nat n);
+	Conj<As> AgParaPremSanc(Conj<Posicion>& c);
 	Nat CantHippiesVecinos(Conj<Posicion>& c);
 	bool TodosEstudiantes(Conj<Posicion>& c);
 	bool TodasOcupadas(Conj<Posicion>& c);
