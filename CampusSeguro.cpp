@@ -590,6 +590,17 @@ bool CampusSeguro::AlMenosUnAgente(Conj<Posicion>& c){
 	return res;
 }
 
+bool CampusSeguro::AlMenosUnEstudiante(Conj<Posicion>& c){
+	typename Conj<Posicion>::Iterador itC = c.CrearIt();
+	bool res = false;
+
+	while(itC.HaySiguiente()){
+		if(this->posicionesEstudiantes[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") res =  true;
+		itC.Avanzar();
+	}
+
+	return res;
+}
 
 void CampusSeguro::IngresarHippie(Nombre h, Posicion pos){
 	//As as = posicionesAgente[3];
@@ -624,7 +635,10 @@ std::cout << "dame la clave ahora: " << clave << std::endl;itDicc.avanzar();}
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
 		Conj<As> conjAgParaPrem = AgParaPremSanc(conjVecinos);
 		PremiarAgentes(conjAgParaPrem);
-	} else {
+	} else if (TodasOcupadas(conjVecinos) && AlMenosUnEstudiante(conjVecinos)) {    //Si el hippie no esta atrapado por estudiantes
+		this->estudiantes.Definir(h, pos);
+		this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] = h;
+	} else{
 		this->hippies.Definir(h,pos);
 		this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = h;
 	}
