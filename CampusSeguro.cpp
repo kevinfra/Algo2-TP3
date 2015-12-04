@@ -541,7 +541,7 @@ bool CampusSeguro::TodasOcupadas(Conj<Posicion>& c){
 	Nat i = 0;
 	typename Conj<Posicion>::Iterador itC = c.CrearIt();
 
-//Dado que no puede pasar todo al mismo tiempo
+//Dado que no puede pasar las 4 cosas al mismo tiempo
 	while(itC.HaySiguiente() && i < c.Cardinal()){
 		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") i++;
 		if(this->posicionesAgente[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x].datos.haySiguiente()) i++;
@@ -989,9 +989,24 @@ Posicion CampusSeguro::proxPos(Posicion pos, DiccString<Posicion>& dicc){
 	Conj<Posicion> conjDondeIr = dondeIr(pos, distCorta, dicc);
 	Conj<Posicion> conjLugaresPosibles = lugaresPosibles(pos, conjDondeIr);
 
-	if(conjLugaresPosibles.EsVacio())
-		return pos;
-	else{
+	if(conjLugaresPosibles.EsVacio()){ //Esto puede ser porque el dicc este vacio
+		Posicion salidaArriba;
+		salidaArriba.x = pos.x;
+		salidaArriba.y = 0;
+
+		Posicion salidaAbajo;
+		salidaAbajo.x = pos.x;
+		salidaAbajo.y = this->grilla.Filas()-1;
+
+		if(distancia(pos, salidaArriba) > distancia(pos, salidaAbajo)){
+			pos.y += 1;
+			cout << pos.x << " y " << pos.y << endl;
+			return pos;
+		}else{
+			pos.y -= 1;
+			return pos;
+		}
+	}else{
 		typename Conj<Posicion>::Iterador it = conjLugaresPosibles.CrearIt();
 		return it.Siguiente();
 	}
@@ -1018,17 +1033,18 @@ Nat CampusSeguro::distanciaMasCorta(Posicion pos, DiccString<Posicion>& dicc){
 	return dist;
 }
 
-Nat CampusSeguro::distancia(Posicion pos1, Posicion pos2){
-	return(modulo(pos1.x - pos2.x) + modulo(pos1.y - pos2.y));
+Nat CampusSeguro::distancia(Posicion pos1, Posicion pos2) {
+	if (pos1.x >= pos2.x && pos1.y >= pos2.y) {
+		return ((pos1.x - pos2.x) + (pos1.y - pos2.y));
+	} else if (pos1.x < pos2.x && pos1.y >= pos2.y) {
+		return ((pos2.x - pos1.x) + (pos1.y - pos2.y));
+	} else if (pos1.x >= pos2.x && pos1.y < pos2.y) {
+		return ((pos1.x - pos2.x) + (pos2.y - pos1.y));
+	} else if (pos1.x < pos2.x && pos1.y < pos2.y) {
+		return ((pos2.x - pos1.x) + (pos2.y - pos1.y));
+	}
+	return 0;
 }
-
-Nat CampusSeguro::modulo(int val){
-	if(val >= 0)
-		return (Nat)val;
-	else
-		return (Nat)-val;
-}
-
 // TODO: testear
 Conj<Posicion> CampusSeguro::dondeIr(Posicion pos, Nat dist, DiccString<Posicion>& dicc){
 	Conj<Posicion> posiciones;

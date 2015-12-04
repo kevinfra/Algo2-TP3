@@ -354,7 +354,6 @@ void test_mover_hippie_a_ingreso() {
 	campus.moverHippie(s);	
 	
 	p4 = campus.posEstudianteYHippie(s);
-	// FIXME: esta linea esta comentada porque el tad no pide que los hippies se muevan hacia las entradas sino los agentes
 	ASSERT(p4.x == 1 && p4.y == 2);
 
 }

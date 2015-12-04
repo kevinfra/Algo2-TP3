@@ -113,7 +113,6 @@ class CampusSeguro
 	Posicion proxPos(Posicion pos, DiccString<Posicion>& dicc);
 	Nat distanciaMasCorta(Posicion pos, DiccString<Posicion>& dicc);
 	Nat distancia(Posicion p1, Posicion p2);
-	Nat modulo(int val);
 	Conj<Posicion> dondeIr(Posicion pos, Nat dist, DiccString<Posicion>& dicc);
 	Conj<Posicion> lugaresPosibles(Posicion pos, Conj<Posicion>& posiciones);
 	bool hayAlgoEnPos(Posicion pos);
