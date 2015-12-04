@@ -43,11 +43,12 @@ class CampusSeguro
 
 	CampusSeguro& operator= (const CampusSeguro& otro);
 
-	//Acordarse de quitar estas funciones, nos sirven para testear nomas
+	/*
+	//para testear
 	void PonerHippie(Nombre h, Posicion pos);
 	void PonerEstudiante(Nombre e, Posicion pos);
 	void QuitarHippie(Nombre h, Posicion pos);
-	void QuitarEstudiante(Nombre e, Posicion pos);
+	void QuitarEstudiante(Nombre e, Posicion pos);*/
 
 	//Funciones que se usan en el driver
 	Nombre iesimoEstudiante(Nat i) const;

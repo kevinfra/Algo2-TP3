@@ -638,7 +638,7 @@ std::cout << "dame la clave ahora: " << clave << std::endl;itDicc.avanzar();}
 	if(TodasOcupadas(conjVecinos) && AlMenosUnAgente(conjVecinos)){
 		Conj<As> conjAgParaPrem = AgParaPremSanc(conjVecinos);
 		PremiarAgentes(conjAgParaPrem);
-	} else if (TodasOcupadas(conjVecinos) && AlMenosUnEstudiante(conjVecinos)) {    //Si el hippie no esta atrapado por estudiantes
+	} else if (SoloObsYEstudiantes(conjVecinos)) {    
 		this->estudiantes.Definir(h, pos);
 		this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] = h;
 	} else{
@@ -1320,6 +1320,7 @@ Nat med;
 	return res;
 }
 
+/*
 void CampusSeguro::PonerEstudiante(Nombre e, Posicion pos){
 	this->estudiantes.Definir(e,pos);
 	this->posicionesEstudiantes[pos.y * this->grilla.Columnas() + pos.x] = e;
@@ -1329,6 +1330,7 @@ void CampusSeguro::PonerHippie(Nombre h, Posicion pos){
 	this->hippies.Definir(h,pos);
 	this->posicionesHippies[pos.y * this->grilla.Columnas() + pos.x] = h;
 }
+*/
 
 Nombre CampusSeguro::iesimoEstudiante(Nat i) const{
 	//PRE: i < #estudiantes
