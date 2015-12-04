@@ -355,7 +355,7 @@ void test_mover_hippie_a_ingreso() {
 	
 	p4 = campus.posEstudianteYHippie(s);
 	// FIXME: esta linea esta comentada porque el tad no pide que los hippies se muevan hacia las entradas sino los agentes
-//	ASSERT(p4.x == 1 && p4.y == 2);
+	ASSERT(p4.x == 1 && p4.y == 2);
 
 }
 
@@ -567,7 +567,67 @@ void test_mas_vigilante()
 	ASSERT(campus.masVigilante() == a3);
 
 }
+/* test agregado por alumnos
+void test_encierra_entre_estudiantes(){
+	Driver campus;
+	campus.crearCampus(10,10);
 
+	Dicc<Agente,Posicion> agentes;
+	campus.comenzarRastrillaje(agentes);
+
+	Posicion p3;
+	p3.x = 2;
+	p3.y = 1;
+
+	Nombre t = "pepa";
+	campus.ingresarEstudiante(t,p3);
+
+	campus.moverEstudiante(t,abajo);
+	campus.moverEstudiante(t,abajo);
+
+	Nombre h1 = "jipon";
+	campus.ingresarHippie(h1,p3);
+	campus.moverHippie(h1);
+
+	Posicion posHippie = campus.posEstudianteYHippie(h1);
+	Posicion posEstudiante = campus.posEstudianteYHippie(t);
+
+	ASSERT(posHippie.x == posEstudiante.x && posHippie.y == posEstudiante.y-1);
+	ASSERT(campus.cantHippies() == 1);
+	ASSERT(campus.cantEstudiantes() == 1);
+
+	Posicion p2;
+	p2.x = 1;
+	p2.y = 1;
+
+	Nombre s = "pepe";
+	campus.ingresarEstudiante(s,p2);
+	campus.moverEstudiante(s,abajo);
+
+	ASSERT(posHippie.x == posEstudiante.x && posHippie.y == posEstudiante.y-1);
+	ASSERT(campus.cantHippies() == 1);
+	ASSERT(campus.cantEstudiantes() == 2);
+
+	Posicion p;
+	p.x = 3;
+	p.y = 1;
+
+	Nombre r = "pepen";
+	campus.ingresarEstudiante(r,p);
+	campus.moverEstudiante(r,abajo);
+
+	ASSERT(posHippie.x == posEstudiante.x && posHippie.y == posEstudiante.y-1);
+	ASSERT(campus.cantHippies() == 1);
+	ASSERT(campus.cantEstudiantes() == 3);
+
+	Nombre gil = "pepito";
+	campus.ingresarEstudiante(gil,p3);
+
+	ASSERT(posHippie.x == posEstudiante.x && posHippie.y == posEstudiante.y-1);
+	ASSERT(campus.cantHippies() == 0);
+	ASSERT(campus.cantEstudiantes() == 5);
+}
+test agregado por alumnos*/
 
 int main(int argc, char **argv)
 {
@@ -586,6 +646,7 @@ int main(int argc, char **argv)
 	RUN_TEST(test_captura_hippie_entre_agentes);
 	RUN_TEST(test_captura_estudiante);
 	RUN_TEST(test_mas_vigilante);
+//	RUN_TEST(test_encierra_entre_estudiantes); este test es agregado por alumnos
 
 	/********************************************************************
 	 * TODO: escribir casos de test exhaustivos para todas              *
