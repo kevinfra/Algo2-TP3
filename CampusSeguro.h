@@ -120,6 +120,7 @@ class CampusSeguro
 	bool atrapado(Posicion pos);
 	void hacerArregloMismasSanc();
 	bool busqBinAgente(Nat k, Nat& i, Arreglo<Lista<kSanc>::Iterador> v);
+	bool SoloObsYEstudiantes(Conj<Posicion>& c);
 
 };
 

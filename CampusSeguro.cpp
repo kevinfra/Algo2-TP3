@@ -313,7 +313,7 @@ Conj<Posicion> CampusSeguro::EstudiantesRodeadosAs(Conj<Posicion>& c){
 	while(itC.HaySiguiente()){
 		//si es un estudiante hace lo de adentro
 		if(this->posicionesEstudiantes[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " "){
-
+			
 			// Me guardo los vecinos de la posicion
 			conjVecinos = this->grilla.Vecinos(itC.Siguiente());
 			// Agrego la posicion si estan todos los vecinos ocupados y al algun agente
@@ -562,15 +562,18 @@ Conj<NombrePosicion> CampusSeguro::HippiesRodeadosEstudiantes(Conj<Posicion>& c)
 
 	while(itC.HaySiguiente()){
 		conjVecinos = this->grilla.Vecinos(itC.Siguiente());
-		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " " && TodasOcupadas(conjVecinos) && AlMenosUnEstudiante(conjVecinos)){	//TodosEstudiantes(conjVecinos) && conjVecinos.Cardinal() == 4){
+		if(this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " " &&
+			SoloObsYEstudiantes(conjVecinos)){	
 			np.nombre = this->posicionesHippies[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x];
 			np.pos = itC.Siguiente();
 
 			conjuntoRetorno.AgregarRapido(np);
+
 		}
 
 		itC.Avanzar();
 	}
+
 
 	return conjuntoRetorno;
 }
@@ -803,8 +806,8 @@ void CampusSeguro::MoverEstudiante(Nombre e, Direccion d){
 			while(itEstAs.HaySiguiente()){
 				conjERAsVecinos = this->grilla.Vecinos(itEstAs.Siguiente());
 				if(TodasOcupadas(conjERAsVecinos) && AlMenosUnAgente(conjERAsVecinos)){
-					//Conj<As> conjAgParaSanc = AgParaPremSanc(conjERAsVecinos);
-					//SancionarAgentes(conjAgParaSanc);
+					Conj<As> conjAgParaSanc = AgParaPremSanc(conjERAsVecinos);
+					SancionarAgentes(conjAgParaSanc);
 				}
 
 				itEstAs.Avanzar();
@@ -1490,3 +1493,19 @@ CampusSeguro& CampusSeguro::operator= (const CampusSeguro& otro){
 	return(*this);
 
 }
+
+bool CampusSeguro::SoloObsYEstudiantes(Conj<Posicion>& c){
+	Nat cantEst = 0;
+	Nat cantObs = 0;
+	typename Conj<Posicion>::Iterador itC = c.CrearIt();
+
+	while(itC.HaySiguiente()){
+		if(this->grilla.Ocupada(itC.Siguiente())) cantObs++;
+		if(this->posicionesEstudiantes[itC.Siguiente().y * this->grilla.Columnas() + itC.Siguiente().x] != " ") cantEst++;
+
+		itC.Avanzar();
+	}
+
+	return (cantEst <= c.Cardinal() && cantObs < c.Cardinal() && cantEst + cantObs == c.Cardinal());
+}
+
